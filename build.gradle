@@ -11,19 +11,14 @@ version = project.minecraft_version+'-'+project.mod_version // thanks carpet
 group = project.maven_group
 
 repositories {
-	maven {
-		url = 'https://www.cursemaven.com'
-		mavenLocal()
-	}
+	maven {	url = 'https://www.cursemaven.com' }
 	// Import masa's maven repo directly
 	maven {
 		url 'https://masa.dy.fi/maven'
 		mavenLocal()
 		}
 
-	flatDir {
-       dirs 'libs'
-   }
+	flatDir { dirs 'libs' }
 }
 
 dependencies {
