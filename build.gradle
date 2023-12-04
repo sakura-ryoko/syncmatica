@@ -11,14 +11,8 @@ version = project.minecraft_version+'-'+project.mod_version // thanks carpet
 group = project.maven_group
 
 repositories {
-	maven {	url = 'https://www.cursemaven.com' }
-	// Import masa's maven repo directly
-	maven {
-		url 'https://masa.dy.fi/maven'
-		mavenLocal()
-		}
-
-	flatDir { dirs 'libs' }
+	maven { url 'https://masa.dy.fi/maven' }
+	// Use local maven for build testing
 }
 
 dependencies {
@@ -27,10 +21,7 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	
-	//modImplementation "curse.maven:litematica-${project.litematica_minecraft_version}-308892:${project.litematica_fileid}"
-	//modImplementation "curse.maven:malilib-${project.litematica_minecraft_version}-303119:${project.malilib_fileid}"
-
-	// Copied method from litematica build.gradle instead of using curse.maven
+	// Should migrate away from using cursemaven and use official method
 	modImplementation "fi.dy.masa.malilib:malilib-fabric-${project.minecraft_version_out}:${project.malilib_version}"
 	modImplementation "fi.dy.masa.litematica:litematica-fabric-${project.minecraft_version_out}:${project.litematica_version}"
 

@@ -19,7 +19,7 @@ public abstract class MixinClientPlayNetworkHandler {
     @Unique
     public ExchangeTarget exTarget = null;
 
-    @Inject(method = "method_52801", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "warnOnUnknownPayload", at = @At("HEAD"), cancellable = true)
     private void handlePacket(CustomPayload customPayload, CallbackInfo ci) {
         // ChannelManager.onChannelRegisterHandle(getExchangeTarget(), packet.getChannel(), packet.getData());
         if (!MinecraftClient.getInstance().isOnThread()) {
