@@ -35,6 +35,7 @@ dependencies/
 bin/
 .classpath
 .project
+libs/
 
 # fabric
 

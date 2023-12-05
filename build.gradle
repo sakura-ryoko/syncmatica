@@ -11,8 +11,12 @@ version = project.minecraft_version+'-'+project.mod_version // thanks carpet
 group = project.maven_group
 
 repositories {
-	maven { url 'https://masa.dy.fi/maven' }
+	maven {
+		url 'https://masa.dy.fi/maven'
+		mavenLocal()
+		}
 	// Use local maven for build testing
+	flatDir { dirs 'libs' }
 }
 
 dependencies {
