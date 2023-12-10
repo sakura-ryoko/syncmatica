@@ -12,12 +12,14 @@ group = project.maven_group
 
 repositories {
 	maven {
-		url 'https://masa.dy.fi/maven'
-		mavenLocal()
-		}
-	// Use local maven for build testing
-	flatDir { dirs 'libs' }
+//		url 'https://masa.dy.fi/maven'
+//		mavenLocal()
+		url = "https://www.cursemaven.com"
+	}
+	// Only for a local maven repo for deps
+//	flatDir { dirs 'libs' }
 }
+
 
 dependencies {
 	// To change the versions see the gradle.properties file
@@ -25,9 +27,10 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	
-	// Should migrate away from using cursemaven and use official method
-	modImplementation "fi.dy.masa.malilib:malilib-fabric-${project.minecraft_version_out}:${project.malilib_version}"
-	modImplementation "fi.dy.masa.litematica:litematica-fabric-${project.minecraft_version_out}:${project.litematica_version}"
+	//	modImplementation "fi.dy.masa.malilib:malilib-fabric-${project.minecraft_version_out}:${project.malilib_version}"
+	//	modImplementation "fi.dy.masa.litematica:litematica-fabric-${project.minecraft_version_out}:${project.litematica_version}"
+	modImplementation "curse.maven:litematica-${project.minecraft_version_out}-308892:${project.litematica_fileid}"
+	modImplementation "curse.maven:malilib-${project.minecraft_version_out}-303119:${project.malilib_fileid}"
 
 	modImplementation "net.fabricmc.fabric-api:fabric-resource-loader-v0:${project.fabric_resource_loader_version}"
 }
