@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.4-SNAPSHOT'
+	id 'fabric-loom' version '1.5-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -11,19 +11,30 @@ version = project.minecraft_version+'-'+project.mod_version // thanks carpet
 group = project.maven_group
 
 repositories {
-	maven { url = "https://www.cursemaven.com" }
+	// maven { url = "https://www.cursemaven.com" }
+	maven { url 'https://maven.terraformersmc.com/releases/' }
+	maven {
+		url 'https://masa.dy.fi/maven'
+		mavenLocal()
+	}
+	flatDir { dirs 'libs' }
 }
 
 
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	//mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	mappings loom.officialMojangMappings()
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	
-	modImplementation "curse.maven:litematica-${project.minecraft_version_out}-308892:${project.litematica_fileid}"
-	modImplementation "curse.maven:malilib-${project.minecraft_version_out}-303119:${project.malilib_fileid}"
+	//modImplementation "curse.maven:litematica-${project.minecraft_version_out}-308892:${project.litematica_fileid}"
+	//modImplementation "curse.maven:malilib-${project.minecraft_version_out}-303119:${project.malilib_fileid}"
 
+	modImplementation "fi.dy.masa.malilib:malilib-fabric-${project.minecraft_version_out}:${project.malilib_version}"
+	modImplementation "fi.dy.masa.litematica:litematica-fabric-${project.minecraft_version_out}:${project.litematica_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-resource-loader-v0:${project.fabric_resource_loader_version}"
+
+	modCompileOnly "com.terraformersmc:modmenu:${project.mod_menu_version}"
 }
 
 processResources {
