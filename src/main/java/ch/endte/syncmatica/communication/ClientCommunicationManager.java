@@ -83,7 +83,7 @@ public class ClientCommunicationManager extends CommunicationManager {
         if (id.equals(PacketType.REGISTER_VERSION.identifier)) {
             LitematicManager.clear();
             Syncmatica.restartClient();
-            ActorClientPlayNetworkHandler.getInstance().packetEvent(id, () -> packetBuf);
+            ActorClientPlayNetworkHandler.getInstance().packetEvent(id, packetBuf);
         }
     }
 
@@ -122,15 +122,11 @@ public class ClientCommunicationManager extends CommunicationManager {
     }
 
     private Message.MessageType mapMessageType(final MessageType m) {
-        switch (m) {
-            case SUCCESS:
-                return Message.MessageType.SUCCESS;
-            case WARNING:
-                return Message.MessageType.WARNING;
-            case ERROR:
-                return Message.MessageType.ERROR;
-            default:
-                return Message.MessageType.INFO;
-        }
+        return switch (m) {
+            case SUCCESS -> Message.MessageType.SUCCESS;
+            case WARNING -> Message.MessageType.WARNING;
+            case ERROR -> Message.MessageType.ERROR;
+            default -> Message.MessageType.INFO;
+        };
     }
 }

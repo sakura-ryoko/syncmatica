@@ -53,8 +53,8 @@ public class ActorClientPlayNetworkHandler {
     }
 
     public void packetEvent(final ClientPlayNetworkHandler clientPlayNetworkHandler, final SyncmaticaPayload payload, final CallbackInfo ci) {
-        final Identifier id = payload.id();
-        final Supplier<PacketByteBuf> bufSupplier = payload::byteBuf;
+        final Identifier id = payload.getIdentifier();
+        final PacketByteBuf bufSupplier = payload.getPacket();
         if (clientCommunication == null) {
             ActorClientPlayNetworkHandler.getInstance().startEvent(clientPlayNetworkHandler);
         }
@@ -64,9 +64,9 @@ public class ActorClientPlayNetworkHandler {
         }
     }
 
-    public boolean packetEvent(final Identifier id, final Supplier<PacketByteBuf> bufSupplier) {
+    public boolean packetEvent(final Identifier id, final PacketByteBuf bufSupplier) {
         if (clientCommunication.handlePacket(id)) {
-            clientCommunication.onPacket(exTarget, id, bufSupplier.get());
+            clientCommunication.onPacket(exTarget, id, bufSupplier);
 
             return true;
         }

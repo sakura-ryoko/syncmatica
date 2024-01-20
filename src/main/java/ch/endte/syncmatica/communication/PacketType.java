@@ -56,7 +56,7 @@ public enum PacketType {
 
     FEATURE("syncmatica:feature"),
     // sends feature set to the partner
-    // send during a version exchange to check if the 2 versions are compatible and there is no
+    // send during a version exchange to check if the 2 versions are compatible, and there is no
     // default feature set available for the transmitted version
     // afterwards the feature set is used to communicate to the partner
 

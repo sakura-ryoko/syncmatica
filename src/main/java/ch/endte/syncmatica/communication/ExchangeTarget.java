@@ -14,9 +14,10 @@ import net.minecraft.util.Identifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 // since Client/Server PlayNetworkHandler are 2 different classes, but I want to use exchanges
-// on both without having to recode them individually I have an adapter class here
+// on both without having to recode them individually, I have an adapter class here
 
 public class ExchangeTarget {
     public final ClientPlayNetworkHandler clientPlayNetworkHandler;
@@ -45,11 +46,13 @@ public class ExchangeTarget {
             context.getDebugService().logSendPacket(id, persistentName);
         }
         if (clientPlayNetworkHandler != null) {
-            CustomPayloadC2SPacket packet = new CustomPayloadC2SPacket(new SyncmaticaPayload(id, packetBuf));
+            final SyncmaticaPayload.SyncPacket syncPacket = new SyncmaticaPayload.SyncPacket(packetBuf.readUuid(), id, packetBuf);
+            CustomPayloadC2SPacket packet = new CustomPayloadC2SPacket(new SyncmaticaPayload(syncPacket));
             clientPlayNetworkHandler.sendPacket(packet);
         }
         if (serverPlayNetworkHandler != null) {
-            CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(new SyncmaticaPayload(id, packetBuf));
+            final SyncmaticaPayload.SyncPacket syncPacket = new SyncmaticaPayload.SyncPacket(packetBuf.readUuid(), id, packetBuf);
+            CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(new SyncmaticaPayload(syncPacket));
             serverPlayNetworkHandler.sendPacket(packet);
         }
     }
