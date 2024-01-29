@@ -2,7 +2,7 @@ package ch.endte.syncmatica.communication;
 
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.communication.exchange.Exchange;
-import ch.endte.syncmatica.network.SyncmaticaPayload;
+import ch.endte.syncmatica.network.s2c.SyncmaticaS2CPayload;
 import fi.dy.masa.malilib.util.StringUtils;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.PacketByteBuf;
@@ -14,11 +14,11 @@ import net.minecraft.util.Identifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
 
 // since Client/Server PlayNetworkHandler are 2 different classes, but I want to use exchanges
 // on both without having to recode them individually, I have an adapter class here
 
+@Deprecated
 public class ExchangeTarget {
     public final ClientPlayNetworkHandler clientPlayNetworkHandler;
     public final ServerPlayNetworkHandler serverPlayNetworkHandler;
@@ -46,14 +46,16 @@ public class ExchangeTarget {
             context.getDebugService().logSendPacket(id, persistentName);
         }
         if (clientPlayNetworkHandler != null) {
-            final SyncmaticaPayload.SyncPacket syncPacket = new SyncmaticaPayload.SyncPacket(packetBuf.readUuid(), id, packetBuf);
-            CustomPayloadC2SPacket packet = new CustomPayloadC2SPacket(new SyncmaticaPayload(syncPacket));
-            clientPlayNetworkHandler.sendPacket(packet);
+            // #FIXME
+            //final SyncmaticaS2CPayload.SyncPacket syncPacket = new SyncmaticaS2CPayload.SyncPacket(packetBuf.readUuid(), id, packetBuf);
+            //CustomPayloadC2SPacket packet = new CustomPayloadC2SPacket(new SyncmaticaS2CPayload(syncPacket));
+            //clientPlayNetworkHandler.sendPacket(packet);
         }
         if (serverPlayNetworkHandler != null) {
-            final SyncmaticaPayload.SyncPacket syncPacket = new SyncmaticaPayload.SyncPacket(packetBuf.readUuid(), id, packetBuf);
-            CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(new SyncmaticaPayload(syncPacket));
-            serverPlayNetworkHandler.sendPacket(packet);
+            // #FIXME
+            //final SyncmaticaS2CPayload.SyncPacket syncPacket = new SyncmaticaS2CPayload.SyncPacket(packetBuf.readUuid(), id, packetBuf);
+            //CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(new SyncmaticaS2CPayload(syncPacket));
+            //serverPlayNetworkHandler.sendPacket(packet);
         }
     }
 

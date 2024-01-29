@@ -10,7 +10,7 @@ import ch.endte.syncmatica.communication.exchange.VersionHandshakeClient;
 import ch.endte.syncmatica.extended_core.PlayerIdentifier;
 import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.litematica.ScreenHelper;
-import ch.endte.syncmatica.mixin_actor.ActorClientPlayNetworkHandler;
+import ch.endte.syncmatica.network.legacy.ActorClientPlayNetworkHandler;
 import fi.dy.masa.malilib.gui.Message;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;

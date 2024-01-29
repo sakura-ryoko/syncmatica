@@ -1,4 +1,4 @@
-package ch.endte.syncmatica.mixin_actor;
+package ch.endte.syncmatica.network.legacy;
 
 import ch.endte.syncmatica.IFileStorage;
 import ch.endte.syncmatica.RedirectFileStorage;
@@ -9,14 +9,14 @@ import ch.endte.syncmatica.communication.CommunicationManager;
 import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.litematica.ScreenHelper;
-import ch.endte.syncmatica.network.SyncmaticaPayload;
+import ch.endte.syncmatica.network.s2c.SyncmaticaS2CPayload;
+import fi.dy.masa.malilib.util.PayloadUtils;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.function.Supplier;
-
+@Deprecated
 public class ActorClientPlayNetworkHandler {
 
     private static ActorClientPlayNetworkHandler instance;
@@ -24,6 +24,7 @@ public class ActorClientPlayNetworkHandler {
     private CommunicationManager clientCommunication;
     private ExchangeTarget exTarget;
 
+    @Deprecated
     public static ActorClientPlayNetworkHandler getInstance() {
         if (instance == null) {
 
@@ -33,11 +34,13 @@ public class ActorClientPlayNetworkHandler {
         return instance;
     }
 
+    @Deprecated
     public void startEvent(final ClientPlayNetworkHandler clientPlayNetworkHandler) {
         setClientPlayNetworkHandler(clientPlayNetworkHandler);
         startClient();
     }
 
+    @Deprecated
     public void startClient() {
         if (clientPlayNetworkHandler == null) {
             throw new RuntimeException("Tried to start client before receiving a connection");
@@ -52,9 +55,10 @@ public class ActorClientPlayNetworkHandler {
         LitematicManager.getInstance().setActiveContext(Syncmatica.getContext(Syncmatica.CLIENT_CONTEXT));
     }
 
-    public void packetEvent(final ClientPlayNetworkHandler clientPlayNetworkHandler, final SyncmaticaPayload payload, final CallbackInfo ci) {
-        final Identifier id = payload.getIdentifier();
-        final PacketByteBuf bufSupplier = payload.getPacket();
+    @Deprecated
+    public void packetEvent(final ClientPlayNetworkHandler clientPlayNetworkHandler, final SyncmaticaS2CPayload payload, final CallbackInfo ci) {
+        final Identifier id = payload.getId().id();
+        PacketByteBuf bufSupplier = PayloadUtils.fromNbt(payload.data(), SyncmaticaS2CPayload.KEY);
         if (clientCommunication == null) {
             ActorClientPlayNetworkHandler.getInstance().startEvent(clientPlayNetworkHandler);
         }
@@ -64,6 +68,7 @@ public class ActorClientPlayNetworkHandler {
         }
     }
 
+    @Deprecated
     public boolean packetEvent(final Identifier id, final PacketByteBuf bufSupplier) {
         if (clientCommunication.handlePacket(id)) {
             clientCommunication.onPacket(exTarget, id, bufSupplier);
@@ -74,12 +79,14 @@ public class ActorClientPlayNetworkHandler {
         return false;
     }
 
+    @Deprecated
     public void reset() {
         clientCommunication = null;
         exTarget = null;
         clientPlayNetworkHandler = null;
     }
 
+    @Deprecated
     private static void setClientPlayNetworkHandler(final ClientPlayNetworkHandler clientPlayNetworkHandler) {
         ActorClientPlayNetworkHandler.clientPlayNetworkHandler = clientPlayNetworkHandler;
     }

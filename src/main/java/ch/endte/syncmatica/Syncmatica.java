@@ -1,7 +1,7 @@
 package ch.endte.syncmatica;
 
 import ch.endte.syncmatica.communication.CommunicationManager;
-import ch.endte.syncmatica.mixin_actor.ActorClientPlayNetworkHandler;
+import ch.endte.syncmatica.network.legacy.ActorClientPlayNetworkHandler;
 import net.minecraft.util.Identifier;
 
 import java.io.File;
@@ -13,7 +13,7 @@ import java.util.UUID;
 
 public class Syncmatica {
 
-    public static final String VERSION = "0.3.11";
+    public static final String VERSION = "0.3.12";
     public static final String MOD_ID = "syncmatica";
 
     private static final String SERVER_PATH = "." + File.separator + "syncmatics";

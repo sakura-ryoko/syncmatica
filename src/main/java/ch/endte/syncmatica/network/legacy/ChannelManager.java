@@ -1,4 +1,4 @@
-package ch.endte.syncmatica.network;
+package ch.endte.syncmatica.network.legacy;
 
 import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.communication.ExchangeTarget;
@@ -13,12 +13,14 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class ChannelManager {
     private static final Identifier MINECRAFT_REGISTER = new Identifier("minecraft:register");
     private static final Identifier MINECRAFT_UNREGISTER = new Identifier("minecraft:unregister");
     private static final List<Identifier> serverRegisterChannels = new ArrayList<>();
     private static final List<Identifier> clientRegisterChannels = new ArrayList<>();
 
+    @Deprecated
     private static List<Identifier> onReadRegisterIdentifier(PacketByteBuf data) {
         List<Identifier> identifiers = new ArrayList<>();
         int start = 0;
@@ -34,6 +36,7 @@ public class ChannelManager {
         return identifiers;
     }
 
+    @Deprecated
     public static void onChannelRegisterHandle(ExchangeTarget target, Identifier channel, PacketByteBuf data) {
         if (channel.equals(MINECRAFT_REGISTER)) {
             // 拷贝一份数据, 因为可能其他插件也存在通道
@@ -60,6 +63,7 @@ public class ChannelManager {
     }
 
 
+    @Deprecated
     public static void onDisconnected() {
         clientRegisterChannels.clear();
         serverRegisterChannels.clear();

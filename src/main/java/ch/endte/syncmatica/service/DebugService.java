@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 public class DebugService extends AbstractService {
 
     private boolean doPacketLogging = false;
+    private static boolean doGeneralDebug = true;
 
     public void logReceivePacket(final Identifier packageType) {
         if (doPacketLogging) {
@@ -23,7 +24,13 @@ public class DebugService extends AbstractService {
             );
         }
     }
-
+    public static void printDebug(String key, Object... args)
+    {
+        if (doGeneralDebug)
+        {
+            LogManager.getLogger(Syncmatica.class).info(key, args);
+        }
+    }
     @Override
     public void getDefaultConfiguration(final IServiceConfiguration configuration) {
         configuration.saveBoolean("doPackageLogging", false);
