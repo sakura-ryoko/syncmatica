@@ -1,13 +1,13 @@
-package ch.endte.syncmatica.network.s2c;
+package ch.endte.syncmatica.network;
 
-import ch.endte.syncmatica.network.c2s.SyncmaticaC2SPayload;
+import ch.endte.syncmatica.network.payload.SyncmaticaPayload;
 import ch.endte.syncmatica.service.DebugService;
 import ch.endte.syncmatica.SyncmaticaReference;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
 public class ServerNetworkPlayRegister
 {
-    static ServerPlayNetworking.PlayPayloadHandler<SyncmaticaC2SPayload> C2SSyncmaticaHandler;
+    static ServerPlayNetworking.PlayPayloadHandler<SyncmaticaPayload> C2SSyncmaticaHandler;
     
     public static void registerDefaultReceivers()
     {
@@ -16,7 +16,7 @@ public class ServerNetworkPlayRegister
         {
             DebugService.printDebug("ServerHandlerManager#registerDefaultReceivers(): isServer() true.");
             DebugService.printDebug("ServerHandlerManager#registerDefaultReceivers(): registerServuxHandler()");
-            ServerPlayNetworking.registerGlobalReceiver(SyncmaticaC2SPayload.TYPE, C2SSyncmaticaHandler);
+            ServerPlayNetworking.registerGlobalReceiver(SyncmaticaPayload.TYPE, C2SSyncmaticaHandler);
         }
     }
 
@@ -27,7 +27,7 @@ public class ServerNetworkPlayRegister
         {
             DebugService.printDebug("ServerHandlerManager#unregisterDefaultReceivers(): isServer() true.");
             DebugService.printDebug("ServerHandlerManager#unregisterDefaultReceivers(): registerSyncmaticaHandler()");
-            ServerPlayNetworking.unregisterGlobalReceiver(SyncmaticaC2SPayload.TYPE.id());
+            ServerPlayNetworking.unregisterGlobalReceiver(SyncmaticaPayload.TYPE.id());
         }
     }
     static

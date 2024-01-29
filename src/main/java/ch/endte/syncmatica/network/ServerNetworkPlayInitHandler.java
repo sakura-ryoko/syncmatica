@@ -1,7 +1,6 @@
-package ch.endte.syncmatica.network.s2c;
+package ch.endte.syncmatica.network;
 
 import ch.endte.syncmatica.Syncmatica;
-import ch.endte.syncmatica.network.PayloadTypeRegister;
 import ch.endte.syncmatica.network.test.ServerDebugSuite;
 
 public class ServerNetworkPlayInitHandler

@@ -1,4 +1,4 @@
-package ch.endte.syncmatica.network.c2s;
+package ch.endte.syncmatica.network;
 
 import ch.endte.syncmatica.service.DebugService;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;

@@ -1,6 +1,6 @@
-package ch.endte.syncmatica.network.s2c;
+package ch.endte.syncmatica.network;
 
-import ch.endte.syncmatica.network.c2s.SyncmaticaC2SPayload;
+import ch.endte.syncmatica.network.s2c.SyncmaticaS2CPayload;
 import ch.endte.syncmatica.service.DebugService;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.network.ServerPlayerEntity;

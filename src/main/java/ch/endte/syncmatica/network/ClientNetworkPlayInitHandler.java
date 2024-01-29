@@ -1,7 +1,6 @@
-package ch.endte.syncmatica.network.c2s;
+package ch.endte.syncmatica.network;
 
 import ch.endte.syncmatica.Syncmatica;
-import ch.endte.syncmatica.network.PayloadTypeRegister;
 import ch.endte.syncmatica.network.test.ClientDebugSuite;
 
 public class ClientNetworkPlayInitHandler

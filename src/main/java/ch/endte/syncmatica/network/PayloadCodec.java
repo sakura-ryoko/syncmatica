@@ -30,8 +30,11 @@ public class PayloadCodec implements IPayloadType
     {
         switch (this.type)
         {
-            case SYNCMATICA_S2C -> this.path = "server_context";
-            case SYNCMATICA_C2S -> this.path = "client_context";
+            case STRING -> this.path = "string";
+            case DATA -> this.path = "data";
+            case CARPET_HELLO -> this.path = "hello";
+            case SERVUX -> this.path = "structures";
+            case SYNCMATICA -> this.path = "syncmatics";
             default -> this.path = "invalid";
         }
     }

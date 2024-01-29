@@ -1,12 +1,13 @@
-package ch.endte.syncmatica.network.c2s;
+package ch.endte.syncmatica.network;
 
+import ch.endte.syncmatica.network.payload.SyncmaticaPayload;
 import ch.endte.syncmatica.service.DebugService;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import ch.endte.syncmatica.SyncmaticaReference;
 
 public class ClientNetworkPlayRegister
 {
-    static ClientPlayNetworking.PlayPayloadHandler<SyncmaticaC2SPayload> S2CSyncmaticaHandler;
+    static ClientPlayNetworking.PlayPayloadHandler<SyncmaticaPayload> S2CSyncmaticaHandler;
     private static boolean receiversInit = false;
 
 
@@ -21,7 +22,7 @@ public class ClientNetworkPlayRegister
             if (SyncmaticaReference.isSinglePlayer())
                 DebugService.printDebug("ClientHandlerManager#registerDefaultReceivers(): Game is running in Single Player Mode.");
             DebugService.printDebug("ClientHandlerManager#registerDefaultReceivers(): isClient() true.  Register handlers.");
-            ClientPlayNetworking.registerGlobalReceiver(SyncmaticaC2SPayload.TYPE, S2CSyncmaticaHandler);
+            ClientPlayNetworking.registerGlobalReceiver(SyncmaticaPayload.TYPE, S2CSyncmaticaHandler);
             receiversInit = true;
         }
     }
@@ -32,7 +33,7 @@ public class ClientNetworkPlayRegister
         if (SyncmaticaReference.isClient())
         {
             DebugService.printDebug("ClientHandlerManager#unregisterDefaultReceivers(): isClient() true.  Unregister handlers.");
-            ClientPlayNetworking.unregisterGlobalReceiver(SyncmaticaC2SPayload.TYPE.id());
+            ClientPlayNetworking.unregisterGlobalReceiver(SyncmaticaPayload.TYPE.id());
             receiversInit = false;
         }
     }

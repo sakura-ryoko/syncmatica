@@ -1,8 +1,7 @@
 package ch.endte.syncmatica.network;
 
 import ch.endte.syncmatica.Syncmatica;
-import ch.endte.syncmatica.network.c2s.SyncmaticaC2SPayload;
-import ch.endte.syncmatica.network.s2c.SyncmaticaS2CPayload;
+import ch.endte.syncmatica.network.payload.SyncmaticaPayload;
 import ch.endte.syncmatica.service.DebugService;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.minecraft.network.PacketByteBuf;
@@ -60,8 +59,7 @@ public class PayloadTypeRegister
         if (namespace.isEmpty())
             namespace = Syncmatica.MOD_ID;
 
-        registerType(PayloadType.SYNCMATICA_S2C, "server", "syncmatica", "server_context");
-        registerType(PayloadType.SYNCMATICA_C2S, "client", "syncmatica", "client_context");
+        registerType(PayloadType.SYNCMATICA, "syncmatic", "syncmatica", "syncmatics");
         channelTypeInit = true;
     }
     public static <T extends CustomPayload> void registerDefaultPlayChannel(CustomPayload.Id<T> id, PacketCodec<PacketByteBuf, T> codec)
@@ -75,8 +73,7 @@ public class PayloadTypeRegister
         if (channelsInit)
             return;
         DebugService.printDebug("PayloadTypeRegister#registerPlayChannels(): registering play channels.");
-        registerDefaultPlayChannel(SyncmaticaS2CPayload.TYPE, SyncmaticaS2CPayload.CODEC);
-        registerDefaultPlayChannel(SyncmaticaC2SPayload.TYPE, SyncmaticaC2SPayload.CODEC);
+        registerDefaultPlayChannel(SyncmaticaPayload.TYPE, SyncmaticaPayload.CODEC);
         channelsInit = true;
     }
 }
