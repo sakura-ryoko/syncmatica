@@ -32,6 +32,6 @@ public class ServerNetworkPlayRegister
     }
     static
     {
-        C2SSyncmaticaHandler = ServerNetworkPlayHandler::receiveC2SSyncmatica;
+        C2SSyncmaticaHandler = ServerNetworkPlayHandler::receiveSyncmaticaServer;
     }
 }

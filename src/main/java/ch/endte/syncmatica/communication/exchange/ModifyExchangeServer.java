@@ -52,17 +52,19 @@ public class ModifyExchangeServer extends AbstractExchange {
     }
 
     private void accept() {
-        final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-        buf.writeUuid(placement.getId());
-        getPartner().sendPacket(PacketType.MODIFY_REQUEST_ACCEPT.identifier, buf, getContext());
-        getContext().getCommunicationManager().setModifier(placement, this);
+        // #FIXME
+        //final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+        //buf.writeUuid(placement.getId());
+        //getPartner().sendPacket(PacketType.MODIFY_REQUEST_ACCEPT.identifier, buf, getContext());
+        //getContext().getCommunicationManager().setModifier(placement, this);
     }
 
     @Override
     protected void sendCancelPacket() {
-        final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-        buf.writeUuid(placementId);
-        getPartner().sendPacket(PacketType.MODIFY_REQUEST_DENY.identifier, buf, getContext());
+        // #FIXME
+        //final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+        //buf.writeUuid(placementId);
+        //getPartner().sendPacket(PacketType.MODIFY_REQUEST_DENY.identifier, buf, getContext());
     }
 
     public ServerPlacement getPlacement() {

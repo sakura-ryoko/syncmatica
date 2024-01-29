@@ -2,12 +2,9 @@ package ch.endte.syncmatica.communication;
 
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.communication.exchange.Exchange;
-import ch.endte.syncmatica.network.s2c.SyncmaticaS2CPayload;
 import fi.dy.masa.malilib.util.StringUtils;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
-import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.util.Identifier;
 
@@ -18,6 +15,9 @@ import java.util.List;
 // since Client/Server PlayNetworkHandler are 2 different classes, but I want to use exchanges
 // on both without having to recode them individually, I have an adapter class here
 
+/**
+ * Refactor Data Exchange to use NbtCompound instead of PacketByteBuf
+ */
 @Deprecated
 public class ExchangeTarget {
     public final ClientPlayNetworkHandler clientPlayNetworkHandler;

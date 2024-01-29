@@ -68,9 +68,10 @@ public class ModifyExchangeClient extends AbstractExchange {
         }
         getContext().getCommunicationManager().setModifier(placement, this);
         if (getPartner().getFeatureSet().hasFeature(Feature.MODIFY)) {
-            final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-            buf.writeUuid(placement.getId());
-            getPartner().sendPacket(PacketType.MODIFY_REQUEST.identifier, buf, getContext());
+            // #FIXME
+            //final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+            //buf.writeUuid(placement.getId());
+            //getPartner().sendPacket(PacketType.MODIFY_REQUEST.identifier, buf, getContext());
         } else {
             acceptModification();
         }
@@ -95,27 +96,30 @@ public class ModifyExchangeClient extends AbstractExchange {
 
     private void sendFinish() {
         if (getPartner().getFeatureSet().hasFeature(Feature.MODIFY)) {
-            final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-            buf.writeUuid(placement.getId());
-            getContext().getCommunicationManager().putPositionData(placement, buf, getPartner());
-            getPartner().sendPacket(PacketType.MODIFY_FINISH.identifier, buf, getContext());
-            succeed();
-            getContext().getCommunicationManager().notifyClose(this);
+            // #FIXME
+            //final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+            //buf.writeUuid(placement.getId());
+            //getContext().getCommunicationManager().putPositionData(placement, buf, getPartner());
+            //getPartner().sendPacket(PacketType.MODIFY_FINISH.identifier, buf, getContext());
+            //succeed();
+            //getContext().getCommunicationManager().notifyClose(this);
         } else {
-            final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-            buf.writeUuid(placement.getId());
-            getPartner().sendPacket(PacketType.REMOVE_SYNCMATIC.identifier, buf, getContext());
-            expectRemove = true;
+            // #FIXME
+            //final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+            //buf.writeUuid(placement.getId());
+            //getPartner().sendPacket(PacketType.REMOVE_SYNCMATIC.identifier, buf, getContext());
+            //expectRemove = true;
         }
     }
 
     @Override
     protected void sendCancelPacket() {
         if (getPartner().getFeatureSet().hasFeature(Feature.MODIFY)) {
-            final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-            buf.writeUuid(placement.getId());
-            getContext().getCommunicationManager().putPositionData(placement, buf, getPartner());
-            getPartner().sendPacket(PacketType.MODIFY_FINISH.identifier, buf, getContext());
+            // #FIXME
+            //final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+            //buf.writeUuid(placement.getId());
+            //getContext().getCommunicationManager().putPositionData(placement, buf, getPartner());
+            //getPartner().sendPacket(PacketType.MODIFY_FINISH.identifier, buf, getContext());
         }
     }
 

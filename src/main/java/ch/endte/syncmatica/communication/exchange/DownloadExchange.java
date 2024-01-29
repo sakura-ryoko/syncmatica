@@ -67,9 +67,10 @@ public class DownloadExchange extends AbstractExchange {
                 e.printStackTrace();
                 return;
             }
-            final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
-            packetByteBuf.writeUuid(toDownload.getId());
-            getPartner().sendPacket(PacketType.RECEIVED_LITEMATIC.identifier, packetByteBuf, getContext());
+            // #FIXME
+            //final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
+            //packetByteBuf.writeUuid(toDownload.getId());
+            //getPartner().sendPacket(PacketType.RECEIVED_LITEMATIC.identifier, packetByteBuf, getContext());
             return;
         }
         if (id.equals(PacketType.FINISHED_LITEMATIC.identifier)) {
@@ -96,9 +97,10 @@ public class DownloadExchange extends AbstractExchange {
 
     @Override
     public void init() {
-        final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
-        packetByteBuf.writeUuid(toDownload.getId());
-        getPartner().sendPacket(PacketType.REQUEST_LITEMATIC.identifier, packetByteBuf, getContext());
+        // #FIXME
+        //final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
+        //packetByteBuf.writeUuid(toDownload.getId());
+        //getPartner().sendPacket(PacketType.REQUEST_LITEMATIC.identifier, packetByteBuf, getContext());
     }
 
     @Override
@@ -119,9 +121,10 @@ public class DownloadExchange extends AbstractExchange {
 
     @Override
     protected void sendCancelPacket() {
-        final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
-        packetByteBuf.writeUuid(toDownload.getId());
-        getPartner().sendPacket(PacketType.CANCEL_LITEMATIC.identifier, packetByteBuf, getContext());
+        // #FIXME
+        //final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
+        //packetByteBuf.writeUuid(toDownload.getId());
+        //getPartner().sendPacket(PacketType.CANCEL_LITEMATIC.identifier, packetByteBuf, getContext());
     }
 
     public ServerPlacement getPlacement() {

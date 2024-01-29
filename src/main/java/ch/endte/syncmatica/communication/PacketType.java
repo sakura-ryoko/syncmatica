@@ -2,6 +2,10 @@ package ch.endte.syncmatica.communication;
 
 import net.minecraft.util.Identifier;
 
+/**
+ * Convert this interface to not use Identifier values, but maybe a Pseudo String-based "id", which can work.
+ */
+@Deprecated
 public enum PacketType {
 
     REGISTER_METADATA("syncmatica:register_metadata"),

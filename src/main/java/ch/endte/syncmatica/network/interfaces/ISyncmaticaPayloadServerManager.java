@@ -1,17 +1,16 @@
 package ch.endte.syncmatica.network.interfaces;
 
 
-public interface ISyncmaticaPayloadManager
+public interface ISyncmaticaPayloadServerManager
 {
     /**
      * Registers a handler for receiving Carpet Hello NBTCompound packets.
      * @param handler
      */
-    void registerSyncmaticaHandler(ISyncmaticaPayloadListener handler);
-
+    void registerSyncmaticaServerHandler(ISyncmaticaPayloadServerListener handler);
     /**
      * Un-Registers a handler for receiving Carpet Hello NBTCompound packets.
      * @param handler
      */
-    void unregisterSyncmaticaHandler(ISyncmaticaPayloadListener handler);
+    void unregisterSyncmaticaServerHandler(ISyncmaticaPayloadServerListener handler);
 }

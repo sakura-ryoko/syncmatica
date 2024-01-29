@@ -71,9 +71,10 @@ public abstract class CommunicationManager {
     protected abstract void handleExchange(Exchange exchange);
 
     public void sendMetaData(final ServerPlacement metaData, final ExchangeTarget target) {
-        final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-        putMetaData(metaData, buf, target);
-        target.sendPacket(PacketType.REGISTER_METADATA.identifier, buf, context);
+        // #FIXME
+        //final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+        //putMetaData(metaData, buf, target);
+        //target.sendPacket(PacketType.REGISTER_METADATA.identifier, buf, context);
     }
 
     public void putMetaData(final ServerPlacement metaData, final PacketByteBuf buf, final ExchangeTarget exchangeTarget) {

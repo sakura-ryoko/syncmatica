@@ -62,9 +62,10 @@ public class VersionHandshakeClient extends FeatureExchange {
 
     @Override
     public void onFeatureSetReceive() {
-        final PacketByteBuf newBuf = new PacketByteBuf(Unpooled.buffer());
-        newBuf.writeString(Syncmatica.VERSION);
-        getPartner().sendPacket(PacketType.REGISTER_VERSION.identifier, newBuf, getContext());
+        // #FIXME
+        //final PacketByteBuf newBuf = new PacketByteBuf(Unpooled.buffer());
+        //newBuf.writeString(Syncmatica.VERSION);
+        //getPartner().sendPacket(PacketType.REGISTER_VERSION.identifier, newBuf, getContext());
     }
 
     @Override

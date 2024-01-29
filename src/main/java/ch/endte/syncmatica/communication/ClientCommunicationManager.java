@@ -59,6 +59,7 @@ public class ClientCommunicationManager extends CommunicationManager {
             return;
         }
         if (id.equals(PacketType.MODIFY.identifier)) {
+            // #FIXME
             final UUID placementId = packetBuf.readUuid();
             final ServerPlacement toModify = context.getSyncmaticManager().getPlacement(placementId);
             receivePositionData(toModify, packetBuf, source);
@@ -83,7 +84,8 @@ public class ClientCommunicationManager extends CommunicationManager {
         if (id.equals(PacketType.REGISTER_VERSION.identifier)) {
             LitematicManager.clear();
             Syncmatica.restartClient();
-            ActorClientPlayNetworkHandler.getInstance().packetEvent(id, packetBuf);
+            // #FIXME
+            //ActorClientPlayNetworkHandler.getInstance().packetEvent(id, packetBuf);
         }
     }
 

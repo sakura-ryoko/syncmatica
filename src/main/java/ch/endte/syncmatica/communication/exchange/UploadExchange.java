@@ -68,18 +68,20 @@ public class UploadExchange extends AbstractExchange {
     }
 
     private void sendData(final int bytesRead) {
-        final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
-        packetByteBuf.writeUuid(toUpload.getId());
-        packetByteBuf.writeInt(bytesRead);
-        packetByteBuf.writeBytes(buffer, 0, bytesRead);
-        getPartner().sendPacket(PacketType.SEND_LITEMATIC.identifier, packetByteBuf, getContext());
+        // #FIXME
+        //final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
+        //packetByteBuf.writeUuid(toUpload.getId());
+        //packetByteBuf.writeInt(bytesRead);
+        //packetByteBuf.writeBytes(buffer, 0, bytesRead);
+        //getPartner().sendPacket(PacketType.SEND_LITEMATIC.identifier, packetByteBuf, getContext());
     }
 
     private void sendFinish() {
-        final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
-        packetByteBuf.writeUuid(toUpload.getId());
-        getPartner().sendPacket(PacketType.FINISHED_LITEMATIC.identifier, packetByteBuf, getContext());
-        succeed();
+        // #FIXME
+        //final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
+        //packetByteBuf.writeUuid(toUpload.getId());
+        //getPartner().sendPacket(PacketType.FINISHED_LITEMATIC.identifier, packetByteBuf, getContext());
+        //succeed();
     }
 
     @Override
@@ -98,9 +100,10 @@ public class UploadExchange extends AbstractExchange {
 
     @Override
     protected void sendCancelPacket() {
-        final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
-        packetByteBuf.writeUuid(toUpload.getId());
-        getPartner().sendPacket(PacketType.CANCEL_LITEMATIC.identifier, packetByteBuf, getContext());
+        // #FIXME
+        //final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
+        //packetByteBuf.writeUuid(toUpload.getId());
+        //getPartner().sendPacket(PacketType.CANCEL_LITEMATIC.identifier, packetByteBuf, getContext());
     }
 
 }

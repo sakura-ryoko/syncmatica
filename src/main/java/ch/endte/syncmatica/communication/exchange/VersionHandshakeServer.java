@@ -53,20 +53,22 @@ public class VersionHandshakeServer extends FeatureExchange {
     @Override
     public void onFeatureSetReceive() {
         LogManager.getLogger(VersionHandshakeServer.class).info("Syncmatica client joining with local version {} and client version {}", Syncmatica.VERSION, partnerVersion);
-        final PacketByteBuf newBuf = new PacketByteBuf(Unpooled.buffer());
-        final Collection<ServerPlacement> l = getContext().getSyncmaticManager().getAll();
-        newBuf.writeInt(l.size());
-        for (final ServerPlacement p : l) {
-            getManager().putMetaData(p, newBuf, getPartner());
-        }
-        getPartner().sendPacket(PacketType.CONFIRM_USER.identifier, newBuf, getContext());
-        succeed();
+        // #FIXME
+        //final PacketByteBuf newBuf = new PacketByteBuf(Unpooled.buffer());
+        //final Collection<ServerPlacement> l = getContext().getSyncmaticManager().getAll();
+        //newBuf.writeInt(l.size());
+        //for (final ServerPlacement p : l) {
+            //getManager().putMetaData(p, newBuf, getPartner());
+        //}
+        //getPartner().sendPacket(PacketType.CONFIRM_USER.identifier, newBuf, getContext());
+        //succeed();
     }
 
     @Override
     public void init() {
-        final PacketByteBuf newBuf = new PacketByteBuf(Unpooled.buffer());
-        newBuf.writeString(Syncmatica.VERSION);
-        getPartner().sendPacket(PacketType.REGISTER_VERSION.identifier, newBuf, getContext());
+        // #FIXME
+        //final PacketByteBuf newBuf = new PacketByteBuf(Unpooled.buffer());
+        //newBuf.writeString(Syncmatica.VERSION);
+        //getPartner().sendPacket(PacketType.REGISTER_VERSION.identifier, newBuf, getContext());
     }
 }

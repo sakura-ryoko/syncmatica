@@ -36,13 +36,15 @@ public abstract class FeatureExchange extends AbstractExchange {
     }
 
     public void requestFeatureSet() {
-        getPartner().sendPacket(PacketType.FEATURE_REQUEST.identifier, new PacketByteBuf(Unpooled.buffer()), getContext());
+        // #FIXME
+        //getPartner().sendPacket(PacketType.FEATURE_REQUEST.identifier, new PacketByteBuf(Unpooled.buffer()), getContext());
     }
 
     private void sendFeatures() {
-        final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-        final FeatureSet fs = getContext().getFeatureSet();
-        buf.writeString(fs.toString(), 32767);
-        getPartner().sendPacket(PacketType.FEATURE.identifier, buf, getContext());
+        // #FIXME
+        //final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+        //final FeatureSet fs = getContext().getFeatureSet();
+        //buf.writeString(fs.toString(), 32767);
+        //getPartner().sendPacket(PacketType.FEATURE.identifier, buf, getContext());
     }
 }
