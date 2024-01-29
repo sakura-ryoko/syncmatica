@@ -6,6 +6,7 @@ import net.fabricmc.loader.api.ModContainer;
 
 public class SyncmaticaReference
 {
+    // Added this to quickly remove Compiler Warnings.
     private static final ModContainer MOD_CONTAINER = FabricLoader.getInstance().getModContainer(Syncmatica.MOD_ID).get();
     public static final String MOD_VERSION = MOD_CONTAINER.getMetadata().getVersion().getFriendlyString();
     private static final EnvType MOD_ENV = FabricLoader.getInstance().getEnvironmentType();
