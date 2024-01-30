@@ -1,8 +1,8 @@
 package ch.endte.syncmatica.communication.exchange;
 
 import ch.endte.syncmatica.Context;
-import ch.endte.syncmatica.RedirectFileStorage;
-import ch.endte.syncmatica.ServerPlacement;
+import ch.endte.syncmatica.data.RedirectFileStorage;
+import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.communication.ClientCommunicationManager;
 import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.communication.PacketType;

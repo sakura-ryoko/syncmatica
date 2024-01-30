@@ -1,15 +1,15 @@
 package ch.endte.syncmatica.network.legacy;
 
-import ch.endte.syncmatica.IFileStorage;
-import ch.endte.syncmatica.RedirectFileStorage;
-import ch.endte.syncmatica.SyncmaticManager;
+import ch.endte.syncmatica.data.IFileStorage;
+import ch.endte.syncmatica.data.RedirectFileStorage;
+import ch.endte.syncmatica.data.SyncmaticManager;
 import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.communication.ClientCommunicationManager;
 import ch.endte.syncmatica.communication.CommunicationManager;
 import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.litematica.ScreenHelper;
-import ch.endte.syncmatica.network.s2c.SyncmaticaS2CPayload;
+import ch.endte.syncmatica.network.payload.SyncmaticaPayload;
 import fi.dy.masa.malilib.util.PayloadUtils;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.PacketByteBuf;
@@ -56,9 +56,9 @@ public class ActorClientPlayNetworkHandler {
     }
 
     @Deprecated
-    public void packetEvent(final ClientPlayNetworkHandler clientPlayNetworkHandler, final SyncmaticaS2CPayload payload, final CallbackInfo ci) {
+    public void packetEvent(final ClientPlayNetworkHandler clientPlayNetworkHandler, final SyncmaticaPayload payload, final CallbackInfo ci) {
         final Identifier id = payload.getId().id();
-        PacketByteBuf bufSupplier = PayloadUtils.fromNbt(payload.data(), SyncmaticaS2CPayload.KEY);
+        PacketByteBuf bufSupplier = PayloadUtils.fromNbt(payload.data(), SyncmaticaPayload.KEY);
         if (clientCommunication == null) {
             ActorClientPlayNetworkHandler.getInstance().startEvent(clientPlayNetworkHandler);
         }

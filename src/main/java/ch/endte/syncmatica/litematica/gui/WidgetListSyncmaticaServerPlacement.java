@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableList;
 
-import ch.endte.syncmatica.ServerPlacement;
-import ch.endte.syncmatica.ServerPosition;
+import ch.endte.syncmatica.data.ServerPlacement;
+import ch.endte.syncmatica.data.ServerPosition;
 import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.litematica.ScreenHelper;
 import ch.endte.syncmatica.util.SyncmaticaUtil;

@@ -1,6 +1,6 @@
 package ch.endte.syncmatica.material;
 
-import ch.endte.syncmatica.ServerPosition;
+import ch.endte.syncmatica.data.ServerPosition;
 
 import java.util.ArrayList;
 import java.util.Collection;

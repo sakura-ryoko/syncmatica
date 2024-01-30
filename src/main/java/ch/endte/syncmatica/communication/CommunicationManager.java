@@ -2,7 +2,7 @@ package ch.endte.syncmatica.communication;
 
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.Feature;
-import ch.endte.syncmatica.ServerPlacement;
+import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.communication.exchange.DownloadExchange;
 import ch.endte.syncmatica.communication.exchange.Exchange;
 import ch.endte.syncmatica.extended_core.PlayerIdentifier;
@@ -10,7 +10,6 @@ import ch.endte.syncmatica.extended_core.PlayerIdentifierProvider;
 import ch.endte.syncmatica.extended_core.SubRegionData;
 import ch.endte.syncmatica.extended_core.SubRegionPlacementModification;
 import ch.endte.syncmatica.util.SyncmaticaUtil;
-import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;

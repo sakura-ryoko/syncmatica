@@ -1,4 +1,4 @@
-package ch.endte.syncmatica;
+package ch.endte.syncmatica.data;
 
 public enum LocalLitematicState {
     NO_LOCAL_LITEMATIC(true, false),

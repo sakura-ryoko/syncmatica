@@ -1,17 +1,13 @@
 package ch.endte.syncmatica.communication.exchange;
 
 import ch.endte.syncmatica.Context;
-import ch.endte.syncmatica.ServerPlacement;
 import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.communication.FeatureSet;
 import ch.endte.syncmatica.communication.PacketType;
-import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
-
-import java.util.Collection;
 
 public class VersionHandshakeServer extends FeatureExchange {
 

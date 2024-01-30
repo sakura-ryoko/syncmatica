@@ -1,4 +1,4 @@
-package fi.dy.masa.servux.util;
+package ch.endte.syncmatica.util;
 
 import io.netty.buffer.Unpooled;
 import net.minecraft.nbt.NbtCompound;

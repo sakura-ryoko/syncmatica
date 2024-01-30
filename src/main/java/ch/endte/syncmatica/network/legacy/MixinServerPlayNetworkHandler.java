@@ -1,24 +1,7 @@
-package ch.endte.syncmatica.mixin;
-
-import java.util.function.Consumer;
-
-import ch.endte.syncmatica.network.legacy.ChannelManager;
-import ch.endte.syncmatica.network.legacy.IServerPlayerNetworkHandler;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import ch.endte.syncmatica.Context;
-import ch.endte.syncmatica.Syncmatica;
-import ch.endte.syncmatica.communication.ExchangeTarget;
-import ch.endte.syncmatica.communication.ServerCommunicationManager;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
-import net.minecraft.text.Text;
+package ch.endte.syncmatica.network.legacy;
 
 @Deprecated
-@Mixin(value = ServerPlayNetworkHandler.class, priority = 998)
+//@Mixin(value = ServerPlayNetworkHandler.class, priority = 998)
 public abstract class MixinServerPlayNetworkHandler implements IServerPlayerNetworkHandler {
     /*
     @Unique

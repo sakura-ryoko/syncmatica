@@ -1,7 +1,7 @@
 package ch.endte.syncmatica.litematica;
 
 import ch.endte.syncmatica.Context;
-import ch.endte.syncmatica.ServerPlacement;
+import ch.endte.syncmatica.data.ServerPlacement;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.Message;
 import fi.dy.masa.malilib.util.InfoUtils;

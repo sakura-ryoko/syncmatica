@@ -1,6 +1,6 @@
 package ch.endte.syncmatica.network;
 
-import ch.endte.syncmatica.network.payload.SyncmaticaPayload;
+import ch.endte.syncmatica.network.payload.*;
 import ch.endte.syncmatica.service.DebugService;
 import ch.endte.syncmatica.SyncmaticaReference;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -9,7 +9,7 @@ public class ServerNetworkPlayRegister
 {
     static ServerPlayNetworking.PlayPayloadHandler<SyncmaticaPayload> C2SSyncmaticaHandler;
     
-    public static void registerDefaultReceivers()
+    public static void registerReceivers()
     {
         // Do when the server starts, not before
         if (SyncmaticaReference.isServer())
@@ -20,7 +20,7 @@ public class ServerNetworkPlayRegister
         }
     }
 
-    public static void unregisterDefaultReceivers()
+    public static void unregisterReceivers()
     {
         // Do when server stops
         if (SyncmaticaReference.isServer())
@@ -32,6 +32,6 @@ public class ServerNetworkPlayRegister
     }
     static
     {
-        C2SSyncmaticaHandler = ServerNetworkPlayHandler::receiveSyncmaticaServer;
+        C2SSyncmaticaHandler = ServerNetworkPlayHandler::receiveSyncmaticaServerPayload;
     }
 }

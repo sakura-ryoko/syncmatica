@@ -1,5 +1,7 @@
 package ch.endte.syncmatica.network.payload;
 
+import ch.endte.syncmatica.network.PayloadType;
+import ch.endte.syncmatica.network.PayloadTypeRegister;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;

@@ -1,18 +1,7 @@
-package ch.endte.syncmatica.mixin;
+package ch.endte.syncmatica.network.legacy;
 
-import ch.endte.syncmatica.communication.PacketType;
-import ch.endte.syncmatica.network.legacy.IServerPlayerNetworkHandler;
-import ch.endte.syncmatica.network.s2c.SyncmaticaS2CPayload;
-import net.minecraft.network.NetworkThreadUtils;
-import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
-import net.minecraft.server.network.ServerCommonNetworkHandler;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-@Mixin(ServerCommonNetworkHandler.class)
+@Deprecated
+//@Mixin(ServerCommonNetworkHandler.class)
 public class MixinServerCommonNetworkHandler {
     /*
     @Inject(method = "onCustomPayload", at = @At("HEAD"))

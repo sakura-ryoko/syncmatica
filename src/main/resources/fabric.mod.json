@@ -1,7 +1,7 @@
 {
 	"schemaVersion": 1,
 	"id": "syncmatica",
-	"version": "${version}",
+	"version": "${mod_version}",
 	"name": "Syncmatica",
 	"description": "Server-wide shared litematics.",
 	"authors": [

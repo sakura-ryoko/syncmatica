@@ -1,7 +1,8 @@
 package ch.endte.syncmatica;
 
 import ch.endte.syncmatica.communication.CommunicationManager;
-import ch.endte.syncmatica.network.legacy.ActorClientPlayNetworkHandler;
+import ch.endte.syncmatica.data.IFileStorage;
+import ch.endte.syncmatica.data.SyncmaticManager;
 import net.minecraft.util.Identifier;
 
 import java.io.File;
@@ -61,7 +62,8 @@ public class Syncmatica {
             contexts.remove(CLIENT_CONTEXT);
         }
 
-        ActorClientPlayNetworkHandler.getInstance().startClient();
+        // #FIXME
+        //ActorClientPlayNetworkHandler.getInstance().startClient();
     }
 
     public static Context getContext(final Identifier id) {

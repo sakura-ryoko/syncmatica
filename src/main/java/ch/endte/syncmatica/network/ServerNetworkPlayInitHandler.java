@@ -10,8 +10,8 @@ public class ServerNetworkPlayInitHandler
      */
     public static void registerPlayChannels()
     {
-        PayloadTypeRegister.registerDefaultTypes(Syncmatica.MOD_ID);
-        PayloadTypeRegister.registerDefaultPlayChannels();
+        PayloadTypeRegister.registerTypes(Syncmatica.MOD_ID);
+        PayloadTypeRegister.registerPlayChannels();
         ServerDebugSuite.checkGlobalChannels();
     }
     /**
@@ -19,12 +19,12 @@ public class ServerNetworkPlayInitHandler
      */
     public static void registerReceivers()
     {
-        ServerNetworkPlayRegister.registerDefaultReceivers();
+        ServerNetworkPlayRegister.registerReceivers();
         ServerDebugSuite.checkGlobalChannels();
     }
     public static void unregisterReceivers()
     {
-        ServerNetworkPlayRegister.unregisterDefaultReceivers();
+        ServerNetworkPlayRegister.unregisterReceivers();
         ServerDebugSuite.checkGlobalChannels();
     }
 }

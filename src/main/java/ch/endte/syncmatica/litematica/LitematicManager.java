@@ -1,6 +1,10 @@
 package ch.endte.syncmatica.litematica;
 
 import ch.endte.syncmatica.*;
+import ch.endte.syncmatica.data.RedirectFileStorage;
+import ch.endte.syncmatica.data.ServerPlacement;
+import ch.endte.syncmatica.data.ServerPosition;
+import ch.endte.syncmatica.data.SyncmaticManager;
 import ch.endte.syncmatica.extended_core.PlayerIdentifier;
 import ch.endte.syncmatica.extended_core.SubRegionData;
 import ch.endte.syncmatica.extended_core.SubRegionPlacementModification;

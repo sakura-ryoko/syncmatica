@@ -1,5 +1,6 @@
-package ch.endte.syncmatica;
+package ch.endte.syncmatica.data;
 
+import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.extended_core.PlayerIdentifier;
 import ch.endte.syncmatica.extended_core.SubRegionData;
 import ch.endte.syncmatica.material.SyncmaticaMaterialList;

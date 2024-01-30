@@ -1,4 +1,4 @@
-package ch.endte.syncmatica;
+package ch.endte.syncmatica.data;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;

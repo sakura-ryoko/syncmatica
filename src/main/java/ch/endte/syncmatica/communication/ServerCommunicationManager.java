@@ -1,15 +1,13 @@
 package ch.endte.syncmatica.communication;
 
 import ch.endte.syncmatica.Feature;
-import ch.endte.syncmatica.LocalLitematicState;
-import ch.endte.syncmatica.ServerPlacement;
+import ch.endte.syncmatica.data.LocalLitematicState;
+import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.communication.exchange.*;
 import ch.endte.syncmatica.extended_core.PlayerIdentifier;
 import com.mojang.authlib.GameProfile;
-import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.io.File;

@@ -1,6 +1,6 @@
 package ch.endte.syncmatica.litematica.gui;
 
-import ch.endte.syncmatica.ServerPlacement;
+import ch.endte.syncmatica.data.ServerPlacement;
 import fi.dy.masa.litematica.gui.GuiMainMenu.ButtonListenerChangeMenu;
 import fi.dy.masa.malilib.gui.GuiListBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;

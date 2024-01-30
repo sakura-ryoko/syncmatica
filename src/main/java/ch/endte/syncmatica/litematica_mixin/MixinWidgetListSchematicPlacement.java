@@ -1,6 +1,6 @@
 package ch.endte.syncmatica.litematica_mixin;
 
-import ch.endte.syncmatica.ServerPlacement;
+import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.litematica.ScreenHelper;
 import fi.dy.masa.litematica.gui.GuiSchematicPlacementsList;
 import fi.dy.masa.litematica.gui.widgets.WidgetListSchematicPlacements;

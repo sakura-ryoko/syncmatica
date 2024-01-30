@@ -1,16 +1,7 @@
 package ch.endte.syncmatica.mixin;
 
-import ch.endte.syncmatica.communication.ExchangeTarget;
-import ch.endte.syncmatica.network.legacy.ActorClientPlayNetworkHandler;
-import ch.endte.syncmatica.network.s2c.SyncmaticaS2CPayload;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.packet.CustomPayload;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 
 @Mixin(value = ClientPlayNetworkHandler.class, priority = 998)

@@ -2,14 +2,13 @@ package ch.endte.syncmatica.communication.exchange;
 
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.Feature;
-import ch.endte.syncmatica.ServerPlacement;
+import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.communication.PacketType;
 import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.litematica.ScreenHelper;
 import fi.dy.masa.litematica.schematic.placement.SchematicPlacement;
 import fi.dy.masa.malilib.gui.Message;
-import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 

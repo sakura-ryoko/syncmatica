@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import org.apache.logging.log4j.LogManager;
 
 import ch.endte.syncmatica.Context;
-import ch.endte.syncmatica.LocalLitematicState;
-import ch.endte.syncmatica.ServerPlacement;
+import ch.endte.syncmatica.data.LocalLitematicState;
+import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.communication.ClientCommunicationManager;
 import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.communication.PacketType;
