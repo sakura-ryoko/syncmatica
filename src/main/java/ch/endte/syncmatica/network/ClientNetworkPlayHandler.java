@@ -5,6 +5,15 @@ import ch.endte.syncmatica.network.payload.*;
 import ch.endte.syncmatica.util.SyncLog;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
+/**
+ * canSend()
+ * Wraps: canSend(payload.getId().id());
+ * -> Wraps Internally as:
+ * `--> ClientNetworkingImpl.getAddon(MinecraftClient.getInstance().getNetworkHandler()).getSendableChannels().contains(payload.getId().id());
+ * send()
+ * Wraps internally as:
+ * --> MinecraftClient.getInstance().getNetworkHandler().sendPacket();
+ */
 public class ClientNetworkPlayHandler
 {
     public static void sendSyncmatica(SyncmaticaPayload payload)

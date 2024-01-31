@@ -21,10 +21,8 @@ import java.util.UUID;
 public class Syncmatica {
     protected static final String SERVER_PATH = "." + File.separator + "syncmatics";
     protected static final String CLIENT_PATH = "." + File.separator + "schematics" + File.separator + "sync";
-
     public static final Identifier CLIENT_CONTEXT = new Identifier("syncmatica:client_context");
     public static final Identifier SERVER_CONTEXT = new Identifier("syncmatica:server_context");
-
     public static final UUID syncmaticaId = UUID.fromString("4c1b738f-56fa-4011-8273-498c972424ea");
     protected static Map<Identifier, Context> contexts = null;
     protected static boolean MOD_INIT = false;
@@ -91,7 +89,7 @@ public class Syncmatica {
         contexts = null;
     }
 
-    public static Context initClient(final IFileStorage fileStorage, final CommunicationManager comms, final SyncmaticManager schematics) {
+    public static Context initClient(final CommunicationManager comms, final IFileStorage fileStorage, final SyncmaticManager schematics) {
         final Context clientContext = new Context(
                 fileStorage,
                 comms,
@@ -114,7 +112,7 @@ public class Syncmatica {
         // #FIXME
         //ActorClientPlayNetworkHandler.getInstance().startClient();
     }
-    public static Context initServer(final IFileStorage fileStorage, final CommunicationManager comms, final SyncmaticManager schematics, final boolean isIntegratedServer, final File worldPath) {
+    public static Context initServer(final CommunicationManager comms, final IFileStorage fileStorage, final SyncmaticManager schematics, final boolean isIntegratedServer, final File worldPath) {
         final Context serverContext = new Context(
                 fileStorage,
                 comms,

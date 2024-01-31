@@ -28,17 +28,17 @@ public class ServerCommunicationManager extends CommunicationManager {
         return playerMap.get(exchangeTarget).getGameProfile();
     }
 
-    public void sendMessage(final ExchangeTarget client, final MessageType type, final String msg) {
+    public void sendMessage(final ExchangeTarget client, final MessageType msgType, final String identifier) {
         if (client.getFeatureSet().hasFeature(Feature.MESSAGE)) {
             // #FIXME
             //final PacketByteBuf newPacketBuf = new PacketByteBuf(Unpooled.buffer());
-            //newPacketBuf.writeString(type.toString());
-            //newPacketBuf.writeString(msg);
+            //newPacketBuf.writeString(msgType.toString());
+            //newPacketBuf.writeString(identifier);
             //client.sendPacket(PacketType.MESSAGE.identifier, newPacketBuf, context);
         } else if (playerMap.containsKey(client)) {
             // #FIXME
             //final ServerPlayerEntity player = playerMap.get(client);
-            //player.sendMessage(Text.of("Syncmatica " + type.toString() + " " + msg), false);
+            //player.sendMessage(Text.of("Syncmatica " + msgType.toString() + " " + identifier), false);
         }
     }
 

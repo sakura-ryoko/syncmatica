@@ -20,13 +20,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import static ch.endte.syncmatica.Syncmatica.*;
 
 /**
- * Move some of this to a different file, such as SyncmaticaPayloadListener, instanced from MaLiLib.
+ * Move some of this to a different file, such as SyncmaticaPayloadListener
+ * Also, we shouldn't be using the " Server/ClientPlayNetworkHandler " to send packets.
  */
 @Deprecated
 public class ActorClientPlayNetworkHandler {
 
     private static ActorClientPlayNetworkHandler instance;
-    private static ClientPlayNetworkHandler clientPlayNetworkHandler;
+    //private static ClientPlayNetworkHandler clientPlayNetworkHandler;
     private CommunicationManager clientCommunication;
     private ExchangeTarget exTarget;
 
@@ -65,16 +66,15 @@ public class ActorClientPlayNetworkHandler {
 
     @Deprecated
     public void packetEvent(final ClientPlayNetworkHandler clientPlayNetworkHandler, final SyncmaticaPayload payload, final CallbackInfo ci) {
-        final Identifier id = payload.getId().id();
-        PacketByteBuf bufSupplier = PayloadUtils.fromNbt(payload.data(), SyncmaticaPayload.KEY);
-        if (clientCommunication == null) {
-            // #FIXME
+        // #FIXME maybe
+        //final Identifier id = payload.id();
+        //final Supplier<PacketByteBuf> bufSupplier = payload::byteBuf;
+        //if (clientCommunication == null) {
             //ActorClientPlayNetworkHandler.getInstance().startEvent(clientPlayNetworkHandler);
-        }
-//        if (packetEvent(type, bufSupplier)) {
-//
-//            ci.cancel(); // prevent further unnecessary comparisons and reporting a warning
-//        }
+        //}
+        //if (packetEvent(id, bufSupplier)) {
+
+        //    ci.cancel(); // prevent further unnecessary comparisons and reporting a warning
     }
 
     @Deprecated
@@ -92,11 +92,11 @@ public class ActorClientPlayNetworkHandler {
     public void reset() {
         clientCommunication = null;
         exTarget = null;
-        clientPlayNetworkHandler = null;
+        //clientPlayNetworkHandler = null;
     }
 
     @Deprecated
     private static void setClientPlayNetworkHandler(final ClientPlayNetworkHandler clientPlayNetworkHandler) {
-        ActorClientPlayNetworkHandler.clientPlayNetworkHandler = clientPlayNetworkHandler;
+        //ActorClientPlayNetworkHandler.clientPlayNetworkHandler = clientPlayNetworkHandler;
     }
 }

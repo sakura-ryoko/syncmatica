@@ -38,8 +38,8 @@ public class ServerListener implements IServerListener
             SyncmaticaReference.setDedicatedServer();
         // Process Syncmatica Server Context
         Syncmatica.initServer(
-                new FileStorage(),
                 new ServerCommunicationManager(),
+                new FileStorage(),
                 new SyncmaticManager(),
                 SyncmaticaReference.isDedicatedServer(),
                 minecraftServer.getSavePath(WorldSavePath.ROOT).toFile()

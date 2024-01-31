@@ -10,6 +10,7 @@ import ch.endte.syncmatica.util.SyncLog;
 import fi.dy.masa.malilib.util.StringUtils;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 
@@ -21,9 +22,12 @@ import java.util.List;
 // on both without having to recode them individually, I have an adapter class here
 
 /**
- * Refactor Packets to use NbtCompound instead of PacketByteBuf
+ * Refactor Packets to use NbtCompound instead of PacketByteBuf before they hit Network API
+ * Also, we shouldn't be using the " Server/ClientPlayNetworkHandler " to send packets, i.e.
+ * "Exchange Target" value.
  */
-public class ExchangeTarget {
+public class ExchangeTarget
+{
     public final ClientPlayNetworking.Context clientPlayContext;
     public final ServerPlayNetworking.Context serverPlayContext;
     private final String persistentName;
@@ -31,13 +35,15 @@ public class ExchangeTarget {
     private FeatureSet features;
     private final List<Exchange> ongoingExchanges = new ArrayList<>(); // implicitly relies on priority
 
-    public ExchangeTarget(ClientPlayNetworking.Context clientPlayContext) {
+    public ExchangeTarget(ClientPlayNetworking.Context clientPlayContext)
+    {
         this.clientPlayContext = clientPlayContext;
         this.serverPlayContext = null;
         this.persistentName = StringUtils.getWorldOrServerName();
     }
 
-    public ExchangeTarget(ServerPlayNetworking.Context serverPlayContext) {
+    public ExchangeTarget(ServerPlayNetworking.Context serverPlayContext)
+    {
         this.clientPlayContext = null;
         this.serverPlayContext = serverPlayContext;
         this.persistentName = serverPlayContext.player().getUuidAsString();
@@ -45,26 +51,34 @@ public class ExchangeTarget {
 
     // this application exclusively communicates in CustomPayLoad packets
     // this class handles the sending of either S2C or C2S packets
-    public void sendPacket(final SyncmaticaPacketType type, final PacketByteBuf packetBuf, final Context context) {
+    public void sendPacket(final SyncmaticaPacketType type, final PacketByteBuf packetBuf, final Context context)
+    {
         if (context != null) {
             context.getDebugService().logSendPacket(type, persistentName);
         }
-        if (clientPlayContext != null) {
+        // #FIXME -- these calls are inverted.
+        //  "clientPlayContext" is used to SEND to a player,
+        //  while "serverPlayContext" is used to send to the Server.
+        //
+        if (clientPlayContext != null)
+        {
             // #FIXME
-            //final SyncmaticaS2CPayload.SyncPacket syncPacket = new SyncmaticaS2CPayload.SyncPacket(packetBuf.readUuid(), id, packetBuf);
-            //CustomPayloadC2SPacket packet = new CustomPayloadC2SPacket(new SyncmaticaS2CPayload(syncPacket));
+            //CustomPayloadC2SPacket packet = new CustomPayloadC2SPacket(new SyncmaticaPayload(id, packetBuf));
             //clientPlayNetworkHandler.sendPacket(packet);
             NbtCompound payload;
             payload = PayloadUtils.fromByteBuf(packetBuf, SyncmaticaPayload.KEY);
             assert payload != null;
             payload.putString("packetType", type.toString());
             SyncLog.debug("ExchangeTarget#sendPacket(): in Client Context, packet type: {}, size in bytes: {}", type.toString(), payload.getSizeInBytes());
+            // FIXME : Internally, this is sort of how it functions when calling .send(), which obfuscates the Network Handler interface
             // ((SyncmaticaPayloadHandler) SyncmaticaPayloadHandler.getInstance()).encodeSyncmaticaPayload(payload);
+            //SyncmaticaPayload packet = new SyncmaticaPayload(payload);
+            //clientPlayContext.client().getNetworkHandler().sendPacket(ClientNetworkingImpl.createC2SPacket(packet));
         }
-        if (serverPlayContext != null) {
+        if (serverPlayContext != null)
+        {
             // #FIXME
-            //final SyncmaticaS2CPayload.SyncPacket syncPacket = new SyncmaticaS2CPayload.SyncPacket(packetBuf.readUuid(), id, packetBuf);
-            //CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(new SyncmaticaS2CPayload(syncPacket));
+            //CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(new SyncmaticaPayload(id, packetBuf));
             //serverPlayNetworkHandler.sendPacket(packet);
             NbtCompound payload;
             payload = PayloadUtils.fromByteBuf(packetBuf, SyncmaticaPayload.KEY);
@@ -72,6 +86,9 @@ public class ExchangeTarget {
             payload.putString("packetType", type.toString());
             SyncLog.debug("ExchangeTarget#sendPacket(): in Server Context, packet type: {}, size in bytes: {}", type.toString(), payload.getSizeInBytes());
             // What player are we sending this to?
+            // #FIXME : Internally, this is sort of how it functions when calling .send(), which obfuscates the Network Handler interface
+            //SyncmaticaPayload packet = new SyncmaticaPayload(payload);
+            //serverPlayContext.responseSender().sendPacket(packet);
         }
     }
 
