@@ -1,7 +1,8 @@
 package ch.endte.syncmatica;
 
 import ch.endte.syncmatica.communication.CommunicationManager;
-import ch.endte.syncmatica.communication.FeatureSet;
+import ch.endte.syncmatica.features.Feature;
+import ch.endte.syncmatica.features.FeatureSet;
 import ch.endte.syncmatica.data.IFileStorage;
 import ch.endte.syncmatica.data.SyncmaticManager;
 import ch.endte.syncmatica.extended_core.PlayerIdentifierProvider;
@@ -9,16 +10,23 @@ import ch.endte.syncmatica.service.DebugService;
 import ch.endte.syncmatica.service.IService;
 import ch.endte.syncmatica.service.JsonConfiguration;
 import ch.endte.syncmatica.service.QuotaService;
+import ch.endte.syncmatica.util.SyncLog;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.util.Arrays;
+import java.util.Objects;
 
+/**
+ * Removing "CommunicationsManager" interface in favor of a new network API.
+ */
 public class Context {
 
     private final IFileStorage files;
+
     private final CommunicationManager comMan;
     private final SyncmaticManager synMan;
     private FeatureSet fs = null;
@@ -65,7 +73,13 @@ public class Context {
         playerIdentifierProvider = new PlayerIdentifierProvider(this);
         debugService = new DebugService();
         this.litematicFolder = litematicFolder;
-        litematicFolder.mkdirs();
+        if (!litematicFolder.exists()) {
+            try {
+                if (!litematicFolder.mkdirs())
+                    SyncLog.fatal("Context(): Fatal error creating litematic Folder");
+            }
+            catch (Exception ignored) {}
+        }
         integratedServer = integrated;
         this.worldFolder = worldFolder;
         loadConfiguration();
@@ -141,20 +155,24 @@ public class Context {
     public File getConfigFolder() {
         if (isServer() && isIntegratedServer()) {
 
-            return new File(worldFolder, Syncmatica.MOD_ID);
+            return new File(worldFolder, SyncmaticaReference.MOD_ID);
         }
-        return new File(new File("."), "config" + File.separator + Syncmatica.MOD_ID);
+        return new File(new File("."), "config" + File.separator + SyncmaticaReference.MOD_ID);
     }
 
     public File getConfigFile() {
         return new File(getConfigFolder(), "config.json");
     }
 
+    @Nullable
     public File getAndCreateConfigFile() throws IOException {
-        getConfigFolder().mkdirs();
-        final File configFile = getConfigFile();
-        configFile.createNewFile();
-        return configFile;
+        if (getConfigFolder().mkdirs()) {
+            final File configFile = getConfigFile();
+            if (configFile.createNewFile())
+                return configFile;
+            else return null;
+        }
+        else return null;
     }
 
     public void loadConfiguration() {
@@ -173,7 +191,7 @@ public class Context {
         needsRewrite |= loadConfigurationForService(debugService, configuration, attemptToLoad);
         if (needsRewrite) {
             try (
-                    final Writer writer = new BufferedWriter(new FileWriter(getAndCreateConfigFile()))
+                    final Writer writer = new BufferedWriter(new FileWriter(Objects.requireNonNull(getAndCreateConfigFile())))
             ) {
                 final Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 final String jsonString = gson.toJson(configuration);
@@ -234,6 +252,7 @@ public class Context {
     }
 
     public static class DuplicateContextAssignmentException extends RuntimeException {
+        @Serial
         private static final long serialVersionUID = -5147544661160756303L;
 
         public DuplicateContextAssignmentException(final String reason) {
@@ -242,6 +261,7 @@ public class Context {
     }
 
     public static class ContextMismatchException extends RuntimeException {
+        @Serial
         private static final long serialVersionUID = 2769376183212635479L;
 
         public ContextMismatchException(final String reason) {

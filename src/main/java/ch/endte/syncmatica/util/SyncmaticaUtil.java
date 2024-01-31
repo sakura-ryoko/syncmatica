@@ -1,7 +1,6 @@
 package ch.endte.syncmatica.util;
 
 import net.minecraft.util.math.BlockPos;
-import org.apache.logging.log4j.LogManager;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -82,7 +81,7 @@ public class SyncmaticaUtil {
             Files.move(current, backup);
         } catch (final IOException exception) {
             if (tries <= 0) {
-                LogManager.getLogger(SyncmaticaUtil.class).error("Excessive retries when trying to write Syncmatica placement", exception);
+                SyncLog.error("Excessive retries when trying to write Syncmatica placement", exception);
 
                 return false;
             }

@@ -3,11 +3,10 @@ package ch.endte.syncmatica.communication.exchange;
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.communication.ExchangeTarget;
-import ch.endte.syncmatica.communication.MessageType;
-import ch.endte.syncmatica.communication.PacketType;
+import ch.endte.syncmatica.features.MessageType;
 import ch.endte.syncmatica.communication.ServerCommunicationManager;
+import ch.endte.syncmatica.network.packet.SyncmaticaPacketType;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -36,19 +35,19 @@ public class DownloadExchange extends AbstractExchange {
     }
 
     @Override
-    public boolean checkPacket(final Identifier id, final PacketByteBuf packetBuf) {
-        if (id.equals(PacketType.SEND_LITEMATIC.identifier)
-                || id.equals(PacketType.FINISHED_LITEMATIC.identifier)
-                || id.equals(PacketType.CANCEL_LITEMATIC.identifier)) {
+    public boolean checkPacket(final SyncmaticaPacketType type, final PacketByteBuf packetBuf) {
+        if (type.equals(SyncmaticaPacketType.SEND_LITEMATIC)
+                || type.equals(SyncmaticaPacketType.FINISHED_LITEMATIC)
+                || type.equals(SyncmaticaPacketType.CANCEL_LITEMATIC)) {
             return checkUUID(packetBuf, toDownload.getId());
         }
         return false;
     }
 
     @Override
-    public void handle(final Identifier id, final PacketByteBuf packetBuf) {
+    public void handle(final SyncmaticaPacketType type, final PacketByteBuf packetBuf) {
         packetBuf.readUuid(); //skips the UUID
-        if (id.equals(PacketType.SEND_LITEMATIC.identifier)) {
+        if (type.equals(SyncmaticaPacketType.SEND_LITEMATIC)) {
             final int size = packetBuf.readInt();
             bytesSent += size;
             if (getContext().isServer() && getContext().getQuotaService().isOverQuota(getPartner(), bytesSent)) {
@@ -72,7 +71,7 @@ public class DownloadExchange extends AbstractExchange {
             //getPartner().sendPacket(PacketType.RECEIVED_LITEMATIC.identifier, packetByteBuf, getContext());
             return;
         }
-        if (id.equals(PacketType.FINISHED_LITEMATIC.identifier)) {
+        if (type.equals(SyncmaticaPacketType.FINISHED_LITEMATIC)) {
             try {
                 outputStream.flush();
             } catch (final IOException e) {
@@ -89,7 +88,7 @@ public class DownloadExchange extends AbstractExchange {
             }
             return;
         }
-        if (id.equals(PacketType.CANCEL_LITEMATIC.identifier)) {
+        if (type.equals(SyncmaticaPacketType.CANCEL_LITEMATIC)) {
             close(false);
         }
     }

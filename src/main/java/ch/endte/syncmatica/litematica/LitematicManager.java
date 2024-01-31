@@ -1,6 +1,5 @@
 package ch.endte.syncmatica.litematica;
 
-import ch.endte.syncmatica.*;
 import ch.endte.syncmatica.data.RedirectFileStorage;
 import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.data.ServerPosition;
@@ -10,6 +9,7 @@ import ch.endte.syncmatica.extended_core.SubRegionData;
 import ch.endte.syncmatica.extended_core.SubRegionPlacementModification;
 import ch.endte.syncmatica.litematica_mixin.MixinSchematicPlacementManager;
 import ch.endte.syncmatica.litematica_mixin.MixinSubregionPlacement;
+import ch.endte.syncmatica.Context;
 import fi.dy.masa.litematica.data.DataManager;
 import fi.dy.masa.litematica.data.SchematicHolder;
 import fi.dy.masa.litematica.schematic.LitematicaSchematic;

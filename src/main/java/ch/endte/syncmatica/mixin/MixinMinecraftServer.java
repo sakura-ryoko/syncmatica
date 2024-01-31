@@ -9,26 +9,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MinecraftServer.class)
 public class MixinMinecraftServer {
-    /*
-    @Inject(method = "startServer", at = @At("RETURN"))
-    private static <S extends MinecraftServer> void initSyncmatica(final Function<Thread, S> serverFactory, final CallbackInfoReturnable<S> ci) {
-        final MinecraftServer returnValue = ci.getReturnValue();
-        Syncmatica.initServer(
-                new ServerCommunicationManager(),
-                new FileStorage(),
-                new SyncmaticManager(),
-                !returnValue.isDedicated(),
-                returnValue.getSavePath(WorldSavePath.ROOT).toFile()
-        ).startup();
-    }
-
-    // at
-    @Inject(method = "shutdown", at = @At("TAIL"))
-    public void shutdownSyncmatica(final CallbackInfo ci) {
-        Syncmatica.shutdown();
-    }
-     */
-
     /**
      *  Call Backs for IServerManager
      */

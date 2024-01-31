@@ -1,7 +1,8 @@
 package ch.endte.syncmatica.communication;
 
 import ch.endte.syncmatica.Context;
-import ch.endte.syncmatica.Feature;
+import ch.endte.syncmatica.features.Feature;
+import ch.endte.syncmatica.features.MessageType;
 import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.communication.exchange.DownloadExchange;
@@ -10,9 +11,9 @@ import ch.endte.syncmatica.communication.exchange.VersionHandshakeClient;
 import ch.endte.syncmatica.extended_core.PlayerIdentifier;
 import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.litematica.ScreenHelper;
+import ch.endte.syncmatica.network.packet.SyncmaticaPacketType;
 import fi.dy.masa.malilib.gui.Message;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -35,13 +36,13 @@ public class ClientCommunicationManager extends CommunicationManager {
     }
 
     @Override
-    protected void handle(final ExchangeTarget source, final Identifier id, final PacketByteBuf packetBuf) {
-        if (id.equals(PacketType.REGISTER_METADATA.identifier)) {
+    protected void handle(final ExchangeTarget source, final SyncmaticaPacketType type, final PacketByteBuf packetBuf) {
+        if (type.equals(SyncmaticaPacketType.REGISTER_METADATA)) {
             final ServerPlacement placement = receiveMetaData(packetBuf, source);
             context.getSyncmaticManager().addPlacement(placement);
             return;
         }
-        if (id.equals(PacketType.REMOVE_SYNCMATIC.identifier)) {
+        if (type.equals(SyncmaticaPacketType.REMOVE_SYNCMATIC)) {
             final UUID placementId = packetBuf.readUuid();
             final ServerPlacement placement = context.getSyncmaticManager().getPlacement(placementId);
             if (placement != null) {
@@ -57,7 +58,7 @@ public class ClientCommunicationManager extends CommunicationManager {
             }
             return;
         }
-        if (id.equals(PacketType.MODIFY.identifier)) {
+        if (type.equals(SyncmaticaPacketType.MODIFY)) {
             // #FIXME
             final UUID placementId = packetBuf.readUuid();
             final ServerPlacement toModify = context.getSyncmaticManager().getPlacement(placementId);
@@ -74,13 +75,13 @@ public class ClientCommunicationManager extends CommunicationManager {
             context.getSyncmaticManager().updateServerPlacement(toModify);
             return;
         }
-        if (id.equals(PacketType.MESSAGE.identifier)) {
-            final Message.MessageType type = mapMessageType(MessageType.valueOf(packetBuf.readString(32767)));
+        if (type.equals(SyncmaticaPacketType.MESSAGE)) {
+            final Message.MessageType msgType = mapMessageType(MessageType.valueOf(packetBuf.readString(32767)));
             final String text = packetBuf.readString(32767);
-            ScreenHelper.ifPresent(s -> s.addMessage(type, text));
+            ScreenHelper.ifPresent(s -> s.addMessage(msgType, text));
             return;
         }
-        if (id.equals(PacketType.REGISTER_VERSION.identifier)) {
+        if (type.equals(SyncmaticaPacketType.REGISTER_VERSION)) {
             LitematicManager.clear();
             Syncmatica.restartClient();
             // #FIXME

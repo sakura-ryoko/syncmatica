@@ -1,7 +1,7 @@
 package ch.endte.syncmatica.communication;
 
 import ch.endte.syncmatica.Context;
-import ch.endte.syncmatica.Feature;
+import ch.endte.syncmatica.features.Feature;
 import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.communication.exchange.DownloadExchange;
 import ch.endte.syncmatica.communication.exchange.Exchange;
@@ -9,11 +9,12 @@ import ch.endte.syncmatica.extended_core.PlayerIdentifier;
 import ch.endte.syncmatica.extended_core.PlayerIdentifierProvider;
 import ch.endte.syncmatica.extended_core.SubRegionData;
 import ch.endte.syncmatica.extended_core.SubRegionPlacementModification;
+import ch.endte.syncmatica.network.packet.SyncmaticaPacketType;
 import ch.endte.syncmatica.util.SyncmaticaUtil;
+import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
 import java.io.File;
@@ -39,41 +40,42 @@ public abstract class CommunicationManager {
         modifyState = new HashMap<>();
     }
 
-    public boolean handlePacket(final Identifier id) {
-        return PacketType.containsIdentifier(id);
+    @Deprecated
+    public boolean handlePacket(final SyncmaticaPacketType type) {
+        return SyncmaticaPacketType.containsType(type.toString());
     }
 
-    public void onPacket(final ExchangeTarget source, final Identifier id, final PacketByteBuf packetBuf) {
-        context.getDebugService().logReceivePacket(id);
+    public void onPacket(final ExchangeTarget source, final SyncmaticaPacketType type, final PacketByteBuf packetBuf) {
+        context.getDebugService().logReceivePacket(type);
         Exchange handler = null;
         final Collection<Exchange> potentialMessageTarget = source.getExchanges();
         if (potentialMessageTarget != null) {
             for (final Exchange target : potentialMessageTarget) {
-                if (target.checkPacket(id, packetBuf)) {
-                    target.handle(id, packetBuf);
+                if (target.checkPacket(type, packetBuf)) {
+                    target.handle(type, packetBuf);
                     handler = target;
                     break;
                 }
             }
         }
         if (handler == null) {
-            handle(source, id, packetBuf);
+            handle(source, type, packetBuf);
         } else if (handler.isFinished()) {
             notifyClose(handler);
         }
     }
 
     // will get called for every packet not handled by an exchange
-    protected abstract void handle(ExchangeTarget source, Identifier id, PacketByteBuf packetBuf);
+    protected abstract void handle(ExchangeTarget source, SyncmaticaPacketType type, PacketByteBuf packetBuf);
 
     // will get called for every finished exchange (successful or not)
     protected abstract void handleExchange(Exchange exchange);
 
     public void sendMetaData(final ServerPlacement metaData, final ExchangeTarget target) {
         // #FIXME
-        //final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-        //putMetaData(metaData, buf, target);
-        //target.sendPacket(PacketType.REGISTER_METADATA.identifier, buf, context);
+        final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+        putMetaData(metaData, buf, target);
+        target.sendPacket(SyncmaticaPacketType.REGISTER_METADATA, buf, context);
     }
 
     public void putMetaData(final ServerPlacement metaData, final PacketByteBuf buf, final ExchangeTarget exchangeTarget) {
@@ -96,7 +98,7 @@ public abstract class CommunicationManager {
         buf.writeBlockPos(metaData.getPosition());
         buf.writeString(metaData.getDimension());
         // one of the rare use cases for ordinal
-        // transmitting the information of a non modifying enum to another
+        // transmitting the information of a non-modifying enum to another
         // instance of this application with no regard to the persistence
         // of the ordinal values over time
         buf.writeInt(metaData.getRotation().ordinal());

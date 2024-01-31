@@ -1,8 +1,8 @@
 package ch.endte.syncmatica.network;
 
-import ch.endte.syncmatica.Syncmatica;
+import ch.endte.syncmatica.SyncmaticaReference;
 import ch.endte.syncmatica.network.payload.*;
-import ch.endte.syncmatica.service.DebugService;
+import ch.endte.syncmatica.util.SyncLog;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
@@ -33,7 +33,7 @@ public class PayloadTypeRegister
         {
             PayloadCodec codec = new PayloadCodec(type, key, namespace);
             TYPES.put(type, codec);
-            DebugService.printDebug("PayloadTypeRegister#registerDefaultType(): Successfully registered new Payload id: {} // {}:{}", codec.getId().hashCode(), codec.getId().getNamespace(), codec.getId().getPath());
+            SyncLog.debug("PayloadTypeRegister#registerDefaultType(): Successfully registered new Payload id: {} // {}:{}", codec.getId().hashCode(), codec.getId().getNamespace(), codec.getId().getPath());
         }
     }
     public static void registerType(PayloadType type, String key, String namespace, String path)
@@ -42,7 +42,7 @@ public class PayloadTypeRegister
         {
             PayloadCodec codec = new PayloadCodec(type, key, namespace, path);
             TYPES.put(type, codec);
-            DebugService.printDebug("PayloadTypeRegister#registerDefaultType(): Successfully registered new Payload id: {} // {}:{}", codec.getId().hashCode(), codec.getId().getNamespace(), codec.getId().getPath());
+            SyncLog.debug("PayloadTypeRegister#registerDefaultType(): Successfully registered new Payload id: {} // {}:{}", codec.getId().hashCode(), codec.getId().getNamespace(), codec.getId().getPath());
         }
     }
     public static void registerTypes(String name)
@@ -50,12 +50,17 @@ public class PayloadTypeRegister
         // Don't invoke more than once
         if (typesRegistered)
             return;
-        DebugService.printDebug("PayloadTypeRegister#registerDefaultTypes(): executing.");
+        SyncLog.debug("PayloadTypeRegister#registerDefaultTypes(): executing.");
 
         String namespace = name;
         if (namespace.isEmpty())
-            namespace = Syncmatica.MOD_ID;
+            namespace = SyncmaticaReference.MOD_ID;
 
+        //registerDefaultType(PayloadType.STRING, "string", namespace);
+        //registerDefaultType(PayloadType.DATA, "data", namespace);
+        // For Carpet "hello" packet (NbtCompound type)
+        //registerType(fi.dy.masa.malilib.network.PayloadType.CARPET_HELLO, "hello", "carpet", "hello");
+        //registerType(fi.dy.masa.malilib.network.PayloadType.SERVUX, "structure_bounding_boxes", "servux", "structures");
         registerType(PayloadType.SYNCMATICA, "syncmatic", "syncmatica", "syncmatics");
 
         typesRegistered = true;
@@ -70,7 +75,11 @@ public class PayloadTypeRegister
         // Don't invoke more than once
         if (playRegistered)
             return;
-        DebugService.printDebug("PayloadTypeRegister#registerPlayChannels(): registering play channels.");
+        SyncLog.debug("PayloadTypeRegister#registerPlayChannels(): registering play channels.");
+        //registerPlayChannel(DataPayload.TYPE, DataPayload.CODEC);
+        //registerPlayChannel(StringPayload.TYPE, StringPayload.CODEC);
+        //registerPlayChannel(fi.dy.masa.malilib.network.payload.CarpetPayload.TYPE, fi.dy.masa.malilib.network.payload.CarpetPayload.CODEC);
+        //registerPlayChannel(fi.dy.masa.malilib.network.payload.ServuxPayload.TYPE, ServuxPayload.CODEC);
         registerPlayChannel(SyncmaticaPayload.TYPE, SyncmaticaPayload.CODEC);
 
         playRegistered = true;

@@ -1,8 +1,8 @@
 package ch.endte.syncmatica.network;
 
 import ch.endte.syncmatica.network.payload.*;
-import ch.endte.syncmatica.service.DebugService;
 import ch.endte.syncmatica.SyncmaticaReference;
+import ch.endte.syncmatica.util.SyncLog;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
 public class ServerNetworkPlayRegister
@@ -14,8 +14,8 @@ public class ServerNetworkPlayRegister
         // Do when the server starts, not before
         if (SyncmaticaReference.isServer())
         {
-            DebugService.printDebug("ServerHandlerManager#registerDefaultReceivers(): isServer() true.");
-            DebugService.printDebug("ServerHandlerManager#registerDefaultReceivers(): registerServuxHandler()");
+            SyncLog.debug("ServerHandlerManager#registerReceivers(): isServer() true.");
+            SyncLog.debug("ServerHandlerManager#registerReceivers(): registerSyncmaticaHandler()");
             ServerPlayNetworking.registerGlobalReceiver(SyncmaticaPayload.TYPE, C2SSyncmaticaHandler);
         }
     }
@@ -25,8 +25,8 @@ public class ServerNetworkPlayRegister
         // Do when server stops
         if (SyncmaticaReference.isServer())
         {
-            DebugService.printDebug("ServerHandlerManager#unregisterDefaultReceivers(): isServer() true.");
-            DebugService.printDebug("ServerHandlerManager#unregisterDefaultReceivers(): registerSyncmaticaHandler()");
+            SyncLog.debug("ServerHandlerManager#unregisterReceivers(): isServer() true.");
+            SyncLog.debug("ServerHandlerManager#unregisterReceivers(): unregisterSyncmaticaHandler()");
             ServerPlayNetworking.unregisterGlobalReceiver(SyncmaticaPayload.TYPE.id());
         }
     }

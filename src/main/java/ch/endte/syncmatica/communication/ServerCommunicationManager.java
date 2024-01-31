@@ -1,14 +1,15 @@
 package ch.endte.syncmatica.communication;
 
-import ch.endte.syncmatica.Feature;
+import ch.endte.syncmatica.features.Feature;
 import ch.endte.syncmatica.data.LocalLitematicState;
+import ch.endte.syncmatica.features.MessageType;
 import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.communication.exchange.*;
 import ch.endte.syncmatica.extended_core.PlayerIdentifier;
+import ch.endte.syncmatica.network.packet.SyncmaticaPacketType;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -27,17 +28,17 @@ public class ServerCommunicationManager extends CommunicationManager {
         return playerMap.get(exchangeTarget).getGameProfile();
     }
 
-    public void sendMessage(final ExchangeTarget client, final MessageType type, final String identifier) {
+    public void sendMessage(final ExchangeTarget client, final MessageType type, final String msg) {
         if (client.getFeatureSet().hasFeature(Feature.MESSAGE)) {
             // #FIXME
             //final PacketByteBuf newPacketBuf = new PacketByteBuf(Unpooled.buffer());
             //newPacketBuf.writeString(type.toString());
-            //newPacketBuf.writeString(identifier);
+            //newPacketBuf.writeString(msg);
             //client.sendPacket(PacketType.MESSAGE.identifier, newPacketBuf, context);
         } else if (playerMap.containsKey(client)) {
             // #FIXME
             //final ServerPlayerEntity player = playerMap.get(client);
-            //player.sendMessage(Text.of("Syncmatica " + type.toString() + " " + identifier), false);
+            //player.sendMessage(Text.of("Syncmatica " + type.toString() + " " + msg), false);
         }
     }
 
@@ -62,8 +63,8 @@ public class ServerCommunicationManager extends CommunicationManager {
     }
 
     @Override
-    protected void handle(final ExchangeTarget source, final Identifier id, final PacketByteBuf packetBuf) {
-        if (id.equals(PacketType.REQUEST_LITEMATIC.identifier)) {
+    protected void handle(final ExchangeTarget source, final SyncmaticaPacketType type, final PacketByteBuf packetBuf) {
+        if (type.equals(SyncmaticaPacketType.REQUEST_LITEMATIC)) {
             final UUID syncmaticaId = packetBuf.readUuid();
             final ServerPlacement placement = context.getSyncmaticManager().getPlacement(syncmaticaId);
             if (placement == null) {
@@ -81,7 +82,7 @@ public class ServerCommunicationManager extends CommunicationManager {
             startExchange(upload);
             return;
         }
-        if (id.equals(PacketType.REGISTER_METADATA.identifier)) {
+        if (type.equals(SyncmaticaPacketType.REGISTER_METADATA)) {
             final ServerPlacement placement = receiveMetaData(packetBuf, source);
             if (context.getSyncmaticManager().getPlacement(placement.getId()) != null) {
                 cancelShare(source, placement);
@@ -116,7 +117,7 @@ public class ServerCommunicationManager extends CommunicationManager {
 
             return;
         }
-        if (id.equals(PacketType.REMOVE_SYNCMATIC.identifier)) {
+        if (type.equals(SyncmaticaPacketType.REMOVE_SYNCMATIC)) {
             final UUID placementId = packetBuf.readUuid();
             final ServerPlacement placement = context.getSyncmaticManager().getPlacement(placementId);
             if (placement != null) {
@@ -134,7 +135,7 @@ public class ServerCommunicationManager extends CommunicationManager {
                 }
             }
         }
-        if (id.equals(PacketType.MODIFY_REQUEST.identifier)) {
+        if (type.equals(SyncmaticaPacketType.MODIFY_REQUEST)) {
             final UUID placementId = packetBuf.readUuid();
             final ModifyExchangeServer modifier = new ModifyExchangeServer(placementId, source, context);
             startExchange(modifier);

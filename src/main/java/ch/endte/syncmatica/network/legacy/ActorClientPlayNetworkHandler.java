@@ -9,6 +9,7 @@ import ch.endte.syncmatica.communication.CommunicationManager;
 import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.litematica.ScreenHelper;
+import ch.endte.syncmatica.network.packet.SyncmaticaPacketType;
 import ch.endte.syncmatica.network.payload.SyncmaticaPayload;
 import fi.dy.masa.malilib.util.PayloadUtils;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -16,6 +17,11 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import static ch.endte.syncmatica.Syncmatica.*;
+
+/**
+ * Move some of this to a different file, such as SyncmaticaPayloadListener, instanced from MaLiLib.
+ */
 @Deprecated
 public class ActorClientPlayNetworkHandler {
 
@@ -42,6 +48,7 @@ public class ActorClientPlayNetworkHandler {
 
     @Deprecated
     public void startClient() {
+        /*
         if (clientPlayNetworkHandler == null) {
             throw new RuntimeException("Tried to start client before receiving a connection");
         }
@@ -52,7 +59,8 @@ public class ActorClientPlayNetworkHandler {
         Syncmatica.initClient(comms, data, man);
         clientCommunication = comms;
         ScreenHelper.init();
-        LitematicManager.getInstance().setActiveContext(Syncmatica.getContext(Syncmatica.CLIENT_CONTEXT));
+        LitematicManager.getInstance().setActiveContext(Syncmatica.getContext(CLIENT_CONTEXT));
+        */
     }
 
     @Deprecated
@@ -60,18 +68,19 @@ public class ActorClientPlayNetworkHandler {
         final Identifier id = payload.getId().id();
         PacketByteBuf bufSupplier = PayloadUtils.fromNbt(payload.data(), SyncmaticaPayload.KEY);
         if (clientCommunication == null) {
-            ActorClientPlayNetworkHandler.getInstance().startEvent(clientPlayNetworkHandler);
+            // #FIXME
+            //ActorClientPlayNetworkHandler.getInstance().startEvent(clientPlayNetworkHandler);
         }
-        if (packetEvent(id, bufSupplier)) {
-
-            ci.cancel(); // prevent further unnecessary comparisons and reporting a warning
-        }
+//        if (packetEvent(type, bufSupplier)) {
+//
+//            ci.cancel(); // prevent further unnecessary comparisons and reporting a warning
+//        }
     }
 
     @Deprecated
-    public boolean packetEvent(final Identifier id, final PacketByteBuf bufSupplier) {
-        if (clientCommunication.handlePacket(id)) {
-            clientCommunication.onPacket(exTarget, id, bufSupplier);
+    public boolean packetEvent(final SyncmaticaPacketType type, final PacketByteBuf bufSupplier) {
+        if (clientCommunication.handlePacket(type)) {
+            clientCommunication.onPacket(exTarget, type, bufSupplier);
 
             return true;
         }

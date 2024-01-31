@@ -4,6 +4,9 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 
+/**
+ * Utility to convert NbtCompound into/from a PacketByteBuf
+ */
 public class PayloadUtils
 {
     public static PacketByteBuf fromNbt(NbtCompound nbt, String key)

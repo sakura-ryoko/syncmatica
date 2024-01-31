@@ -1,34 +1,24 @@
 package ch.endte.syncmatica.service;
 
-import ch.endte.syncmatica.Syncmatica;
-import net.minecraft.util.Identifier;
-import org.apache.logging.log4j.LogManager;
+import ch.endte.syncmatica.network.packet.SyncmaticaPacketType;
+import ch.endte.syncmatica.util.SyncLog;
 
 public class DebugService extends AbstractService {
 
-    private boolean doPacketLogging = false;
-    private static boolean doGeneralDebug = true;
-
-    public void logReceivePacket(final Identifier packageType) {
+    private boolean doPacketLogging = true;
+    public void logReceivePacket(final SyncmaticaPacketType packetType) {
         if (doPacketLogging) {
-            LogManager.getLogger(Syncmatica.class).info("Syncmatica - received packet:[type={}]", packageType);
+            SyncLog.info("Syncmatica - received packet:[type={}]", packetType.toString());
         }
     }
 
-    public void logSendPacket(final Identifier packetType, final String targetIdentifier) {
+    public void logSendPacket(final SyncmaticaPacketType packetType, final String targetIdentifier) {
         if (doPacketLogging) {
-            LogManager.getLogger(Syncmatica.class).info(
+            SyncLog.info(
                     "Sending packet[type={}] to ExchangeTarget[id={}]",
-                    packetType,
+                    packetType.toString(),
                     targetIdentifier
             );
-        }
-    }
-    public static void printDebug(String key, Object... args)
-    {
-        if (doGeneralDebug)
-        {
-            LogManager.getLogger(Syncmatica.class).info(key, args);
         }
     }
     @Override

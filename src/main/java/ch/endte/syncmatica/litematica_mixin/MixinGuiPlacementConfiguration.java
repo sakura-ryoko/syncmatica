@@ -1,7 +1,7 @@
 package ch.endte.syncmatica.litematica_mixin;
 
 import ch.endte.syncmatica.Context;
-import ch.endte.syncmatica.Feature;
+import ch.endte.syncmatica.features.Feature;
 import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.communication.ClientCommunicationManager;
 import ch.endte.syncmatica.communication.ExchangeTarget;

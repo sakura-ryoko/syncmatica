@@ -1,6 +1,7 @@
 package ch.endte.syncmatica.event;
 
 import ch.endte.syncmatica.interfaces.ISyncmaticaPayloadServerListener;
+import ch.endte.syncmatica.network.packet.SyncmaticaPacketType;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -31,13 +32,13 @@ public class SyncmaticaPayloadServerHandler implements ISyncmaticaPayloadServerM
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void receiveSyncmaticaServerPayload(NbtCompound data, ServerPlayNetworking.Context ctx, Identifier id)
+    public void receiveSyncmaticaServerPayload(NbtCompound data, ServerPlayNetworking.Context ctx)
     {
         if (!this.handlers.isEmpty())
         {
             for (ISyncmaticaPayloadServerListener handler : this.handlers)
             {
-                handler.receiveSyncmaticaServerPayload(data, ctx, id);
+                handler.receiveSyncmaticaServerPayload(data, ctx);
             }
         }
     }
@@ -51,23 +52,23 @@ public class SyncmaticaPayloadServerHandler implements ISyncmaticaPayloadServerM
             }
         }
     }
-    public void encodeSyncmaticaServerPayload(NbtCompound data, ServerPlayerEntity player, Identifier id)
+    public void encodeSyncmaticaServerPayload(NbtCompound data, ServerPlayerEntity player, SyncmaticaPacketType type)
     {
         if (!this.handlers.isEmpty())
         {
             for (ISyncmaticaPayloadServerListener handler : this.handlers)
             {
-                handler.encodeSyncmaticaServerPayload(data, player, id);
+                handler.encodeSyncmaticaServerPayload(data, player, type);
             }
         }
     }
-    public void decodeSyncmaticaServerPayload(NbtCompound data, ServerPlayerEntity player, Identifier id)
+    public void decodeSyncmaticaServerPayload(NbtCompound data, ServerPlayerEntity player)
     {
         if (!this.handlers.isEmpty())
         {
             for (ISyncmaticaPayloadServerListener handler : this.handlers)
             {
-                handler.decodeSyncmaticaServerPayload(data, player, id);
+                handler.decodeSyncmaticaServerPayload(data, player);
             }
         }
     }

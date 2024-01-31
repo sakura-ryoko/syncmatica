@@ -5,11 +5,10 @@ import ch.endte.syncmatica.data.RedirectFileStorage;
 import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.communication.ClientCommunicationManager;
 import ch.endte.syncmatica.communication.ExchangeTarget;
-import ch.endte.syncmatica.communication.PacketType;
 import ch.endte.syncmatica.litematica.LitematicManager;
+import ch.endte.syncmatica.network.packet.SyncmaticaPacketType;
 import fi.dy.masa.litematica.schematic.placement.SchematicPlacement;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -32,18 +31,18 @@ public class ShareLitematicExchange extends AbstractExchange {
     }
 
     @Override
-    public boolean checkPacket(final Identifier id, final PacketByteBuf packetBuf) {
-        if (id.equals(PacketType.REQUEST_LITEMATIC.identifier)
-                || id.equals(PacketType.REGISTER_METADATA.identifier)
-                || id.equals(PacketType.CANCEL_SHARE.identifier)) {
+    public boolean checkPacket(final SyncmaticaPacketType type, final PacketByteBuf packetBuf) {
+        if (type.equals(SyncmaticaPacketType.REQUEST_LITEMATIC)
+                || type.equals(SyncmaticaPacketType.REGISTER_METADATA)
+                || type.equals(SyncmaticaPacketType.CANCEL_SHARE)) {
             return AbstractExchange.checkUUID(packetBuf, toShare.getId());
         }
         return false;
     }
 
     @Override
-    public void handle(final Identifier id, final PacketByteBuf packetBuf) {
-        if (id.equals(PacketType.REQUEST_LITEMATIC.identifier)) {
+    public void handle(final SyncmaticaPacketType type, final PacketByteBuf packetBuf) {
+        if (type.equals(SyncmaticaPacketType.REQUEST_LITEMATIC)) {
             packetBuf.readUuid();
             final UploadExchange upload;
             try {
@@ -56,14 +55,14 @@ public class ShareLitematicExchange extends AbstractExchange {
             getManager().startExchange(upload);
             return;
         }
-        if (id.equals(PacketType.REGISTER_METADATA.identifier)) {
+        if (type.equals(SyncmaticaPacketType.REGISTER_METADATA)) {
             final RedirectFileStorage redirect = (RedirectFileStorage) getContext().getFileStorage();
             redirect.addRedirect(toUpload);
             LitematicManager.getInstance().renderSyncmatic(toShare, schematicPlacement, false);
             getContext().getSyncmaticManager().addPlacement(toShare);
             return;
         }
-        if (id.equals(PacketType.CANCEL_SHARE.identifier)) {
+        if (type.equals(SyncmaticaPacketType.CANCEL_SHARE)) {
             close(false);
         }
     }

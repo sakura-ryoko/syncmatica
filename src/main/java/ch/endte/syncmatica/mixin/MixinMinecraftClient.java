@@ -3,8 +3,7 @@ package ch.endte.syncmatica.mixin;
 import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.litematica.ScreenHelper;
-import ch.endte.syncmatica.network.legacy.ActorClientPlayNetworkHandler;
-import ch.endte.syncmatica.network.legacy.ChannelManager;
+import ch.endte.syncmatica.network.ClientNetworkPlayInitHandler;
 import net.minecraft.client.MinecraftClient;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -16,10 +15,11 @@ public class MixinMinecraftClient {
 
     @Inject(method = "disconnect()V", at = @At("HEAD"))
     private void shutdownSyncmatica(final CallbackInfo ci) {
-        //ChannelManager.onDisconnected();
+        // #REMOVE: ChannelManager.onDisconnected();
         ScreenHelper.close();
         Syncmatica.shutdown();
         LitematicManager.clear();
-        //ActorClientPlayNetworkHandler.getInstance().reset();
+        ClientNetworkPlayInitHandler.unregisterReceivers();
+        // #REMOVE: ActorClientPlayNetworkHandler.getInstance().reset();
     }
 }

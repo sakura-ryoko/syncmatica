@@ -12,14 +12,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PlayerManager.class)
 public class MixinPlayerManager {
-    /*
-    @Inject(method = "onPlayerConnect", at = @At("RETURN"))
-    public void onConnect(ClientConnection connection, ServerPlayerEntity player, ConnectedClientData clientData, CallbackInfo ci) {
-        //IServerPlayerNetworkHandler impl = (IServerPlayerNetworkHandler) player.networkHandler;
-        //impl.syncmatica$operateComms(sm -> sm.onPlayerJoin(impl.syncmatica$getExchangeTarget(), player));
-    }
-     */
-
     /**
      * Callbacks for IPlayerManager
      */

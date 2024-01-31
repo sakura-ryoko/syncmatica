@@ -3,10 +3,9 @@ package ch.endte.syncmatica.communication.exchange;
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.communication.ExchangeTarget;
-import ch.endte.syncmatica.communication.PacketType;
 import ch.endte.syncmatica.extended_core.PlayerIdentifier;
+import ch.endte.syncmatica.network.packet.SyncmaticaPacketType;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
 
 import java.util.UUID;
 
@@ -22,14 +21,14 @@ public class ModifyExchangeServer extends AbstractExchange {
     }
 
     @Override
-    public boolean checkPacket(final Identifier id, final PacketByteBuf packetBuf) {
-        return id.equals(PacketType.MODIFY_FINISH.identifier) && checkUUID(packetBuf, placement.getId());
+    public boolean checkPacket(final SyncmaticaPacketType type, final PacketByteBuf packetBuf) {
+        return type.equals(SyncmaticaPacketType.MODIFY_FINISH) && checkUUID(packetBuf, placement.getId());
     }
 
     @Override
-    public void handle(final Identifier id, final PacketByteBuf packetBuf) {
+    public void handle(final SyncmaticaPacketType type, final PacketByteBuf packetBuf) {
         packetBuf.readUuid(); // consume uuid
-        if (id.equals(PacketType.MODIFY_FINISH.identifier)) {
+        if (type.equals(SyncmaticaPacketType.MODIFY_FINISH)) {
             getContext().getCommunicationManager().receivePositionData(placement, packetBuf, getPartner());
 
             final PlayerIdentifier identifier = getContext().getPlayerIdentifierProvider().createOrGet(

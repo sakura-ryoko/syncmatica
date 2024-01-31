@@ -1,8 +1,18 @@
 package ch.endte.syncmatica.mixin;
 
+import ch.endte.syncmatica.SyncmaticaReference;
+import ch.endte.syncmatica.event.SyncmaticaPayloadHandler;
+import ch.endte.syncmatica.network.ClientNetworkPlayInitHandler;
+import ch.endte.syncmatica.network.packet.SyncmaticaPacketType;
+import ch.endte.syncmatica.network.payload.SyncmaticaPayload;
+import ch.endte.syncmatica.util.SyncLog;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 import org.spongepowered.asm.mixin.Mixin;
-
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = ClientPlayNetworkHandler.class, priority = 998)
 public abstract class MixinClientPlayNetworkHandler {
@@ -30,4 +40,27 @@ public abstract class MixinClientPlayNetworkHandler {
         return exTarget;
     }
     */
+    @Inject(method = "onGameJoin", at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/client/MinecraftClient;joinWorld(" +
+                    "Lnet/minecraft/client/world/ClientWorld;)V"))
+    private void syncmatica_onPreGameJoin(GameJoinS2CPacket packet, CallbackInfo ci)
+    {
+        SyncLog.debug("MixinClientPlayNetworkHandler#syncmatica_onPreGameJoin(): invoked");
+        if (SyncmaticaReference.isClient())
+            ClientNetworkPlayInitHandler.registerPlayChannels();
+    }
+
+    @Inject(method = "onGameJoin", at = @At("RETURN"))
+    private void syncmatica_onPostGameJoin(GameJoinS2CPacket packet, CallbackInfo ci)
+    {
+        SyncLog.debug("MixinClientPlayNetworkHandler#syncmatica_onPostGameJoin(): invoked");
+        if (SyncmaticaReference.isClient())
+        {
+            ClientNetworkPlayInitHandler.registerReceivers();
+
+            NbtCompound nbt = new NbtCompound();
+            nbt.putString(SyncmaticaPayload.KEY, "hello");
+            ((SyncmaticaPayloadHandler) SyncmaticaPayloadHandler.getInstance()).encodeSyncmaticaPayload(nbt, SyncmaticaPacketType.SYNCMATICA_PROTOCOL_VERSION);
+        }
+    }
 }

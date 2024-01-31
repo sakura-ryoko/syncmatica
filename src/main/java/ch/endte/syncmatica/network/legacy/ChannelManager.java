@@ -1,20 +1,11 @@
 package ch.endte.syncmatica.network.legacy;
 
-import ch.endte.syncmatica.Syncmatica;
-import ch.endte.syncmatica.communication.ExchangeTarget;
-import ch.endte.syncmatica.communication.PacketType;
-import ch.endte.syncmatica.util.StringTools;
-import io.netty.buffer.Unpooled;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
-import org.slf4j.LoggerFactory;
-
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-
+/**
+ * I really think this code is nifty, but unfortunately it's obsolete.
+ */
 @Deprecated
 public class ChannelManager {
+    /*
     private static final Identifier MINECRAFT_REGISTER = new Identifier("minecraft:register");
     private static final Identifier MINECRAFT_UNREGISTER = new Identifier("minecraft:unregister");
     private static final List<Identifier> serverRegisterChannels = new ArrayList<>();
@@ -68,4 +59,5 @@ public class ChannelManager {
         clientRegisterChannels.clear();
         serverRegisterChannels.clear();
     }
+     */
 }

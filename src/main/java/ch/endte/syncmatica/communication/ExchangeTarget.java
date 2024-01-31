@@ -2,11 +2,16 @@ package ch.endte.syncmatica.communication;
 
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.communication.exchange.Exchange;
+import ch.endte.syncmatica.features.FeatureSet;
+import ch.endte.syncmatica.network.packet.SyncmaticaPacketType;
+import ch.endte.syncmatica.network.payload.SyncmaticaPayload;
+import ch.endte.syncmatica.util.PayloadUtils;
+import ch.endte.syncmatica.util.SyncLog;
 import fi.dy.masa.malilib.util.StringUtils;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
-import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,46 +21,57 @@ import java.util.List;
 // on both without having to recode them individually, I have an adapter class here
 
 /**
- * Refactor Data Exchange to use NbtCompound instead of PacketByteBuf
+ * Refactor Packets to use NbtCompound instead of PacketByteBuf
  */
-@Deprecated
 public class ExchangeTarget {
-    public final ClientPlayNetworkHandler clientPlayNetworkHandler;
-    public final ServerPlayNetworkHandler serverPlayNetworkHandler;
+    public final ClientPlayNetworking.Context clientPlayContext;
+    public final ServerPlayNetworking.Context serverPlayContext;
     private final String persistentName;
 
     private FeatureSet features;
     private final List<Exchange> ongoingExchanges = new ArrayList<>(); // implicitly relies on priority
 
-    public ExchangeTarget(ClientPlayNetworkHandler clientPlayNetworkHandler) {
-        this.clientPlayNetworkHandler = clientPlayNetworkHandler;
-        this.serverPlayNetworkHandler = null;
+    public ExchangeTarget(ClientPlayNetworking.Context clientPlayContext) {
+        this.clientPlayContext = clientPlayContext;
+        this.serverPlayContext = null;
         this.persistentName = StringUtils.getWorldOrServerName();
     }
 
-    public ExchangeTarget(ServerPlayNetworkHandler serverPlayNetworkHandler) {
-        this.clientPlayNetworkHandler = null;
-        this.serverPlayNetworkHandler = serverPlayNetworkHandler;
-        this.persistentName = serverPlayNetworkHandler.player.getUuidAsString();
+    public ExchangeTarget(ServerPlayNetworking.Context serverPlayContext) {
+        this.clientPlayContext = null;
+        this.serverPlayContext = serverPlayContext;
+        this.persistentName = serverPlayContext.player().getUuidAsString();
     }
 
     // this application exclusively communicates in CustomPayLoad packets
     // this class handles the sending of either S2C or C2S packets
-    public void sendPacket(final Identifier id, final PacketByteBuf packetBuf, final Context context) {
+    public void sendPacket(final SyncmaticaPacketType type, final PacketByteBuf packetBuf, final Context context) {
         if (context != null) {
-            context.getDebugService().logSendPacket(id, persistentName);
+            context.getDebugService().logSendPacket(type, persistentName);
         }
-        if (clientPlayNetworkHandler != null) {
+        if (clientPlayContext != null) {
             // #FIXME
             //final SyncmaticaS2CPayload.SyncPacket syncPacket = new SyncmaticaS2CPayload.SyncPacket(packetBuf.readUuid(), id, packetBuf);
             //CustomPayloadC2SPacket packet = new CustomPayloadC2SPacket(new SyncmaticaS2CPayload(syncPacket));
             //clientPlayNetworkHandler.sendPacket(packet);
+            NbtCompound payload;
+            payload = PayloadUtils.fromByteBuf(packetBuf, SyncmaticaPayload.KEY);
+            assert payload != null;
+            payload.putString("packetType", type.toString());
+            SyncLog.debug("ExchangeTarget#sendPacket(): in Client Context, packet type: {}, size in bytes: {}", type.toString(), payload.getSizeInBytes());
+            // ((SyncmaticaPayloadHandler) SyncmaticaPayloadHandler.getInstance()).encodeSyncmaticaPayload(payload);
         }
-        if (serverPlayNetworkHandler != null) {
+        if (serverPlayContext != null) {
             // #FIXME
             //final SyncmaticaS2CPayload.SyncPacket syncPacket = new SyncmaticaS2CPayload.SyncPacket(packetBuf.readUuid(), id, packetBuf);
             //CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(new SyncmaticaS2CPayload(syncPacket));
             //serverPlayNetworkHandler.sendPacket(packet);
+            NbtCompound payload;
+            payload = PayloadUtils.fromByteBuf(packetBuf, SyncmaticaPayload.KEY);
+            assert payload != null;
+            payload.putString("packetType", type.toString());
+            SyncLog.debug("ExchangeTarget#sendPacket(): in Server Context, packet type: {}, size in bytes: {}", type.toString(), payload.getSizeInBytes());
+            // What player are we sending this to?
         }
     }
 
@@ -78,10 +94,10 @@ public class ExchangeTarget {
     }
 
     public boolean isServer() {
-        return serverPlayNetworkHandler != null;
+        return serverPlayContext != null;
     }
 
     public boolean isClient() {
-        return clientPlayNetworkHandler != null;
+        return clientPlayContext != null;
     }
 }

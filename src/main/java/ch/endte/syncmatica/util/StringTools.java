@@ -3,6 +3,10 @@ package ch.endte.syncmatica.util;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Part of Bunny_i's ChannelManager
+ */
+@Deprecated
 public class StringTools {
     public static String getHexString(byte[] bytes) {
         List<String> list = new ArrayList<>();

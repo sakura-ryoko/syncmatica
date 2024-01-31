@@ -13,7 +13,14 @@
 	},
 	"license": "CC0-1.0",
 	"environment": "*",
-	"entrypoints": {},
+	"entrypoints": {
+		"client": [
+			"ch.endte.syncmatica.SyncmaticaClient"
+		],
+		"server": [
+			"ch.endte.syncmatica.SyncmaticaServer"
+		]
+	},
 	"mixins": [
 		"syncmatica.mixin.json",
 		"syncmatica.litematica_mixin.json"

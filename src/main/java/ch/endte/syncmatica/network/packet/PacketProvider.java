@@ -1,9 +1,9 @@
 package ch.endte.syncmatica.network.packet;
 
 import ch.endte.syncmatica.SyncmaticaReference;
+import ch.endte.syncmatica.event.SyncmaticaPayloadHandler;
 import ch.endte.syncmatica.event.SyncmaticaPayloadServerHandler;
-import ch.endte.syncmatica.service.DebugService;
-import fi.dy.masa.malilib.event.SyncmaticaPayloadHandler;
+import ch.endte.syncmatica.util.SyncLog;
 
 public class PacketProvider
 {
@@ -11,7 +11,7 @@ public class PacketProvider
     static SyncmaticaPayloadServerListener syncmaticaServerListener = new SyncmaticaPayloadServerListener();
     public static void registerPayloads()
     {
-        DebugService.printDebug("PacketProvider#registerPayloads(): registerSyncmaticaHandler()");
+        SyncLog.debug("PacketProvider#registerPayloads(): registerSyncmaticaHandler()");
         if (SyncmaticaReference.isClient())
             SyncmaticaPayloadHandler.getInstance().registerSyncmaticaHandler(syncmaticaClientListener);
         if (SyncmaticaReference.isServer())
@@ -20,7 +20,7 @@ public class PacketProvider
 
     public static void unregisterPayloads()
     {
-        DebugService.printDebug("PacketProvider#unregisterPayloads(): unregisterSyncmaticaHandler()");
+        SyncLog.debug("PacketProvider#unregisterPayloads(): unregisterSyncmaticaHandler()");
         if (SyncmaticaReference.isClient())
             SyncmaticaPayloadHandler.getInstance().unregisterSyncmaticaHandler(syncmaticaClientListener);
         if (SyncmaticaReference.isServer())

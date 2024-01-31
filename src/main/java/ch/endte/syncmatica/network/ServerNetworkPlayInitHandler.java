@@ -1,7 +1,8 @@
 package ch.endte.syncmatica.network;
 
-import ch.endte.syncmatica.Syncmatica;
+import ch.endte.syncmatica.SyncmaticaReference;
 import ch.endte.syncmatica.network.test.ServerDebugSuite;
+import ch.endte.syncmatica.util.SyncLog;
 
 public class ServerNetworkPlayInitHandler
 {
@@ -10,17 +11,15 @@ public class ServerNetworkPlayInitHandler
      */
     public static void registerPlayChannels()
     {
-        PayloadTypeRegister.registerTypes(Syncmatica.MOD_ID);
+        PayloadTypeRegister.registerTypes(SyncmaticaReference.MOD_ID);
         PayloadTypeRegister.registerPlayChannels();
         ServerDebugSuite.checkGlobalChannels();
     }
-    /**
-     * Should be called when Client joins a server
-     */
     public static void registerReceivers()
     {
         ServerNetworkPlayRegister.registerReceivers();
         ServerDebugSuite.checkGlobalChannels();
+        SyncLog.debug("ServerNetworkPlayInitHandler#ServerNetworkPlayInitHandler(): Ready to receive packets.");
     }
     public static void unregisterReceivers()
     {

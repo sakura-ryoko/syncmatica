@@ -3,9 +3,8 @@ package ch.endte.syncmatica.communication.exchange;
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.communication.ExchangeTarget;
-import ch.endte.syncmatica.communication.PacketType;
+import ch.endte.syncmatica.network.packet.SyncmaticaPacketType;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
 
 import java.io.*;
 
@@ -29,22 +28,22 @@ public class UploadExchange extends AbstractExchange {
     }
 
     @Override
-    public boolean checkPacket(final Identifier id, final PacketByteBuf packetBuf) {
-        if (id.equals(PacketType.RECEIVED_LITEMATIC.identifier)
-                || id.equals(PacketType.CANCEL_LITEMATIC.identifier)) {
+    public boolean checkPacket(final SyncmaticaPacketType type, final PacketByteBuf packetBuf) {
+        if (type.equals(SyncmaticaPacketType.RECEIVED_LITEMATIC)
+                || type.equals(SyncmaticaPacketType.CANCEL_LITEMATIC)) {
             return checkUUID(packetBuf, toUpload.getId());
         }
         return false;
     }
 
     @Override
-    public void handle(final Identifier id, final PacketByteBuf packetBuf) {
+    public void handle(final SyncmaticaPacketType type, final PacketByteBuf packetBuf) {
 
         packetBuf.readUuid(); // uncertain if the data has to be consumed
-        if (id.equals(PacketType.RECEIVED_LITEMATIC.identifier)) {
+        if (type.equals(SyncmaticaPacketType.RECEIVED_LITEMATIC)) {
             send();
         }
-        if (id.equals(PacketType.CANCEL_LITEMATIC.identifier)) {
+        if (type.equals(SyncmaticaPacketType.CANCEL_LITEMATIC)) {
             close(false);
         }
     }

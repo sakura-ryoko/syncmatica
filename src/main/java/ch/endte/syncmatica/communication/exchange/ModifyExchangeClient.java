@@ -1,16 +1,15 @@
 package ch.endte.syncmatica.communication.exchange;
 
 import ch.endte.syncmatica.Context;
-import ch.endte.syncmatica.Feature;
+import ch.endte.syncmatica.features.Feature;
 import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.communication.ExchangeTarget;
-import ch.endte.syncmatica.communication.PacketType;
 import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.litematica.ScreenHelper;
+import ch.endte.syncmatica.network.packet.SyncmaticaPacketType;
 import fi.dy.masa.litematica.schematic.placement.SchematicPlacement;
 import fi.dy.masa.malilib.gui.Message;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
 
 public class ModifyExchangeClient extends AbstractExchange {
 
@@ -27,18 +26,18 @@ public class ModifyExchangeClient extends AbstractExchange {
     }
 
     @Override
-    public boolean checkPacket(final Identifier id, final PacketByteBuf packetBuf) {
-        if (id.equals(PacketType.MODIFY_REQUEST_DENY.identifier)
-                || id.equals(PacketType.MODIFY_REQUEST_ACCEPT.identifier)
-                || (expectRemove && id.equals(PacketType.REMOVE_SYNCMATIC.identifier))) {
+    public boolean checkPacket(final SyncmaticaPacketType type, final PacketByteBuf packetBuf) {
+        if (type.equals(SyncmaticaPacketType.MODIFY_REQUEST_DENY)
+                || type.equals(SyncmaticaPacketType.MODIFY_REQUEST_ACCEPT)
+                || (expectRemove && type.equals(SyncmaticaPacketType.REMOVE_SYNCMATIC))) {
             return AbstractExchange.checkUUID(packetBuf, placement.getId());
         }
         return false;
     }
 
     @Override
-    public void handle(final Identifier id, final PacketByteBuf packetBuf) {
-        if (id.equals(PacketType.MODIFY_REQUEST_DENY.identifier)) {
+    public void handle(final SyncmaticaPacketType type, final PacketByteBuf packetBuf) {
+        if (type.equals(SyncmaticaPacketType.MODIFY_REQUEST_DENY)) {
             packetBuf.readUuid();
             close(false);
             if (!litematic.isLocked()) {
@@ -48,10 +47,10 @@ public class ModifyExchangeClient extends AbstractExchange {
                 litematic.toggleLocked();
             }
             ScreenHelper.ifPresent(s -> s.addMessage(Message.MessageType.SUCCESS, "syncmatica.error.modification_deny"));
-        } else if (id.equals(PacketType.MODIFY_REQUEST_ACCEPT.identifier)) {
+        } else if (type.equals(SyncmaticaPacketType.MODIFY_REQUEST_ACCEPT)) {
             packetBuf.readUuid();
             acceptModification();
-        } else if (id.equals(PacketType.REMOVE_SYNCMATIC.identifier)) {
+        } else if (type.equals(SyncmaticaPacketType.REMOVE_SYNCMATIC)) {
             packetBuf.readUuid();
             final ShareLitematicExchange legacyModify = new ShareLitematicExchange(litematic, getPartner(), getContext(), placement);
             getContext().getCommunicationManager().startExchange(legacyModify);

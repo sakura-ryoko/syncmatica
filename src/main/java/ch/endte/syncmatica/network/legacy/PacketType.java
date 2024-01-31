@@ -1,4 +1,4 @@
-package ch.endte.syncmatica.communication;
+package ch.endte.syncmatica.network.legacy;
 
 import net.minecraft.util.Identifier;
 

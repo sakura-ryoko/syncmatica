@@ -2,6 +2,7 @@ package ch.endte.syncmatica.communication.exchange;
 
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.communication.ExchangeTarget;
+import ch.endte.syncmatica.network.packet.SyncmaticaPacketType;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 
@@ -28,10 +29,10 @@ public interface Exchange {
     // whether this exchange handles the packet or not
     // this test should have no side effects.
     // doesn't handle packets directly
-    boolean checkPacket(Identifier id, PacketByteBuf packetBuf);
+    boolean checkPacket(SyncmaticaPacketType type, PacketByteBuf packetBuf);
 
     // handles the data of this specific packet
-    void handle(Identifier id, PacketByteBuf packetBuf);
+    void handle(SyncmaticaPacketType type, PacketByteBuf packetBuf);
 
     // marks an exchange that has terminated
     boolean isFinished();

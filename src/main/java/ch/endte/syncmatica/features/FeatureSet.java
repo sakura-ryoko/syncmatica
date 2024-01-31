@@ -1,6 +1,4 @@
-package ch.endte.syncmatica.communication;
-
-import ch.endte.syncmatica.Feature;
+package ch.endte.syncmatica.features;
 
 import java.util.*;
 

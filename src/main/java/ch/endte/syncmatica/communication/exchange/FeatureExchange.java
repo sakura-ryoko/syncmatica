@@ -2,11 +2,9 @@ package ch.endte.syncmatica.communication.exchange;
 
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.communication.ExchangeTarget;
-import ch.endte.syncmatica.communication.FeatureSet;
-import ch.endte.syncmatica.communication.PacketType;
-import io.netty.buffer.Unpooled;
+import ch.endte.syncmatica.features.FeatureSet;
+import ch.endte.syncmatica.network.packet.SyncmaticaPacketType;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
 
 public abstract class FeatureExchange extends AbstractExchange {
 
@@ -15,16 +13,16 @@ public abstract class FeatureExchange extends AbstractExchange {
     }
 
     @Override
-    public boolean checkPacket(final Identifier id, final PacketByteBuf packetBuf) {
-        return id.equals(PacketType.FEATURE_REQUEST.identifier)
-                || id.equals(PacketType.FEATURE.identifier);
+    public boolean checkPacket(final SyncmaticaPacketType type, final PacketByteBuf packetBuf) {
+        return type.equals(SyncmaticaPacketType.FEATURE_REQUEST)
+                || type.equals(SyncmaticaPacketType.FEATURE);
     }
 
     @Override
-    public void handle(final Identifier id, final PacketByteBuf packetBuf) {
-        if (id.equals(PacketType.FEATURE_REQUEST.identifier)) {
+    public void handle(final SyncmaticaPacketType type, final PacketByteBuf packetBuf) {
+        if (type.equals(SyncmaticaPacketType.FEATURE_REQUEST)) {
             sendFeatures();
-        } else if (id.equals(PacketType.FEATURE.identifier)) {
+        } else if (type.equals(SyncmaticaPacketType.FEATURE)) {
             final FeatureSet fs = FeatureSet.fromString(packetBuf.readString(32767));
             getPartner().setFeatureSet(fs);
             onFeatureSetReceive();
