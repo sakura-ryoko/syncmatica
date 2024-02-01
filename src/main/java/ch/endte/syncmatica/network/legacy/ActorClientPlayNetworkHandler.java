@@ -9,7 +9,7 @@ import ch.endte.syncmatica.communication.CommunicationManager;
 import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.litematica.ScreenHelper;
-import ch.endte.syncmatica.network.packet.SyncmaticaPacketType;
+//import ch.endte.syncmatica.network.packet.SyncmaticaPacketType;
 import ch.endte.syncmatica.network.payload.channels.SyncmaticaNbtData;
 import fi.dy.masa.malilib.util.PayloadUtils;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
