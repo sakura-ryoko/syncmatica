@@ -8,7 +8,6 @@ import ch.endte.syncmatica.data.SyncmaticManager;
 import ch.endte.syncmatica.interfaces.IServerListener;
 import ch.endte.syncmatica.network.ClientNetworkPlayInitHandler;
 import ch.endte.syncmatica.network.ServerNetworkPlayInitHandler;
-//import ch.endte.syncmatica.network.packet.PacketProvider;
 import ch.endte.syncmatica.network.test.ClientDebugSuite;
 import ch.endte.syncmatica.network.test.ServerDebugSuite;
 import ch.endte.syncmatica.util.SyncLog;
@@ -23,13 +22,11 @@ public class ServerListener implements IServerListener
         if (SyncmaticaReference.isServer())
         {
             ServerNetworkPlayInitHandler.registerPlayChannels();
-            //PacketProvider.registerPayloads();
             ServerDebugSuite.checkGlobalChannels();
         }
         else {
             // MaLiLib Calls for Client Context
             ClientNetworkPlayInitHandler.registerPlayChannels();
-            //PacketProvider.registerPayloads();
             ClientDebugSuite.checkGlobalChannels();
         }
         SyncLog.debug("MinecraftServerEvents#onServerStarting(): invoked.");

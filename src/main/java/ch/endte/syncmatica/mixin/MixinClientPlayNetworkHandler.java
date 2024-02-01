@@ -16,21 +16,24 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(value = ClientPlayNetworkHandler.class, priority = 998)
 public abstract class MixinClientPlayNetworkHandler {
 
+    // #FIXME Is this even needed?  Network API receives the packets.
     /*
     @Unique
     public ExchangeTarget exTarget = null;
 
-    @Inject(method = "warnOnUnknownPayload", at = @At("HEAD"), cancellable = true)
-    private void handlePacket(CustomPayload customPayload, CallbackInfo ci) {
+    @Inject(method = "onCustomPayload", at = @At("HEAD"))
+    private void syncmatica_handlePacket(CustomPayload payload, CallbackInfo ci) {
         // ChannelManager.onChannelRegisterHandle(getExchangeTarget(), packet.getChannel(), packet.getData());
-        if (!MinecraftClient.getInstance().isOnThread()) {
+        //if (!MinecraftClient.getInstance().isOnThread())
+        //{
             return; //only execute packet on main thread
-        }
-        if (customPayload instanceof SyncmaticaS2CPayload payload) {
-            ActorClientPlayNetworkHandler.getInstance().packetEvent((ClientPlayNetworkHandler) (Object) this, payload, ci);
-        }
+        //}
+        //PacketType type =  PacketType.getType(payload.getId().id());
+        //if (type != null)
+        //{
+            //ActorClientPlayNetworkHandler.getInstance().packetEvent(type, payload.byteBuf(), (ClientPlayNetworkHandler) (Object) this);
+        //}
     }
-
     @Unique
     private ExchangeTarget getExchangeTarget() {
         if (exTarget == null) {
@@ -38,7 +41,7 @@ public abstract class MixinClientPlayNetworkHandler {
         }
         return exTarget;
     }
-    */
+*/
     @Inject(method = "onGameJoin", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/client/MinecraftClient;joinWorld(" +
                     "Lnet/minecraft/client/world/ClientWorld;)V"))
@@ -57,9 +60,9 @@ public abstract class MixinClientPlayNetworkHandler {
         {
             ClientNetworkPlayInitHandler.registerReceivers();
 
+            // Test hello packet (NBT)
             NbtCompound nbt = new NbtCompound();
             nbt.putString(SyncmaticaNbtData.KEY, "hello");
-            //((SyncPacketClientHandler) SyncPacketClientHandler.getInstance()).encodeSyncmaticaPayload(nbt, SyncmaticaPacketType.SYNCMATICA_PROTOCOL_VERSION);
             SyncmaticaNbtData payload = new SyncmaticaNbtData(nbt);
             ClientNetworkPlayHandler.sendSyncPacket(payload);
         }

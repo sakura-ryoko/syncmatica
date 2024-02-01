@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(PlayerManager.class)
 public class MixinPlayerManager {
     /**
-     * Callbacks for IPlayerManager
+     * Callbacks for IPlayerManager (maybe remove)
      */
     public MixinPlayerManager() { super(); }
 

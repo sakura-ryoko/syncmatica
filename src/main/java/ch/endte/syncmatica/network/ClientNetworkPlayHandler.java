@@ -8,6 +8,8 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.CustomPayload;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
 
 /**
  * canSend()
@@ -28,7 +30,19 @@ public class ClientNetworkPlayHandler
         if (ClientPlayNetworking.canSend(payload.getId()))
         {
             ClientPlayNetworking.send(payload);
-            SyncLog.debug("ClientNetworkPlayHandler#sendSyncPacket(): sending payload id: {}", payload.getId().id().toString());
+            SyncLog.debug("ClientNetworkPlayHandler#sendSyncPacket(): [API] sending payload id: {}", payload.getId().id().toString());
+        }
+    }
+
+    // Uses ClientPlayNetworkHandler method
+    public static <T extends CustomPayload> void sendSyncPacket(T payload, ClientPlayNetworkHandler handler)
+    {
+        // Server-bound packet sent from the Client
+        Packet<?> packet = new CustomPayloadC2SPacket(payload);
+        if (handler.accepts(packet))
+        {
+            handler.sendPacket(packet);
+            SyncLog.debug("ClientNetworkPlayHandler#sendSyncPacket(): [Handler] sending payload id: {}", payload.getId().id().toString());
         }
     }
 
@@ -38,12 +52,16 @@ public class ClientNetworkPlayHandler
     public static void receiveSyncPacket(PacketType type, SyncByteBuf data, ClientPlayNetworkHandler handler)
     {
         SyncLog.debug("ClientNetworkPlayHandler#receiveSyncPacket(): received payload id: {}, size in bytes {}", type.toString(), data.readableBytes());
-        SyncLog.debug("ClientNetworkPlayHandler#receiveSyncPacket(): payload.readString(): {}", data.readString(256));
+
+        // Call Syncmatica internal handler
+        ActorClientPlayNetworkHandler.getInstance().packetEvent(type, data, handler);
     }
     public static void receiveSyncNbt(PacketType type, NbtCompound data, ClientPlayNetworkHandler handler)
     {
         SyncLog.debug("ClientNetworkPlayHandler#receiveSyncPacket(): received payload id: {}, size in bytes {}", type.toString(), data.getSizeInBytes());
-        SyncLog.debug("ClientNetworkPlayHandler#receiveSyncPacket(): payload.readString(): {}", data.getString(SyncmaticaNbtData.KEY));
+        //SyncLog.debug("ClientNetworkPlayHandler#receiveSyncPacket(): payload.readString(): {}", data.getString(SyncmaticaNbtData.KEY));
+
+        ActorClientPlayNetworkHandler.getInstance().packetNbtEvent(type, data, handler);
     }
     public static void receiveCancelShare(CancelShare data, ClientPlayNetworking.Context context)
     {

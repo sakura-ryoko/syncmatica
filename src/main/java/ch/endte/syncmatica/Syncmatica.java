@@ -9,7 +9,7 @@ import ch.endte.syncmatica.listeners.PlayerListener;
 import ch.endte.syncmatica.listeners.ServerListener;
 import ch.endte.syncmatica.network.ClientNetworkPlayInitHandler;
 import ch.endte.syncmatica.network.ServerNetworkPlayInitHandler;
-import ch.endte.syncmatica.network.legacy.ActorClientPlayNetworkHandler;
+import ch.endte.syncmatica.network.ActorClientPlayNetworkHandler;
 import ch.endte.syncmatica.util.SyncLog;
 import net.minecraft.util.Identifier;
 

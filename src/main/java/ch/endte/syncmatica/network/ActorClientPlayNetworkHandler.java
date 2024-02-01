@@ -1,4 +1,4 @@
-package ch.endte.syncmatica.network.legacy;
+package ch.endte.syncmatica.network;
 
 import ch.endte.syncmatica.data.IFileStorage;
 import ch.endte.syncmatica.data.RedirectFileStorage;
@@ -10,23 +10,14 @@ import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.litematica.ScreenHelper;
 import ch.endte.syncmatica.network.payload.PacketType;
-import ch.endte.syncmatica.network.payload.channels.SyncmaticaNbtData;
-import fi.dy.masa.malilib.util.PayloadUtils;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.util.Identifier;
-
-import java.util.function.Supplier;
 
 import static ch.endte.syncmatica.Syncmatica.*;
 
 /**
- * TODO: Move some of this to a different file, such as SyncmaticaPayloadListener...
- * Also, we shouldn't be using the " Server/ClientPlayNetworkHandler " to send packets, but
- * if I can get this to work, to "plugin" to the Communications Manager / Target Exchange, so be it.
+ * If I can get this to work, so be it.
  */
 public class ActorClientPlayNetworkHandler
 {
@@ -67,22 +58,22 @@ public class ActorClientPlayNetworkHandler
         LitematicManager.getInstance().setActiveContext(Syncmatica.getContext(CLIENT_CONTEXT));
     }
 
-    // Payload has been received --> onPacket
-    public <T extends CustomPayload> void packetEvent(final ClientPlayNetworkHandler clientContext, final T payload)
+    public void packetEvent(final PacketType type, final PacketByteBuf data, final ClientPlayNetworkHandler clientContext)
     {
-        final Identifier id = payload.getId().id();
-        //final Supplier<PacketByteBuf> bufSupplier = payload::byteBuf;
         if (clientCommunication == null)
         {
             ActorClientPlayNetworkHandler.getInstance().startEvent(clientContext);
         }
-        // #FIXME Do we even want to do this ?
-        //packetEvent(PacketType.getType(id), payload);
         // No longer called from a Mixin.
-        //if ()
-        //{
-//            ci.cancel(); // prevent further unnecessary comparisons and reporting a warning
-//        }
+        packetEvent(type, data);
+    }
+    public void packetNbtEvent(final PacketType type, final NbtCompound data, final ClientPlayNetworkHandler clientContext)
+    {
+        if (clientCommunication == null)
+        {
+            ActorClientPlayNetworkHandler.getInstance().startEvent(clientContext);
+        }
+        packetNbtEvent(type, data);
     }
 
     public void packetEvent(final PacketType type, final PacketByteBuf bufSupplier)
@@ -90,6 +81,14 @@ public class ActorClientPlayNetworkHandler
         if (clientCommunication.handlePacket(type))
         {
             clientCommunication.onPacket(exTarget, type, bufSupplier);
+        }
+    }
+
+    public void packetNbtEvent(final PacketType type, final NbtCompound data)
+    {
+        if (clientCommunication.handlePacket(type))
+        {
+            clientCommunication.onNbtPacket(exTarget, type, data);
         }
     }
 
@@ -101,4 +100,5 @@ public class ActorClientPlayNetworkHandler
     }
 
     private static void setClientContext(final ClientPlayNetworkHandler clientContext) { ActorClientPlayNetworkHandler.clientPlayNetworkHandler = clientContext; }
+
 }

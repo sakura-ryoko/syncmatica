@@ -6,7 +6,10 @@ import ch.endte.syncmatica.network.payload.channels.*;
 import ch.endte.syncmatica.util.SyncLog;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.CustomPayload;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 
@@ -29,15 +32,32 @@ public abstract class ServerNetworkPlayHandler
         if (ServerPlayNetworking.canSend(player, payload.getId()))
         {
             ServerPlayNetworking.send(player, payload);
-            SyncLog.debug("ServerNetworkPlayHandler#sendSyncPacket(): sending payload id: {} to player: {}", payload.getId(), player.getName().getLiteralString());
+            // networkHandler method
+            //player.networkHandler.sendPacket(new CustomPayloadC2SPacket(payload));
+            SyncLog.debug("ServerNetworkPlayHandler#sendSyncPacket(): [API] sending payload id: {} to player: {}", payload.getId(), player.getName().getLiteralString());
+        }
+    }
+
+    // Uses ServerPlayNetworkHandler method
+    public static <T extends CustomPayload> void sendSyncPacket(T payload, ServerPlayNetworkHandler handler)
+    {
+        // Client-bound packet sent by the Server
+        Packet<?> packet = new CustomPayloadS2CPacket(payload);
+        ServerPlayerEntity player = handler.getPlayer();
+        if (handler.accepts(packet))
+        {
+            handler.sendPacket(packet);
+            SyncLog.debug("ServerNetworkPlayHandler#sendSyncPacket(): [Handler] sending payload id: {} to player: {}", payload.getId(), player.getName().getLiteralString());
         }
     }
 
     // Server-bound packet sent by a Client
     public static void receiveSyncPacket(PacketType type, SyncByteBuf data, ServerPlayNetworkHandler handler, ServerPlayerEntity player)
     {
-        SyncLog.debug("ServerNetworkPlayHandler#receiveSyncPacket(): received payload id: {}, size in bytes {}", type.toString(), data.readableBytes());
-        SyncLog.debug("ServerNetworkPlayHandler#receiveSyncPacket(): payload.readString(): {}", data.readString(256));
+        // Convert to PacketByteBuf
+        PacketByteBuf input = data;
+        SyncLog.debug("ServerNetworkPlayHandler#receiveSyncPacket(): received payload id: {}, size in bytes {}", type.toString(), input.readableBytes());
+        SyncLog.debug("ServerNetworkPlayHandler#receiveSyncPacket(): payload.readString(): {}", input.readString(256));
     }
     public static void receiveSyncNbt(PacketType type, NbtCompound data, ServerPlayNetworkHandler handler, ServerPlayerEntity player)
     {

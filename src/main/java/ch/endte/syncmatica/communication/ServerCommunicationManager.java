@@ -7,8 +7,11 @@ import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.communication.exchange.*;
 import ch.endte.syncmatica.extended_core.PlayerIdentifier;
 import ch.endte.syncmatica.network.payload.PacketType;
+import ch.endte.syncmatica.network.payload.channels.SyncmaticaNbtData;
+import ch.endte.syncmatica.util.SyncLog;
 import com.mojang.authlib.GameProfile;
 import io.netty.buffer.Unpooled;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -165,6 +168,13 @@ public class ServerCommunicationManager extends CommunicationManager
             final ModifyExchangeServer modifier = new ModifyExchangeServer(placementId, source, context);
             startExchange(modifier);
         }
+    }
+
+    @Override
+    protected void handle(ExchangeTarget source, PacketType type, NbtCompound nbt)
+    {
+        // Can code in a Nbt Compound handler here.
+        SyncLog.debug("ServerCommunicationManager#handle(): received Nbt Packet type: {}, size : {}, from: {}, key data: {}", type.toString(), nbt.getSizeInBytes(), source.getPersistentName(), nbt.getString(SyncmaticaNbtData.KEY));
     }
 
     @Override
