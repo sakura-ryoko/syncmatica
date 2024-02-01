@@ -6,6 +6,8 @@ import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.features.MessageType;
 import ch.endte.syncmatica.communication.ServerCommunicationManager;
 import ch.endte.syncmatica.network.packet.SyncmaticaPacketType;
+import ch.endte.syncmatica.util.SyncLog;
+import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketByteBuf;
 
 import java.io.File;
@@ -17,15 +19,16 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 
-public class DownloadExchange extends AbstractExchange {
-
+public class DownloadExchange extends AbstractExchange
+{
     private final ServerPlacement toDownload;
     private final OutputStream outputStream;
     private final MessageDigest md5;
     private final File downloadFile;
     private int bytesSent;
 
-    public DownloadExchange(final ServerPlacement syncmatic, final File downloadFile, final ExchangeTarget partner, final Context context) throws IOException, NoSuchAlgorithmException {
+    public DownloadExchange(final ServerPlacement syncmatic, final File downloadFile, final ExchangeTarget partner, final Context context) throws IOException, NoSuchAlgorithmException
+    {
         super(partner, context);
         this.downloadFile = downloadFile;
         final OutputStream os = new FileOutputStream(downloadFile); //NOSONAR
@@ -35,22 +38,27 @@ public class DownloadExchange extends AbstractExchange {
     }
 
     @Override
-    public boolean checkPacket(final SyncmaticaPacketType type, final PacketByteBuf packetBuf) {
+    public boolean checkPacket(final SyncmaticaPacketType type, final PacketByteBuf packetBuf)
+    {
         if (type.equals(SyncmaticaPacketType.SEND_LITEMATIC)
                 || type.equals(SyncmaticaPacketType.FINISHED_LITEMATIC)
-                || type.equals(SyncmaticaPacketType.CANCEL_LITEMATIC)) {
+                || type.equals(SyncmaticaPacketType.CANCEL_LITEMATIC))
+        {
             return checkUUID(packetBuf, toDownload.getId());
         }
         return false;
     }
 
     @Override
-    public void handle(final SyncmaticaPacketType type, final PacketByteBuf packetBuf) {
+    public void handle(final SyncmaticaPacketType type, final PacketByteBuf packetBuf)
+    {
         packetBuf.readUuid(); //skips the UUID
-        if (type.equals(SyncmaticaPacketType.SEND_LITEMATIC)) {
+        if (type.equals(SyncmaticaPacketType.SEND_LITEMATIC))
+        {
             final int size = packetBuf.readInt();
             bytesSent += size;
-            if (getContext().isServer() && getContext().getQuotaService().isOverQuota(getPartner(), bytesSent)) {
+            if (getContext().isServer() && getContext().getQuotaService().isOverQuota(getPartner(), bytesSent))
+            {
                 close(true);
                 ((ServerCommunicationManager) getContext().getCommunicationManager()).sendMessage(
                         getPartner(),
@@ -58,75 +66,93 @@ public class DownloadExchange extends AbstractExchange {
                         "syncmatica.error.cancelled_transmit_exceed_quota"
                 );
             }
-            try {
+            try
+            {
                 packetBuf.readBytes(outputStream, size);
-            } catch (final IOException e) {
+            }
+            catch (final IOException e)
+            {
                 close(true);
                 e.printStackTrace();
                 return;
             }
             // #FIXME
-            //final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
-            //packetByteBuf.writeUuid(toDownload.getId());
-            //getPartner().sendPacket(PacketType.RECEIVED_LITEMATIC.identifier, packetByteBuf, getContext());
+            final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
+            packetByteBuf.writeUuid(toDownload.getId());
+            getPartner().sendPacket(SyncmaticaPacketType.RECEIVED_LITEMATIC, packetByteBuf, getContext());
             return;
         }
-        if (type.equals(SyncmaticaPacketType.FINISHED_LITEMATIC)) {
-            try {
+        if (type.equals(SyncmaticaPacketType.FINISHED_LITEMATIC))
+        {
+            try
+            {
                 outputStream.flush();
-            } catch (final IOException e) {
+            }
+            catch (final IOException e)
+            {
                 close(false);
                 e.printStackTrace();
                 return;
             }
             final UUID downloadHash = UUID.nameUUIDFromBytes(md5.digest());
-            if (downloadHash.equals(toDownload.getHash())) {
+            if (downloadHash.equals(toDownload.getHash()))
+            {
                 succeed();
-            } else {
+            }
+            else
+            {
                 // no need to notify partner since exchange is closed on partner side
                 close(false);
             }
             return;
         }
-        if (type.equals(SyncmaticaPacketType.CANCEL_LITEMATIC)) {
+        if (type.equals(SyncmaticaPacketType.CANCEL_LITEMATIC))
+        {
             close(false);
         }
     }
 
     @Override
-    public void init() {
+    public void init()
+    {
         // #FIXME
-        //final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
-        //packetByteBuf.writeUuid(toDownload.getId());
-        //getPartner().sendPacket(PacketType.REQUEST_LITEMATIC.identifier, packetByteBuf, getContext());
+        final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
+        packetByteBuf.writeUuid(toDownload.getId());
+        getPartner().sendPacket(SyncmaticaPacketType.REQUEST_LITEMATIC, packetByteBuf, getContext());
     }
 
     @Override
-    protected void onClose() {
+    protected void onClose()
+    {
         getManager().setDownloadState(toDownload, false);
-        if (getContext().isServer() && isSuccessful()) {
+        if (getContext().isServer() && isSuccessful())
+        {
             getContext().getQuotaService().progressQuota(getPartner(), bytesSent);
         }
-        try {
+        try
+        {
             outputStream.close();
-        } catch (final IOException e) {
+        }
+        catch (final IOException e)
+        {
             e.printStackTrace();
         }
-        if (!isSuccessful() && downloadFile.exists()) {
-            downloadFile.delete(); // NOSONAR
+        if (!isSuccessful() && downloadFile.exists())
+        {
+            if (!downloadFile.delete())
+                SyncLog.error("DownloadExchange#onClose(): failed to delete file: {}", downloadFile.toString());
+            // NOSONAR
         }
     }
 
     @Override
-    protected void sendCancelPacket() {
+    protected void sendCancelPacket()
+    {
         // #FIXME
-        //final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
-        //packetByteBuf.writeUuid(toDownload.getId());
-        //getPartner().sendPacket(PacketType.CANCEL_LITEMATIC.identifier, packetByteBuf, getContext());
+        final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
+        packetByteBuf.writeUuid(toDownload.getId());
+        getPartner().sendPacket(SyncmaticaPacketType.CANCEL_LITEMATIC, packetByteBuf, getContext());
     }
 
-    public ServerPlacement getPlacement() {
-        return toDownload;
-    }
-
+    public ServerPlacement getPlacement() { return toDownload; }
 }

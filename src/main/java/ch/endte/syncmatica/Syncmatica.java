@@ -9,6 +9,7 @@ import ch.endte.syncmatica.listeners.PlayerListener;
 import ch.endte.syncmatica.listeners.ServerListener;
 import ch.endte.syncmatica.network.ClientNetworkPlayInitHandler;
 import ch.endte.syncmatica.network.ServerNetworkPlayInitHandler;
+import ch.endte.syncmatica.network.legacy.ActorClientPlayNetworkHandler;
 import ch.endte.syncmatica.util.SyncLog;
 import net.minecraft.util.Identifier;
 
@@ -21,8 +22,10 @@ import java.util.UUID;
 public class Syncmatica {
     protected static final String SERVER_PATH = "." + File.separator + "syncmatics";
     protected static final String CLIENT_PATH = "." + File.separator + "schematics" + File.separator + "sync";
-    public static final Identifier CLIENT_CONTEXT = new Identifier("syncmatica:client_context");
-    public static final Identifier SERVER_CONTEXT = new Identifier("syncmatica:server_context");
+
+    // #FIXME -- You really shouldn't be using Identifier's for this.  It works, but just don't pass it into a network interface.
+    public static final Identifier CLIENT_CONTEXT = new Identifier("syncmatica", "client_context");
+    public static final Identifier SERVER_CONTEXT = new Identifier("syncmatica", "server_context");
     public static final UUID syncmaticaId = UUID.fromString("4c1b738f-56fa-4011-8273-498c972424ea");
     protected static Map<Identifier, Context> contexts = null;
     protected static boolean MOD_INIT = false;
@@ -32,6 +35,10 @@ public class Syncmatica {
         return contexts.get(id);
     }
 
+    /** This preInit() calls are for early network API initialization / Play Channel registration;
+     * and is used to set up the Player / Server Handler interfaces for calling init() and handling
+     * incoming packets.
+     */
     public static void preInitClient()
     {
         SyncLog.initLogger();
@@ -57,7 +64,7 @@ public class Syncmatica {
     {
         SyncLog.debug("Syncmatica#preInit(): invoked.");
 
-        // ServerListener interface
+        // ServerListener interface (init() callbacks)
         ServerListener serverListener = new ServerListener();
         ServerHandler.getInstance().registerServerHandler(serverListener);
 
@@ -109,8 +116,8 @@ public class Syncmatica {
             contexts.remove(CLIENT_CONTEXT);
         }
 
-        // #FIXME
-        //ActorClientPlayNetworkHandler.getInstance().startClient();
+        // #FIXME Perhaps?
+        ActorClientPlayNetworkHandler.getInstance().startClient();
     }
     public static Context initServer(final CommunicationManager comms, final IFileStorage fileStorage, final SyncmaticManager schematics, final boolean isIntegratedServer, final File worldPath) {
         final Context serverContext = new Context(

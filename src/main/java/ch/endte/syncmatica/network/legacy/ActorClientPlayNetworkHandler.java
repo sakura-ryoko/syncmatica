@@ -12,91 +12,92 @@ import ch.endte.syncmatica.litematica.ScreenHelper;
 import ch.endte.syncmatica.network.packet.SyncmaticaPacketType;
 import ch.endte.syncmatica.network.payload.SyncmaticaPayload;
 import fi.dy.masa.malilib.util.PayloadUtils;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import static ch.endte.syncmatica.Syncmatica.*;
 
 /**
- * Move some of this to a different file, such as SyncmaticaPayloadListener
- * Also, we shouldn't be using the " Server/ClientPlayNetworkHandler " to send packets.
+ * TODO: Move some of this to a different file, such as SyncmaticaPayloadListener...
+ * Also, we shouldn't be using the " Server/ClientPlayNetworkHandler " to send packets, but
+ * if I can get this to work, to "plugin" to the Communications Manager / Target Exchange, so be it.
  */
-@Deprecated
-public class ActorClientPlayNetworkHandler {
-
+public class ActorClientPlayNetworkHandler
+{
     private static ActorClientPlayNetworkHandler instance;
-    //private static ClientPlayNetworkHandler clientPlayNetworkHandler;
+    private static ClientPlayNetworking.Context clientPlayContext;
     private CommunicationManager clientCommunication;
     private ExchangeTarget exTarget;
 
-    @Deprecated
-    public static ActorClientPlayNetworkHandler getInstance() {
-        if (instance == null) {
-
+    public static ActorClientPlayNetworkHandler getInstance()
+    {
+        if (instance == null)
+        {
             instance = new ActorClientPlayNetworkHandler();
         }
 
         return instance;
     }
 
-    @Deprecated
-    public void startEvent(final ClientPlayNetworkHandler clientPlayNetworkHandler) {
-        setClientPlayNetworkHandler(clientPlayNetworkHandler);
+    public void startEvent(final ClientPlayNetworking.Context clientContext)
+    {
+        setClientContext(clientContext);
         startClient();
     }
 
-    @Deprecated
-    public void startClient() {
-        /*
-        if (clientPlayNetworkHandler == null) {
+    public void startClient()
+    {
+        if (clientPlayContext == null)
+        {
             throw new RuntimeException("Tried to start client before receiving a connection");
         }
         final IFileStorage data = new RedirectFileStorage();
         final SyncmaticManager man = new SyncmaticManager();
-        exTarget = new ExchangeTarget(clientPlayNetworkHandler);
+        exTarget = new ExchangeTarget(clientPlayContext);
         final CommunicationManager comms = new ClientCommunicationManager(exTarget);
         Syncmatica.initClient(comms, data, man);
         clientCommunication = comms;
         ScreenHelper.init();
         LitematicManager.getInstance().setActiveContext(Syncmatica.getContext(CLIENT_CONTEXT));
-        */
     }
 
-    @Deprecated
-    public void packetEvent(final ClientPlayNetworkHandler clientPlayNetworkHandler, final SyncmaticaPayload payload, final CallbackInfo ci) {
-        // #FIXME maybe
+    // Payload has been received --> onPacket
+    public void packetEvent(final ClientPlayNetworking.Context clientContext, final NbtCompound data)
+    {
+        // We don't use Identifiers anymore
         //final Identifier id = payload.id();
         //final Supplier<PacketByteBuf> bufSupplier = payload::byteBuf;
-        //if (clientCommunication == null) {
-            //ActorClientPlayNetworkHandler.getInstance().startEvent(clientPlayNetworkHandler);
-        //}
-        //if (packetEvent(id, bufSupplier)) {
-
-        //    ci.cancel(); // prevent further unnecessary comparisons and reporting a warning
-    }
-
-    @Deprecated
-    public boolean packetEvent(final SyncmaticaPacketType type, final PacketByteBuf bufSupplier) {
-        if (clientCommunication.handlePacket(type)) {
-            clientCommunication.onPacket(exTarget, type, bufSupplier);
-
-            return true;
+        if (clientCommunication == null)
+        {
+            ActorClientPlayNetworkHandler.getInstance().startEvent(clientContext);
         }
-
-        return false;
+        // #FIXME Do we even want to do this ?
+        // No longer obtains packetType from Identifier
+        String typeString = data.getString("packetType");
+        final PacketByteBuf buf = PayloadUtils.fromNbt(data, SyncmaticaPayload.KEY);
+        packetEvent(SyncmaticaPacketType.getTypeFromString(typeString), buf);
+        // No longer called from a Mixin.
+        //if ()
+        //{
+//            ci.cancel(); // prevent further unnecessary comparisons and reporting a warning
+//        }
     }
 
-    @Deprecated
-    public void reset() {
+    public void packetEvent(final SyncmaticaPacketType type, final PacketByteBuf bufSupplier)
+    {
+        if (clientCommunication.handlePacket(type))
+        {
+            clientCommunication.onPacket(exTarget, type, bufSupplier);
+        }
+    }
+
+    public void reset()
+    {
         clientCommunication = null;
         exTarget = null;
-        //clientPlayNetworkHandler = null;
+        clientPlayContext = null;
     }
 
-    @Deprecated
-    private static void setClientPlayNetworkHandler(final ClientPlayNetworkHandler clientPlayNetworkHandler) {
-        //ActorClientPlayNetworkHandler.clientPlayNetworkHandler = clientPlayNetworkHandler;
-    }
+    private static void setClientContext(final ClientPlayNetworking.Context clientContext) { ActorClientPlayNetworkHandler.clientPlayContext = clientContext; }
 }

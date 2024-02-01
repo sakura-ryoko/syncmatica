@@ -1,7 +1,15 @@
 package ch.endte.syncmatica.network.packet;
 
 /**
- * Converted from an Identifier-based enum list with the original comments from nnnik
+ * Converted from an Identifier-based enum list with the original comments from nnnik.
+ * -
+ * This is because we cannot use these for Network communications without complex problems.
+ * I assume you don't want to create a payload for each and every Identifier, then register a
+ * Runnable and send() for each one per a Client / Server instance, then register them all, do you?
+ * My code is flexible enough to handle all of this, but it would totally transform your entire
+ * communication structure into something different.
+ * So, as an alternative, you can use Strings or Int values and then use the existing code
+ * to read from the singleton NbtCompound Payload.  I kept the original file under network.legacy.
  */
 public enum SyncmaticaPacketType
 {
@@ -18,7 +26,7 @@ public enum SyncmaticaPacketType
     // litematic starting with a download request
     SEND_LITEMATIC("syncmatica:send_litematic"),
     // a packet responsible for sending a bit of a litematic
-    // (16 kilo-bytes to be precise (half of what minecraft can send in one packet at most))
+    // (16 kilobytes to be precise (half of what minecraft can send in one packet at most))
     RECEIVED_LITEMATIC("syncmatica:received_litematic"),
     // a packet responsible for triggering another send for a litematic
     // by waiting until a response is sent I hope we can ensure
@@ -80,5 +88,14 @@ public enum SyncmaticaPacketType
                 return true;
         }
         return false;
+    }
+    public static SyncmaticaPacketType getTypeFromString(String type)
+    {
+        for (final SyncmaticaPacketType p : SyncmaticaPacketType.values())
+        {
+            if (type.equals(p.toString()))
+                return p;
+        }
+        return null;
     }
 }

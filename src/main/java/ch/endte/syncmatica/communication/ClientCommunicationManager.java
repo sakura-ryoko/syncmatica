@@ -19,8 +19,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.UUID;
 
-public class ClientCommunicationManager extends CommunicationManager {
-
+public class ClientCommunicationManager extends CommunicationManager
+{
     private final ExchangeTarget server;
     private final Collection<ServerPlacement> sharing;
 

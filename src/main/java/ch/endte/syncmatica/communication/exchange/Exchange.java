@@ -16,8 +16,8 @@ import net.minecraft.util.Identifier;
 // the 2 halves of a TRANSMIT_DATA_EXCHANGE
 
 
-public interface Exchange {
-
+public interface Exchange
+{
     // uniquely identifies the partner of this exchange
     ExchangeTarget getPartner();
 
@@ -48,5 +48,4 @@ public interface Exchange {
 
     // initializes the actual Exchange
     void init();
-
 }

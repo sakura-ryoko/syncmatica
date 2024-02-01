@@ -13,17 +13,16 @@ import net.minecraft.network.PacketByteBuf;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-public class ShareLitematicExchange extends AbstractExchange {
-
+public class ShareLitematicExchange extends AbstractExchange
+{
     private final SchematicPlacement schematicPlacement;
     private final ServerPlacement toShare;
     private final File toUpload;
 
-    public ShareLitematicExchange(final SchematicPlacement schematicPlacement, final ExchangeTarget partner, final Context con) {
-        this(schematicPlacement, partner, con, null);
-    }
+    public ShareLitematicExchange(final SchematicPlacement schematicPlacement, final ExchangeTarget partner, final Context con) { this(schematicPlacement, partner, con, null); }
 
-    public ShareLitematicExchange(final SchematicPlacement schematicPlacement, final ExchangeTarget partner, final Context con, final ServerPlacement p) {
+    public ShareLitematicExchange(final SchematicPlacement schematicPlacement, final ExchangeTarget partner, final Context con, final ServerPlacement p)
+    {
         super(partner, con);
         this.schematicPlacement = schematicPlacement;
         toShare = p == null ? LitematicManager.getInstance().syncmaticFromSchematic(schematicPlacement) : p;
@@ -31,23 +30,30 @@ public class ShareLitematicExchange extends AbstractExchange {
     }
 
     @Override
-    public boolean checkPacket(final SyncmaticaPacketType type, final PacketByteBuf packetBuf) {
+    public boolean checkPacket(final SyncmaticaPacketType type, final PacketByteBuf packetBuf)
+    {
         if (type.equals(SyncmaticaPacketType.REQUEST_LITEMATIC)
                 || type.equals(SyncmaticaPacketType.REGISTER_METADATA)
-                || type.equals(SyncmaticaPacketType.CANCEL_SHARE)) {
+                || type.equals(SyncmaticaPacketType.CANCEL_SHARE))
+        {
             return AbstractExchange.checkUUID(packetBuf, toShare.getId());
         }
         return false;
     }
 
     @Override
-    public void handle(final SyncmaticaPacketType type, final PacketByteBuf packetBuf) {
-        if (type.equals(SyncmaticaPacketType.REQUEST_LITEMATIC)) {
+    public void handle(final SyncmaticaPacketType type, final PacketByteBuf packetBuf)
+    {
+        if (type.equals(SyncmaticaPacketType.REQUEST_LITEMATIC))
+        {
             packetBuf.readUuid();
             final UploadExchange upload;
-            try {
+            try
+            {
                 upload = new UploadExchange(toShare, toUpload, getPartner(), getContext());
-            } catch (final FileNotFoundException e) {
+            }
+            catch (final FileNotFoundException e)
+            {
                 e.printStackTrace();
 
                 return;
@@ -55,21 +61,25 @@ public class ShareLitematicExchange extends AbstractExchange {
             getManager().startExchange(upload);
             return;
         }
-        if (type.equals(SyncmaticaPacketType.REGISTER_METADATA)) {
+        if (type.equals(SyncmaticaPacketType.REGISTER_METADATA))
+        {
             final RedirectFileStorage redirect = (RedirectFileStorage) getContext().getFileStorage();
             redirect.addRedirect(toUpload);
             LitematicManager.getInstance().renderSyncmatic(toShare, schematicPlacement, false);
             getContext().getSyncmaticManager().addPlacement(toShare);
             return;
         }
-        if (type.equals(SyncmaticaPacketType.CANCEL_SHARE)) {
+        if (type.equals(SyncmaticaPacketType.CANCEL_SHARE))
+        {
             close(false);
         }
     }
 
     @Override
-    public void init() {
-        if (toShare == null) {
+    public void init()
+    {
+        if (toShare == null)
+        {
             close(false);
             return;
         }
@@ -79,7 +89,5 @@ public class ShareLitematicExchange extends AbstractExchange {
     }
 
     @Override
-    public void onClose() {
-        ((ClientCommunicationManager) getManager()).setSharingState(toShare, false);
-    }
+    public void onClose() { ((ClientCommunicationManager) getManager()).setSharingState(toShare, false); }
 }

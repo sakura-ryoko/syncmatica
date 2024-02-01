@@ -21,12 +21,10 @@ import java.util.Arrays;
 import java.util.Objects;
 
 /**
- * Removing "CommunicationsManager" interface in favor of a new network API.
+ * Remove "CommunicationsManager" / "ExchangeTarget" interface in favor of new network API ?
  */
 public class Context {
-
     private final IFileStorage files;
-
     private final CommunicationManager comMan;
     private final SyncmaticManager synMan;
     private FeatureSet fs = null;
@@ -38,7 +36,6 @@ public class Context {
     private final QuotaService quota;
     private final DebugService debugService;
     private final PlayerIdentifierProvider playerIdentifierProvider;
-
 
     public Context(
             final IFileStorage fs,
@@ -65,16 +62,21 @@ public class Context {
         this.synMan = synMan;
         synMan.setContext(this);
         server = isServer;
-        if (isServer) {
+        if (isServer)
+        {
             quota = new QuotaService();
-        } else {
+        }
+        else
+        {
             quota = null;
         }
         playerIdentifierProvider = new PlayerIdentifierProvider(this);
         debugService = new DebugService();
         this.litematicFolder = litematicFolder;
-        if (!litematicFolder.exists()) {
-            try {
+        if (!litematicFolder.exists())
+        {
+            try
+            {
                 if (!litematicFolder.mkdirs())
                     SyncLog.fatal("Context(): Fatal error creating litematic Folder");
             }
