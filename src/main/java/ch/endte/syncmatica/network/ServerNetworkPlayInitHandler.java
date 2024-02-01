@@ -1,6 +1,6 @@
 package ch.endte.syncmatica.network;
 
-import ch.endte.syncmatica.SyncmaticaReference;
+import ch.endte.syncmatica.network.payload.PacketTypeRegister;
 import ch.endte.syncmatica.network.test.ServerDebugSuite;
 import ch.endte.syncmatica.util.SyncLog;
 
@@ -11,8 +11,8 @@ public class ServerNetworkPlayInitHandler
      */
     public static void registerPlayChannels()
     {
-        PayloadTypeRegister.registerTypes(SyncmaticaReference.MOD_ID);
-        PayloadTypeRegister.registerPlayChannels();
+        PacketTypeRegister.registerPlayChannels();
+        //PacketProvider.registerPayloads();
         ServerDebugSuite.checkGlobalChannels();
     }
     public static void registerReceivers()

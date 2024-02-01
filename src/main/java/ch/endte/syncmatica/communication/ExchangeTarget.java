@@ -3,14 +3,12 @@ package ch.endte.syncmatica.communication;
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.communication.exchange.Exchange;
 import ch.endte.syncmatica.features.FeatureSet;
-import ch.endte.syncmatica.network.packet.SyncmaticaPacketType;
-import ch.endte.syncmatica.network.payload.SyncmaticaPayload;
+import ch.endte.syncmatica.network.payload.channels.SyncmaticaNbtData;
 import ch.endte.syncmatica.util.PayloadUtils;
 import ch.endte.syncmatica.util.SyncLog;
 import fi.dy.masa.malilib.util.StringUtils;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 
@@ -66,7 +64,7 @@ public class ExchangeTarget
             //CustomPayloadC2SPacket packet = new CustomPayloadC2SPacket(new SyncmaticaPayload(id, packetBuf));
             //clientPlayNetworkHandler.sendPacket(packet);
             NbtCompound payload;
-            payload = PayloadUtils.fromByteBuf(packetBuf, SyncmaticaPayload.KEY);
+            payload = PayloadUtils.fromByteBuf(packetBuf, SyncmaticaNbtData.KEY);
             assert payload != null;
             payload.putInt("version", SyncmaticaPacketType.SYNCMATICA_PROTOCOL_VERSION.hashCode());
             payload.putString("packetType", type.toString());
@@ -82,7 +80,7 @@ public class ExchangeTarget
             //CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(new SyncmaticaPayload(id, packetBuf));
             //serverPlayNetworkHandler.sendPacket(packet);
             NbtCompound payload;
-            payload = PayloadUtils.fromByteBuf(packetBuf, SyncmaticaPayload.KEY);
+            payload = PayloadUtils.fromByteBuf(packetBuf, SyncmaticaNbtData.KEY);
             assert payload != null;
             payload.putInt("version", SyncmaticaPacketType.SYNCMATICA_PROTOCOL_VERSION.hashCode());
             payload.putString("packetType", type.toString());

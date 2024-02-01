@@ -1,19 +1,19 @@
 package ch.endte.syncmatica.event;
 
 
-import ch.endte.syncmatica.interfaces.ISyncmaticaPayloadListener;
+import ch.endte.syncmatica.interfaces.ISyncNbtClientListener;
 
-public interface ISyncmaticaPayloadManager
+public interface ISyncNbtClientManager
 {
     /**
      * Registers a handler for receiving Carpet Hello NBTCompound packets.
      * @param handler
      */
-    void registerSyncmaticaHandler(ISyncmaticaPayloadListener handler);
+    void registerSyncNbtClientHandler(ISyncNbtClientListener handler);
 
     /**
      * Un-Registers a handler for receiving Carpet Hello NBTCompound packets.
      * @param handler
      */
-    void unregisterSyncmaticaHandler(ISyncmaticaPayloadListener handler);
+    void unregisterSyncNbtClientHandler(ISyncNbtClientListener handler);
 }

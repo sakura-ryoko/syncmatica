@@ -10,7 +10,7 @@ import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.litematica.ScreenHelper;
 import ch.endte.syncmatica.network.packet.SyncmaticaPacketType;
-import ch.endte.syncmatica.network.payload.SyncmaticaPayload;
+import ch.endte.syncmatica.network.payload.channels.SyncmaticaNbtData;
 import fi.dy.masa.malilib.util.PayloadUtils;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.nbt.NbtCompound;
@@ -75,7 +75,7 @@ public class ActorClientPlayNetworkHandler
         // #FIXME Do we even want to do this ?
         // No longer obtains packetType from Identifier
         String typeString = data.getString("packetType");
-        final PacketByteBuf buf = PayloadUtils.fromNbt(data, SyncmaticaPayload.KEY);
+        final PacketByteBuf buf = PayloadUtils.fromNbt(data, SyncmaticaNbtData.KEY);
         packetEvent(SyncmaticaPacketType.getTypeFromString(typeString), buf);
         // No longer called from a Mixin.
         //if ()
