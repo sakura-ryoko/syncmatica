@@ -3,7 +3,7 @@ package ch.endte.syncmatica.communication.exchange;
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.features.FeatureSet;
-import ch.endte.syncmatica.network.packet.SyncmaticaPacketType;
+import ch.endte.syncmatica.network.payload.PacketType;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketByteBuf;
 
@@ -12,19 +12,19 @@ public abstract class FeatureExchange extends AbstractExchange
     protected FeatureExchange(final ExchangeTarget partner, final Context con) { super(partner, con); }
 
     @Override
-    public boolean checkPacket(final SyncmaticaPacketType type, final PacketByteBuf packetBuf)
+    public boolean checkPacket(final PacketType type, final PacketByteBuf packetBuf)
     {
-        return type.equals(SyncmaticaPacketType.FEATURE_REQUEST)
-                || type.equals(SyncmaticaPacketType.FEATURE);
+        return type.equals(PacketType.FEATURE_REQUEST)
+                || type.equals(PacketType.FEATURE);
     }
 
     @Override
-    public void handle(final SyncmaticaPacketType type, final PacketByteBuf packetBuf)
+    public void handle(final PacketType type, final PacketByteBuf packetBuf)
     {
-        if (type.equals(SyncmaticaPacketType.FEATURE_REQUEST))
+        if (type.equals(PacketType.FEATURE_REQUEST))
         {
             sendFeatures();
-        } else if (type.equals(SyncmaticaPacketType.FEATURE))
+        } else if (type.equals(PacketType.FEATURE))
         {
             final FeatureSet fs = FeatureSet.fromString(packetBuf.readString(PACKET_MAX_STRING_SIZE));
             getPartner().setFeatureSet(fs);
@@ -37,7 +37,7 @@ public abstract class FeatureExchange extends AbstractExchange
     public void requestFeatureSet()
     {
         // #FIXME
-        getPartner().sendPacket(SyncmaticaPacketType.FEATURE_REQUEST, new PacketByteBuf(Unpooled.buffer()), getContext());
+        getPartner().sendPacket(PacketType.FEATURE_REQUEST, new PacketByteBuf(Unpooled.buffer()), getContext());
     }
 
     private void sendFeatures()
@@ -46,6 +46,6 @@ public abstract class FeatureExchange extends AbstractExchange
         final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         final FeatureSet fs = getContext().getFeatureSet();
         buf.writeString(fs.toString(), PACKET_MAX_STRING_SIZE);
-        getPartner().sendPacket(SyncmaticaPacketType.FEATURE, buf, getContext());
+        getPartner().sendPacket(PacketType.FEATURE, buf, getContext());
     }
 }

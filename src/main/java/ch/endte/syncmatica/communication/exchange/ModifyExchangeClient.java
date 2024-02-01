@@ -6,7 +6,7 @@ import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.litematica.ScreenHelper;
-import ch.endte.syncmatica.network.packet.SyncmaticaPacketType;
+import ch.endte.syncmatica.network.payload.PacketType;
 import fi.dy.masa.litematica.schematic.placement.SchematicPlacement;
 import fi.dy.masa.malilib.gui.Message;
 import io.netty.buffer.Unpooled;
@@ -27,11 +27,11 @@ public class ModifyExchangeClient extends AbstractExchange
     }
 
     @Override
-    public boolean checkPacket(final SyncmaticaPacketType type, final PacketByteBuf packetBuf)
+    public boolean checkPacket(final PacketType type, final PacketByteBuf packetBuf)
     {
-        if (type.equals(SyncmaticaPacketType.MODIFY_REQUEST_DENY)
-                || type.equals(SyncmaticaPacketType.MODIFY_REQUEST_ACCEPT)
-                || (expectRemove && type.equals(SyncmaticaPacketType.REMOVE_SYNCMATIC)))
+        if (type.equals(PacketType.MODIFY_REQUEST_DENY)
+                || type.equals(PacketType.MODIFY_REQUEST_ACCEPT)
+                || (expectRemove && type.equals(PacketType.REMOVE_SYNCMATIC)))
         {
             return AbstractExchange.checkUUID(packetBuf, placement.getId());
         }
@@ -39,9 +39,9 @@ public class ModifyExchangeClient extends AbstractExchange
     }
 
     @Override
-    public void handle(final SyncmaticaPacketType type, final PacketByteBuf packetBuf)
+    public void handle(final PacketType type, final PacketByteBuf packetBuf)
     {
-        if (type.equals(SyncmaticaPacketType.MODIFY_REQUEST_DENY))
+        if (type.equals(PacketType.MODIFY_REQUEST_DENY))
         {
             packetBuf.readUuid();
             close(false);
@@ -54,12 +54,12 @@ public class ModifyExchangeClient extends AbstractExchange
             }
             ScreenHelper.ifPresent(s -> s.addMessage(Message.MessageType.SUCCESS, "syncmatica.error.modification_deny"));
         }
-        else if (type.equals(SyncmaticaPacketType.MODIFY_REQUEST_ACCEPT))
+        else if (type.equals(PacketType.MODIFY_REQUEST_ACCEPT))
         {
             packetBuf.readUuid();
             acceptModification();
         }
-        else if (type.equals(SyncmaticaPacketType.REMOVE_SYNCMATIC))
+        else if (type.equals(PacketType.REMOVE_SYNCMATIC))
         {
             packetBuf.readUuid();
             final ShareLitematicExchange legacyModify = new ShareLitematicExchange(litematic, getPartner(), getContext(), placement);
@@ -82,7 +82,7 @@ public class ModifyExchangeClient extends AbstractExchange
             // #FIXME
             final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
             buf.writeUuid(placement.getId());
-            getPartner().sendPacket(SyncmaticaPacketType.MODIFY_REQUEST, buf, getContext());
+            getPartner().sendPacket(PacketType.MODIFY_REQUEST, buf, getContext());
         }
         else
         {
@@ -118,7 +118,7 @@ public class ModifyExchangeClient extends AbstractExchange
             final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
             buf.writeUuid(placement.getId());
             getContext().getCommunicationManager().putPositionData(placement, buf, getPartner());
-            getPartner().sendPacket(SyncmaticaPacketType.MODIFY_FINISH, buf, getContext());
+            getPartner().sendPacket(PacketType.MODIFY_FINISH, buf, getContext());
             succeed();
             getContext().getCommunicationManager().notifyClose(this);
         }
@@ -127,7 +127,7 @@ public class ModifyExchangeClient extends AbstractExchange
             // #FIXME
             final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
             buf.writeUuid(placement.getId());
-            getPartner().sendPacket(SyncmaticaPacketType.REMOVE_SYNCMATIC, buf, getContext());
+            getPartner().sendPacket(PacketType.REMOVE_SYNCMATIC, buf, getContext());
             expectRemove = true;
         }
     }
@@ -141,7 +141,7 @@ public class ModifyExchangeClient extends AbstractExchange
             final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
             buf.writeUuid(placement.getId());
             getContext().getCommunicationManager().putPositionData(placement, buf, getPartner());
-            getPartner().sendPacket(SyncmaticaPacketType.MODIFY_FINISH, buf, getContext());
+            getPartner().sendPacket(PacketType.MODIFY_FINISH, buf, getContext());
         }
     }
 

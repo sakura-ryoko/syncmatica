@@ -10,6 +10,7 @@ public record SyncmaticaNbtData(NbtCompound data) implements CustomPayload
 {
     public static final Id<SyncmaticaNbtData> TYPE = new Id<>(new Identifier("syncmatica", "nbt_data"));
     public static final PacketCodec<PacketByteBuf, SyncmaticaNbtData> CODEC = CustomPayload.codecOf(SyncmaticaNbtData::write, SyncmaticaNbtData::new);
+    public static final String KEY = "syncNbt";
 
     public SyncmaticaNbtData(PacketByteBuf buf) { this(buf.readNbt()); }
 

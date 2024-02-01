@@ -3,7 +3,7 @@ package ch.endte.syncmatica.communication.exchange;
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.communication.ExchangeTarget;
-import ch.endte.syncmatica.network.packet.SyncmaticaPacketType;
+import ch.endte.syncmatica.network.payload.PacketType;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketByteBuf;
 
@@ -29,10 +29,10 @@ public class UploadExchange extends AbstractExchange
     }
 
     @Override
-    public boolean checkPacket(final SyncmaticaPacketType type, final PacketByteBuf packetBuf)
+    public boolean checkPacket(final PacketType type, final PacketByteBuf packetBuf)
     {
-        if (type.equals(SyncmaticaPacketType.RECEIVED_LITEMATIC)
-                || type.equals(SyncmaticaPacketType.CANCEL_LITEMATIC))
+        if (type.equals(PacketType.RECEIVED_LITEMATIC)
+                || type.equals(PacketType.CANCEL_LITEMATIC))
         {
             return checkUUID(packetBuf, toUpload.getId());
         }
@@ -40,15 +40,15 @@ public class UploadExchange extends AbstractExchange
     }
 
     @Override
-    public void handle(final SyncmaticaPacketType type, final PacketByteBuf packetBuf)
+    public void handle(final PacketType type, final PacketByteBuf packetBuf)
     {
 
         packetBuf.readUuid(); // uncertain if the data has to be consumed
-        if (type.equals(SyncmaticaPacketType.RECEIVED_LITEMATIC))
+        if (type.equals(PacketType.RECEIVED_LITEMATIC))
         {
             send();
         }
-        if (type.equals(SyncmaticaPacketType.CANCEL_LITEMATIC))
+        if (type.equals(PacketType.CANCEL_LITEMATIC))
         {
             close(false);
         }
@@ -85,7 +85,7 @@ public class UploadExchange extends AbstractExchange
         packetByteBuf.writeUuid(toUpload.getId());
         packetByteBuf.writeInt(bytesRead);
         packetByteBuf.writeBytes(buffer, 0, bytesRead);
-        getPartner().sendPacket(SyncmaticaPacketType.SEND_LITEMATIC, packetByteBuf, getContext());
+        getPartner().sendPacket(PacketType.SEND_LITEMATIC, packetByteBuf, getContext());
     }
 
     private void sendFinish()
@@ -93,7 +93,7 @@ public class UploadExchange extends AbstractExchange
         // #FIXME
         final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
         packetByteBuf.writeUuid(toUpload.getId());
-        getPartner().sendPacket(SyncmaticaPacketType.FINISHED_LITEMATIC, packetByteBuf, getContext());
+        getPartner().sendPacket(PacketType.FINISHED_LITEMATIC, packetByteBuf, getContext());
         succeed();
     }
 
@@ -119,6 +119,6 @@ public class UploadExchange extends AbstractExchange
         // #FIXME
         final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
         packetByteBuf.writeUuid(toUpload.getId());
-        getPartner().sendPacket(SyncmaticaPacketType.CANCEL_LITEMATIC, packetByteBuf, getContext());
+        getPartner().sendPacket(PacketType.CANCEL_LITEMATIC, packetByteBuf, getContext());
     }
 }

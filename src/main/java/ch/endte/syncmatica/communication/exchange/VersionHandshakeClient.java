@@ -6,7 +6,7 @@ import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.features.FeatureSet;
 import ch.endte.syncmatica.litematica.LitematicManager;
-import ch.endte.syncmatica.network.packet.SyncmaticaPacketType;
+import ch.endte.syncmatica.network.payload.PacketType;
 import ch.endte.syncmatica.util.SyncLog;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketByteBuf;
@@ -17,17 +17,17 @@ public class VersionHandshakeClient extends FeatureExchange
     public VersionHandshakeClient(final ExchangeTarget partner, final Context con) { super(partner, con); }
 
     @Override
-    public boolean checkPacket(final SyncmaticaPacketType type, final PacketByteBuf packetBuf)
+    public boolean checkPacket(final PacketType type, final PacketByteBuf packetBuf)
     {
-        return type.equals(SyncmaticaPacketType.CONFIRM_USER)
-                || type.equals(SyncmaticaPacketType.REGISTER_VERSION)
+        return type.equals(PacketType.CONFIRM_USER)
+                || type.equals(PacketType.REGISTER_VERSION)
                 || super.checkPacket(type, packetBuf);
     }
 
     @Override
-    public void handle(final SyncmaticaPacketType type, final PacketByteBuf packetBuf)
+    public void handle(final PacketType type, final PacketByteBuf packetBuf)
     {
-        if (type.equals(SyncmaticaPacketType.REGISTER_VERSION))
+        if (type.equals(PacketType.REGISTER_VERSION))
         {
             final String version = packetBuf.readString(PACKET_MAX_STRING_SIZE);
             if (!getContext().checkPartnerVersion(version))
@@ -51,7 +51,7 @@ public class VersionHandshakeClient extends FeatureExchange
                 }
             }
         }
-        else if (type.equals(SyncmaticaPacketType.CONFIRM_USER))
+        else if (type.equals(PacketType.CONFIRM_USER))
         {
             final int placementCount = packetBuf.readInt();
             for (int i = 0; i < placementCount; i++)
@@ -76,7 +76,7 @@ public class VersionHandshakeClient extends FeatureExchange
         // #FIXME
         final PacketByteBuf newBuf = new PacketByteBuf(Unpooled.buffer());
         newBuf.writeString(SyncmaticaReference.MOD_VERSION);
-        getPartner().sendPacket(SyncmaticaPacketType.REGISTER_VERSION, newBuf, getContext());
+        getPartner().sendPacket(PacketType.REGISTER_VERSION, newBuf, getContext());
     }
 
     @Override

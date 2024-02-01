@@ -5,7 +5,7 @@ import ch.endte.syncmatica.SyncmaticaReference;
 import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.features.FeatureSet;
-import ch.endte.syncmatica.network.packet.SyncmaticaPacketType;
+import ch.endte.syncmatica.network.payload.PacketType;
 import ch.endte.syncmatica.util.SyncLog;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketByteBuf;
@@ -18,16 +18,16 @@ public class VersionHandshakeServer extends FeatureExchange
     public VersionHandshakeServer(final ExchangeTarget partner, final Context con) { super(partner, con); }
 
     @Override
-    public boolean checkPacket(final SyncmaticaPacketType type, final PacketByteBuf packetBuf)
+    public boolean checkPacket(final PacketType type, final PacketByteBuf packetBuf)
     {
-        return type.equals(SyncmaticaPacketType.REGISTER_VERSION)
+        return type.equals(PacketType.REGISTER_VERSION)
                 || super.checkPacket(type, packetBuf);
     }
 
     @Override
-    public void handle(final SyncmaticaPacketType type, final PacketByteBuf packetBuf)
+    public void handle(final PacketType type, final PacketByteBuf packetBuf)
     {
-        if (type.equals(SyncmaticaPacketType.REGISTER_VERSION))
+        if (type.equals(PacketType.REGISTER_VERSION))
         {
             partnerVersion = packetBuf.readString(PACKET_MAX_STRING_SIZE);
             if (!getContext().checkPartnerVersion(partnerVersion))
@@ -66,7 +66,7 @@ public class VersionHandshakeServer extends FeatureExchange
         {
             getManager().putMetaData(p, newBuf, getPartner());
         }
-        getPartner().sendPacket(SyncmaticaPacketType.CONFIRM_USER, newBuf, getContext());
+        getPartner().sendPacket(PacketType.CONFIRM_USER, newBuf, getContext());
         succeed();
     }
 
@@ -76,6 +76,6 @@ public class VersionHandshakeServer extends FeatureExchange
         // #FIXME
         final PacketByteBuf newBuf = new PacketByteBuf(Unpooled.buffer());
         newBuf.writeString(SyncmaticaReference.MOD_VERSION);
-        getPartner().sendPacket(SyncmaticaPacketType.REGISTER_VERSION, newBuf, getContext());
+        getPartner().sendPacket(PacketType.REGISTER_VERSION, newBuf, getContext());
     }
 }

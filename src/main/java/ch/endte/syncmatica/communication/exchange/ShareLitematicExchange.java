@@ -6,7 +6,7 @@ import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.communication.ClientCommunicationManager;
 import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.litematica.LitematicManager;
-import ch.endte.syncmatica.network.packet.SyncmaticaPacketType;
+import ch.endte.syncmatica.network.payload.PacketType;
 import fi.dy.masa.litematica.schematic.placement.SchematicPlacement;
 import net.minecraft.network.PacketByteBuf;
 
@@ -30,11 +30,11 @@ public class ShareLitematicExchange extends AbstractExchange
     }
 
     @Override
-    public boolean checkPacket(final SyncmaticaPacketType type, final PacketByteBuf packetBuf)
+    public boolean checkPacket(final PacketType type, final PacketByteBuf packetBuf)
     {
-        if (type.equals(SyncmaticaPacketType.REQUEST_LITEMATIC)
-                || type.equals(SyncmaticaPacketType.REGISTER_METADATA)
-                || type.equals(SyncmaticaPacketType.CANCEL_SHARE))
+        if (type.equals(PacketType.REQUEST_LITEMATIC)
+                || type.equals(PacketType.REGISTER_METADATA)
+                || type.equals(PacketType.CANCEL_SHARE))
         {
             return AbstractExchange.checkUUID(packetBuf, toShare.getId());
         }
@@ -42,9 +42,9 @@ public class ShareLitematicExchange extends AbstractExchange
     }
 
     @Override
-    public void handle(final SyncmaticaPacketType type, final PacketByteBuf packetBuf)
+    public void handle(final PacketType type, final PacketByteBuf packetBuf)
     {
-        if (type.equals(SyncmaticaPacketType.REQUEST_LITEMATIC))
+        if (type.equals(PacketType.REQUEST_LITEMATIC))
         {
             packetBuf.readUuid();
             final UploadExchange upload;
@@ -61,7 +61,7 @@ public class ShareLitematicExchange extends AbstractExchange
             getManager().startExchange(upload);
             return;
         }
-        if (type.equals(SyncmaticaPacketType.REGISTER_METADATA))
+        if (type.equals(PacketType.REGISTER_METADATA))
         {
             final RedirectFileStorage redirect = (RedirectFileStorage) getContext().getFileStorage();
             redirect.addRedirect(toUpload);
@@ -69,7 +69,7 @@ public class ShareLitematicExchange extends AbstractExchange
             getContext().getSyncmaticManager().addPlacement(toShare);
             return;
         }
-        if (type.equals(SyncmaticaPacketType.CANCEL_SHARE))
+        if (type.equals(PacketType.CANCEL_SHARE))
         {
             close(false);
         }

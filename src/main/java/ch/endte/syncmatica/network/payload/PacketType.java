@@ -93,4 +93,15 @@ public enum PacketType {
         }
         return false;
     }
+    public static boolean containsType(final PacketType type)
+    {
+        for (final PacketType p : PacketType.values())
+        {
+            if (type.equals(p))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 }

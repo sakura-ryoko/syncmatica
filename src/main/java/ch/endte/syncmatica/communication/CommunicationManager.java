@@ -9,7 +9,7 @@ import ch.endte.syncmatica.extended_core.PlayerIdentifier;
 import ch.endte.syncmatica.extended_core.PlayerIdentifierProvider;
 import ch.endte.syncmatica.extended_core.SubRegionData;
 import ch.endte.syncmatica.extended_core.SubRegionPlacementModification;
-import ch.endte.syncmatica.network.packet.SyncmaticaPacketType;
+import ch.endte.syncmatica.network.payload.PacketType;
 import ch.endte.syncmatica.util.SyncmaticaUtil;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketByteBuf;
@@ -40,9 +40,9 @@ public abstract class CommunicationManager
         modifyState = new HashMap<>();
     }
 
-    public boolean handlePacket(final SyncmaticaPacketType type) { return SyncmaticaPacketType.containsType(type.toString()); }
+    public boolean handlePacket(final PacketType type) { return PacketType.containsType(type); }
 
-    public void onPacket(final ExchangeTarget source, final SyncmaticaPacketType type, final PacketByteBuf packetBuf)
+    public void onPacket(final ExchangeTarget source, final PacketType type, final PacketByteBuf packetBuf)
     {
         context.getDebugService().logReceivePacket(type);
         Exchange handler = null;
@@ -70,7 +70,7 @@ public abstract class CommunicationManager
     }
 
     // will get called for every packet not handled by an exchange
-    protected abstract void handle(ExchangeTarget source, SyncmaticaPacketType type, PacketByteBuf packetBuf);
+    protected abstract void handle(ExchangeTarget source, PacketType type, PacketByteBuf packetBuf);
     // will get called for every finished exchange (successful or not)
     protected abstract void handleExchange(Exchange exchange);
 
@@ -79,7 +79,7 @@ public abstract class CommunicationManager
         // #FIXME
         final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         putMetaData(metaData, buf, target);
-        target.sendPacket(SyncmaticaPacketType.REGISTER_METADATA, buf, context);
+        target.sendPacket(PacketType.REGISTER_METADATA, buf, context);
     }
 
     public void putMetaData(final ServerPlacement metaData, final PacketByteBuf buf, final ExchangeTarget exchangeTarget)

@@ -5,7 +5,7 @@ import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.features.MessageType;
 import ch.endte.syncmatica.communication.ServerCommunicationManager;
-import ch.endte.syncmatica.network.packet.SyncmaticaPacketType;
+import ch.endte.syncmatica.network.payload.PacketType;
 import ch.endte.syncmatica.util.SyncLog;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketByteBuf;
@@ -38,11 +38,11 @@ public class DownloadExchange extends AbstractExchange
     }
 
     @Override
-    public boolean checkPacket(final SyncmaticaPacketType type, final PacketByteBuf packetBuf)
+    public boolean checkPacket(final PacketType type, final PacketByteBuf packetBuf)
     {
-        if (type.equals(SyncmaticaPacketType.SEND_LITEMATIC)
-                || type.equals(SyncmaticaPacketType.FINISHED_LITEMATIC)
-                || type.equals(SyncmaticaPacketType.CANCEL_LITEMATIC))
+        if (type.equals(PacketType.SEND_LITEMATIC)
+                || type.equals(PacketType.FINISHED_LITEMATIC)
+                || type.equals(PacketType.CANCEL_LITEMATIC))
         {
             return checkUUID(packetBuf, toDownload.getId());
         }
@@ -50,10 +50,10 @@ public class DownloadExchange extends AbstractExchange
     }
 
     @Override
-    public void handle(final SyncmaticaPacketType type, final PacketByteBuf packetBuf)
+    public void handle(final PacketType type, final PacketByteBuf packetBuf)
     {
         packetBuf.readUuid(); //skips the UUID
-        if (type.equals(SyncmaticaPacketType.SEND_LITEMATIC))
+        if (type.equals(PacketType.SEND_LITEMATIC))
         {
             final int size = packetBuf.readInt();
             bytesSent += size;
@@ -79,10 +79,10 @@ public class DownloadExchange extends AbstractExchange
             // #FIXME
             final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
             packetByteBuf.writeUuid(toDownload.getId());
-            getPartner().sendPacket(SyncmaticaPacketType.RECEIVED_LITEMATIC, packetByteBuf, getContext());
+            getPartner().sendPacket(PacketType.RECEIVED_LITEMATIC, packetByteBuf, getContext());
             return;
         }
-        if (type.equals(SyncmaticaPacketType.FINISHED_LITEMATIC))
+        if (type.equals(PacketType.FINISHED_LITEMATIC))
         {
             try
             {
@@ -106,7 +106,7 @@ public class DownloadExchange extends AbstractExchange
             }
             return;
         }
-        if (type.equals(SyncmaticaPacketType.CANCEL_LITEMATIC))
+        if (type.equals(PacketType.CANCEL_LITEMATIC))
         {
             close(false);
         }
@@ -118,7 +118,7 @@ public class DownloadExchange extends AbstractExchange
         // #FIXME
         final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
         packetByteBuf.writeUuid(toDownload.getId());
-        getPartner().sendPacket(SyncmaticaPacketType.REQUEST_LITEMATIC, packetByteBuf, getContext());
+        getPartner().sendPacket(PacketType.REQUEST_LITEMATIC, packetByteBuf, getContext());
     }
 
     @Override
@@ -151,7 +151,7 @@ public class DownloadExchange extends AbstractExchange
         // #FIXME
         final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
         packetByteBuf.writeUuid(toDownload.getId());
-        getPartner().sendPacket(SyncmaticaPacketType.CANCEL_LITEMATIC, packetByteBuf, getContext());
+        getPartner().sendPacket(PacketType.CANCEL_LITEMATIC, packetByteBuf, getContext());
     }
 
     public ServerPlacement getPlacement() { return toDownload; }

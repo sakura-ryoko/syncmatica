@@ -1,7 +1,7 @@
 package ch.endte.syncmatica.mixin;
 
 import ch.endte.syncmatica.SyncmaticaReference;
-import ch.endte.syncmatica.event.SyncPacketClientHandler;
+import ch.endte.syncmatica.network.ClientNetworkPlayHandler;
 import ch.endte.syncmatica.network.ClientNetworkPlayInitHandler;
 import ch.endte.syncmatica.network.payload.channels.SyncmaticaNbtData;
 import ch.endte.syncmatica.util.SyncLog;
@@ -59,7 +59,9 @@ public abstract class MixinClientPlayNetworkHandler {
 
             NbtCompound nbt = new NbtCompound();
             nbt.putString(SyncmaticaNbtData.KEY, "hello");
-            ((SyncPacketClientHandler) SyncPacketClientHandler.getInstance()).encodeSyncmaticaPayload(nbt, SyncmaticaPacketType.SYNCMATICA_PROTOCOL_VERSION);
+            //((SyncPacketClientHandler) SyncPacketClientHandler.getInstance()).encodeSyncmaticaPayload(nbt, SyncmaticaPacketType.SYNCMATICA_PROTOCOL_VERSION);
+            SyncmaticaNbtData payload = new SyncmaticaNbtData(nbt);
+            ClientNetworkPlayHandler.sendSyncPacket(payload);
         }
     }
 }

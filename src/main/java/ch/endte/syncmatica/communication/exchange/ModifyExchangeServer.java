@@ -4,7 +4,7 @@ import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.extended_core.PlayerIdentifier;
-import ch.endte.syncmatica.network.packet.SyncmaticaPacketType;
+import ch.endte.syncmatica.network.payload.PacketType;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketByteBuf;
 
@@ -23,16 +23,16 @@ public class ModifyExchangeServer extends AbstractExchange
     }
 
     @Override
-    public boolean checkPacket(final SyncmaticaPacketType type, final PacketByteBuf packetBuf)
+    public boolean checkPacket(final PacketType type, final PacketByteBuf packetBuf)
     {
-        return type.equals(SyncmaticaPacketType.MODIFY_FINISH) && checkUUID(packetBuf, placement.getId());
+        return type.equals(PacketType.MODIFY_FINISH) && checkUUID(packetBuf, placement.getId());
     }
 
     @Override
-    public void handle(final SyncmaticaPacketType type, final PacketByteBuf packetBuf)
+    public void handle(final PacketType type, final PacketByteBuf packetBuf)
     {
         packetBuf.readUuid(); // consume uuid
-        if (type.equals(SyncmaticaPacketType.MODIFY_FINISH))
+        if (type.equals(PacketType.MODIFY_FINISH))
         {
             getContext().getCommunicationManager().receivePositionData(placement, packetBuf, getPartner());
 
@@ -63,7 +63,7 @@ public class ModifyExchangeServer extends AbstractExchange
         // #FIXME
         final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeUuid(placement.getId());
-        getPartner().sendPacket(SyncmaticaPacketType.MODIFY_REQUEST_ACCEPT, buf, getContext());
+        getPartner().sendPacket(PacketType.MODIFY_REQUEST_ACCEPT, buf, getContext());
         getContext().getCommunicationManager().setModifier(placement, this);
     }
 
@@ -73,7 +73,7 @@ public class ModifyExchangeServer extends AbstractExchange
         // #FIXME
         final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeUuid(placementId);
-        getPartner().sendPacket(SyncmaticaPacketType.MODIFY_REQUEST_DENY, buf, getContext());
+        getPartner().sendPacket(PacketType.MODIFY_REQUEST_DENY, buf, getContext());
     }
 
     public ServerPlacement getPlacement() { return placement; }
