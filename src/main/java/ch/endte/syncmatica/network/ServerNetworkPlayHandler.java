@@ -36,13 +36,13 @@ public abstract class ServerNetworkPlayHandler
     // Server-bound packet sent by a Client
     public static void receiveSyncPacket(PacketType type, SyncByteBuf data, ServerPlayNetworkHandler handler, ServerPlayerEntity player)
     {
-        SyncLog.debug("ServerNetworkPlayHandler#receiveCancelShare(): received payload id: {}, size in bytes {}", type.toString(), data.readableBytes());
-        SyncLog.debug("ServerNetworkPlayHandler#receiveCancelShare(): payload.readString(): {}", data.readString(256));
+        SyncLog.debug("ServerNetworkPlayHandler#receiveSyncPacket(): received payload id: {}, size in bytes {}", type.toString(), data.readableBytes());
+        SyncLog.debug("ServerNetworkPlayHandler#receiveSyncPacket(): payload.readString(): {}", data.readString(256));
     }
     public static void receiveSyncNbt(PacketType type, NbtCompound data, ServerPlayNetworkHandler handler, ServerPlayerEntity player)
     {
-        SyncLog.debug("ServerNetworkPlayHandler#receiveCancelShare(): received payload id: {}, size in bytes {}", type.toString(), data.getSizeInBytes());
-        SyncLog.debug("ServerNetworkPlayHandler#receiveCancelShare(): payload.readString(): {}", data.getString(SyncmaticaNbtData.KEY));
+        SyncLog.debug("ServerNetworkPlayHandler#receiveSyncNbt(): received payload id: {}, size in bytes {}", type.toString(), data.getSizeInBytes());
+        SyncLog.debug("ServerNetworkPlayHandler#receiveSyncNbt(): payload.readString(): {}", data.getString(SyncmaticaNbtData.KEY));
     }
     public static void receiveCancelShare(CancelShare data, ServerPlayNetworking.Context context)
     {

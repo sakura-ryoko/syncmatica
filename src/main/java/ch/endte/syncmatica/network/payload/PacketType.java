@@ -104,4 +104,15 @@ public enum PacketType {
         }
         return false;
     }
+    public static PacketType getType(final Identifier id)
+    {
+        for (final PacketType p : PacketType.values())
+        {
+            if (id.equals(p.identifier))
+            {
+                return p;
+            }
+        }
+        return null;
+    }
 }

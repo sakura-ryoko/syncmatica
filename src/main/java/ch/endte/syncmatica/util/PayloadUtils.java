@@ -38,9 +38,9 @@ public class PayloadUtils
     }
 
     @Nullable
-    public static <T extends CustomPayload> T getPayload(PacketType type, SyncByteBuf buf)
+    public static CustomPayload getPayload(PacketType type, SyncByteBuf buf)
     {
-        Object payload = null;
+        CustomPayload payload;
         if (type.equals(PacketType.CANCEL_SHARE))
         {
             payload = new CancelShare(buf);
@@ -113,15 +113,14 @@ public class PayloadUtils
         {
             return null;
         }
-        return (T) payload;
+        return payload;
     }
     @Nullable
-    public static <T extends CustomPayload> T getPayload(PacketType type, NbtCompound data)
+    public static CustomPayload getPayload(PacketType type, NbtCompound data)
     {
         if (type.equals(PacketType.NBT_DATA))
         {
-            Object payload = new SyncmaticaNbtData(data);
-            return (T) payload;
+            return new SyncmaticaNbtData(data);
         }
         else return null;
     }

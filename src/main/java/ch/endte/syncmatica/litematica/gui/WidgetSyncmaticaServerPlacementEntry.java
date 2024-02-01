@@ -4,14 +4,13 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
-import ch.endte.syncmatica.network.packet.SyncmaticaPacketType;
-
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.data.LocalLitematicState;
 import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.communication.ClientCommunicationManager;
 import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.litematica.LitematicManager;
+import ch.endte.syncmatica.network.payload.PacketType;
 import ch.endte.syncmatica.util.SyncLog;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
@@ -151,8 +150,7 @@ public class WidgetSyncmaticaServerPlacementEntry extends WidgetListEntryBase<Se
                     final ExchangeTarget server = ((ClientCommunicationManager) con.getCommunicationManager()).getServer();
                     final PacketByteBuf packetBuf = new PacketByteBuf(Unpooled.buffer());
                     packetBuf.writeUuid(placement.placement.getId());
-                    //server.sendPacket(PacketType.REMOVE_SYNCMATIC.identifier, packetBuf, LitematicManager.getInstance().getActiveContext());
-                    server.sendPacket(SyncmaticaPacketType.REMOVE_SYNCMATIC, packetBuf, LitematicManager.getInstance().getActiveContext());
+                    server.sendPacket(PacketType.REMOVE_SYNCMATIC, packetBuf, LitematicManager.getInstance().getActiveContext());
                 }
             },
             MATERIAL_GATHERING() {

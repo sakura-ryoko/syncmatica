@@ -6,7 +6,7 @@ import ch.endte.syncmatica.features.MessageType;
 import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.communication.exchange.*;
 import ch.endte.syncmatica.extended_core.PlayerIdentifier;
-import ch.endte.syncmatica.network.packet.SyncmaticaPacketType;
+import ch.endte.syncmatica.network.payload.PacketType;
 import com.mojang.authlib.GameProfile;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketByteBuf;
@@ -34,7 +34,7 @@ public class ServerCommunicationManager extends CommunicationManager
             final PacketByteBuf newPacketBuf = new PacketByteBuf(Unpooled.buffer());
             newPacketBuf.writeString(msgType.toString());
             newPacketBuf.writeString(identifier);
-            client.sendPacket(SyncmaticaPacketType.MESSAGE, newPacketBuf, context);
+            client.sendPacket(PacketType.MESSAGE, newPacketBuf, context);
         }
         else if (playerMap.containsKey(client))
         {
@@ -69,9 +69,9 @@ public class ServerCommunicationManager extends CommunicationManager
     }
 
     @Override
-    protected void handle(final ExchangeTarget source, final SyncmaticaPacketType type, final PacketByteBuf packetBuf)
+    protected void handle(final ExchangeTarget source, final PacketType type, final PacketByteBuf packetBuf)
     {
-        if (type.equals(SyncmaticaPacketType.REQUEST_LITEMATIC))
+        if (type.equals(PacketType.REQUEST_LITEMATIC))
         {
             final UUID syncmaticaId = packetBuf.readUuid();
             final ServerPlacement placement = context.getSyncmaticManager().getPlacement(syncmaticaId);
@@ -94,7 +94,7 @@ public class ServerCommunicationManager extends CommunicationManager
             startExchange(upload);
             return;
         }
-        if (type.equals(SyncmaticaPacketType.REGISTER_METADATA))
+        if (type.equals(PacketType.REGISTER_METADATA))
         {
             final ServerPlacement placement = receiveMetaData(packetBuf, source);
             if (context.getSyncmaticManager().getPlacement(placement.getId()) != null)
@@ -137,7 +137,7 @@ public class ServerCommunicationManager extends CommunicationManager
 
             return;
         }
-        if (type.equals(SyncmaticaPacketType.REMOVE_SYNCMATIC))
+        if (type.equals(PacketType.REMOVE_SYNCMATIC))
         {
             final UUID placementId = packetBuf.readUuid();
             final ServerPlacement placement = context.getSyncmaticManager().getPlacement(placementId);
@@ -155,11 +155,11 @@ public class ServerCommunicationManager extends CommunicationManager
                     // #FIXME
                     final PacketByteBuf newPacketBuf = new PacketByteBuf(Unpooled.buffer());
                     newPacketBuf.writeUuid(placement.getId());
-                    client.sendPacket(SyncmaticaPacketType.REMOVE_SYNCMATIC, newPacketBuf, context);
+                    client.sendPacket(PacketType.REMOVE_SYNCMATIC, newPacketBuf, context);
                 }
             }
         }
-        if (type.equals(SyncmaticaPacketType.MODIFY_REQUEST))
+        if (type.equals(PacketType.MODIFY_REQUEST))
         {
             final UUID placementId = packetBuf.readUuid();
             final ModifyExchangeServer modifier = new ModifyExchangeServer(placementId, source, context);
@@ -221,7 +221,7 @@ public class ServerCommunicationManager extends CommunicationManager
                         buf.writeUuid(placement.getLastModifiedBy().uuid);
                         buf.writeString(placement.getLastModifiedBy().getName());
                     }
-                    client.sendPacket(SyncmaticaPacketType.MODIFY, buf, context);
+                    client.sendPacket(PacketType.MODIFY, buf, context);
                 }
                 else
                 {
@@ -230,10 +230,10 @@ public class ServerCommunicationManager extends CommunicationManager
                     // #FIXME
                     final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
                     buf.writeUuid(placement.getId());
-                    client.sendPacket(SyncmaticaPacketType.REMOVE_SYNCMATIC, buf, context);
+                    client.sendPacket(PacketType.REMOVE_SYNCMATIC, buf, context);
                     final PacketByteBuf buf2 = new PacketByteBuf(Unpooled.buffer());
                     putMetaData(placement, buf2, client);
-                    client.sendPacket(SyncmaticaPacketType.REGISTER_METADATA, buf2, context);
+                    client.sendPacket(PacketType.REGISTER_METADATA, buf2, context);
                 }
             }
         }
@@ -258,6 +258,6 @@ public class ServerCommunicationManager extends CommunicationManager
         // #FIXME
         final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
         packetByteBuf.writeUuid(placement.getId());
-        source.sendPacket(SyncmaticaPacketType.CANCEL_SHARE, packetByteBuf, context);
+        source.sendPacket(PacketType.CANCEL_SHARE, packetByteBuf, context);
     }
 }

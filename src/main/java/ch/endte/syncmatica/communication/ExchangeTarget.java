@@ -11,9 +11,12 @@ import ch.endte.syncmatica.network.payload.channels.SyncmaticaNbtData;
 import ch.endte.syncmatica.util.PayloadUtils;
 import ch.endte.syncmatica.util.SyncLog;
 import fi.dy.masa.malilib.util.StringUtils;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
+import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 
 import java.util.ArrayList;
@@ -25,10 +28,7 @@ import java.util.Objects;
 // on both without having to recode them individually, I have an adapter class here
 
 /**
- * Refactor Packets to use NbtCompound instead of PacketByteBuf before they hit Network API
- * Also, we shouldn't be using the " Server/ClientPlayNetworkHandler " to send packets, i.e.
- * "Exchange Target" value.  We'll just use the new Context interface, then call the correct
- * Packet Handler in the new Network API.
+ * Lots of testing required to figure out which API call works best.
  */
 public class ExchangeTarget
 {
@@ -64,28 +64,26 @@ public class ExchangeTarget
             SyncLog.error("ExchangeTarget#sendPacket(): NBT PacketType rejected.");
             return;
         }
+        final SyncByteBuf buf = (SyncByteBuf) packetBuf;
         // #FIXME -- these calls are inverted.
         //  "clientPlayContext" is used to SEND to a player,
         //  while "serverPlayContext" is used to send to the Server.
         //
         if (clientPlayNetworkHandler != null)
         {
-            // #FIXME
+            // #FIXME -- Which method works best?
+            SyncLog.debug("ExchangeTarget#sendPacket(): [ORIG] in Client Context, packet type: {}, size in bytes: {}", type.toString(), buf.readableBytes());
+            CustomPayloadC2SPacket packet = new CustomPayloadC2SPacket(PayloadUtils.getPayload(type, buf));
             //CustomPayloadC2SPacket packet = new CustomPayloadC2SPacket(new SyncmaticaPayload(id, packetBuf));
-            //clientPlayNetworkHandler.sendPacket(packet);
+            clientPlayNetworkHandler.sendPacket(packet);
 
-            SyncLog.debug("ExchangeTarget#sendPacket(): in Client Context, packet type: {}, size in bytes: {}", type.toString(), packetBuf.readableBytes());
+            SyncLog.debug("ExchangeTarget#sendPacket(): [TEST] in Client Context, packet type: {}, size in bytes: {}", type.toString(), buf.readableBytes());
             try {
-                ClientNetworkPlayHandler.sendSyncPacket(Objects.requireNonNull(PayloadUtils.getPayload(type, (SyncByteBuf) packetBuf)));
+                ClientNetworkPlayHandler.sendSyncPacket(Objects.requireNonNull(PayloadUtils.getPayload(type, buf)));
             } catch (Exception e) {
                 SyncLog.debug("ExchangeTarget#sendPacket(): in Client Context, Caught Null Exception.");
             }
 
-            //NbtCompound payload;
-            //payload = PayloadUtils.fromByteBuf(packetBuf, SyncmaticaNbtData.KEY);
-            //assert payload != null;
-            //payload.putInt("version", PacketType.SYNCMATICA_PROTOCOL_VERSION.hashCode());
-            //payload.putString("packetType", type.toString());
             // FIXME : Internally, this is sort of how it functions when calling .send(), which obfuscates the Network Handler interface
             // ((SyncmaticaPayloadHandler) SyncmaticaPayloadHandler.getInstance()).encodeSyncmaticaPayload(payload);
             //SyncmaticaPayload packet = new SyncmaticaPayload(payload);
@@ -93,29 +91,23 @@ public class ExchangeTarget
         }
         if (serverPlayNetworkHandler != null)
         {
-            // #FIXME
+            // #FIXME -- Which method works best?
+            SyncLog.debug("ExchangeTarget#sendPacket(): [ORIG] in Server Context, packet type: {}, size in bytes: {} to player: {}", type.toString(), buf.readableBytes(), serverPlayNetworkHandler.getPlayer());
+            CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(PayloadUtils.getPayload(type, buf));
             //CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(new SyncmaticaPayload(id, packetBuf));
-            //serverPlayNetworkHandler.sendPacket(packet);
+            serverPlayNetworkHandler.sendPacket(packet);
 
-            SyncLog.debug("ExchangeTarget#sendPacket(): in Server Context, packet type: {}, size in bytes: {} to player: {}", type.toString(), packetBuf.readableBytes(), serverPlayNetworkHandler.getPlayer());
+            SyncLog.debug("ExchangeTarget#sendPacket(): [TEST] in Server Context, packet type: {}, size in bytes: {} to player: {}", type.toString(), buf.readableBytes(), serverPlayNetworkHandler.getPlayer());
             try {
-                ServerNetworkPlayHandler.sendSyncPacket(Objects.requireNonNull(PayloadUtils.getPayload(type, (SyncByteBuf) packetBuf)), serverPlayNetworkHandler.getPlayer());
+                ServerNetworkPlayHandler.sendSyncPacket(Objects.requireNonNull(PayloadUtils.getPayload(type, buf)), serverPlayNetworkHandler.getPlayer());
             } catch (Exception e) {
                 SyncLog.debug("ExchangeTarget#sendPacket(): in Server Context, Caught Null Exception.");
             }
-
-            //NbtCompound payload;
-            //payload = PayloadUtils.fromByteBuf(packetBuf, SyncmaticaNbtData.KEY);
-            //assert payload != null;
-            //payload.putInt("version", PacketType.SYNCMATICA_PROTOCOL_VERSION.hashCode());
-            //payload.putString("packetType", type.toString());
-            //SyncLog.debug("ExchangeTarget#sendPacket(): in Server Context, packet type: {}, size in bytes: {}", type.toString(), payload.getSizeInBytes());
             // What player are we sending this to?
-            //context.
 
-
-            // #FIXME : Internally, this is sort of how it functions when calling .send(), which obfuscates the Network Handler interface
+            // #FIXME : Internally under Fabric, this is sort of how it functions when calling .send(), which obfuscates the Network Handler interface
             //SyncmaticaPayload packet = new SyncmaticaPayload(payload);
+            //ServerPlayNetworking.Context serverPlayContext = null;
             //serverPlayContext.responseSender().sendPacket(packet);
         }
     }
@@ -129,17 +121,19 @@ public class ExchangeTarget
             SyncLog.error("ExchangeTarget#sendPacket(): Non-NBT PacketType rejected.");
             return;
         }
-        // #FIXME -- these calls are inverted.
+        // #FIXME -- these calls are inverted ?
         //  "clientPlayContext" is used to SEND to a player,
         //  while "serverPlayContext" is used to send to the Server.
         //
         if (clientPlayNetworkHandler != null)
         {
-            // #FIXME
+            // #FIXME -- Which method works best?
+            SyncLog.debug("ExchangeTarget#sendPacket(): [ORIG] in Client Context, packet type: {}, size in bytes: {}", type.toString(), data.getSizeInBytes());
+            CustomPayloadC2SPacket packet = new CustomPayloadC2SPacket(PayloadUtils.getPayload(type, data));
             //CustomPayloadC2SPacket packet = new CustomPayloadC2SPacket(new SyncmaticaPayload(id, packetBuf));
-            //clientPlayNetworkHandler.sendPacket(packet);
+            clientPlayNetworkHandler.sendPacket(packet);
 
-            SyncLog.debug("ExchangeTarget#sendPacket(): in Client Context, packet type: {}, size in bytes: {}", type.toString(), data.getSizeInBytes());
+            SyncLog.debug("ExchangeTarget#sendPacket(): [TEST] in Client Context, packet type: {}, size in bytes: {}", type.toString(), data.getSizeInBytes());
             try {
                 SyncmaticaNbtData payload = new SyncmaticaNbtData(data);
                 ClientNetworkPlayHandler.sendSyncPacket(payload);
@@ -147,11 +141,6 @@ public class ExchangeTarget
                 SyncLog.debug("ExchangeTarget#sendPacket(): in Client Context, Caught Null Exception.");
             }
 
-            //NbtCompound payload;
-            //payload = PayloadUtils.fromByteBuf(packetBuf, SyncmaticaNbtData.KEY);
-            //assert payload != null;
-            //payload.putInt("version", PacketType.SYNCMATICA_PROTOCOL_VERSION.hashCode());
-            //payload.putString("packetType", type.toString());
             // FIXME : Internally, this is sort of how it functions when calling .send(), which obfuscates the Network Handler interface
             // ((SyncmaticaPayloadHandler) SyncmaticaPayloadHandler.getInstance()).encodeSyncmaticaPayload(payload);
             //SyncmaticaPayload packet = new SyncmaticaPayload(payload);
@@ -160,26 +149,19 @@ public class ExchangeTarget
         if (serverPlayNetworkHandler != null)
         {
             // #FIXME
+            SyncLog.debug("ExchangeTarget#sendPacket(): [ORIG] in Server Context, packet type: {}, size in bytes: {} to player: {}", type.toString(), data.getSizeInBytes(), serverPlayNetworkHandler.getPlayer());
+            CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(PayloadUtils.getPayload(type, data));
             //CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(new SyncmaticaPayload(id, packetBuf));
-            //serverPlayNetworkHandler.sendPacket(packet);
+            serverPlayNetworkHandler.sendPacket(packet);
 
-            SyncLog.debug("ExchangeTarget#sendPacket(): in Server Context, packet type: {}, size in bytes: {} to player: {}", type.toString(), data.getSizeInBytes(), serverPlayNetworkHandler.getPlayer());
+            SyncLog.debug("ExchangeTarget#sendPacket(): [TEST] in Server Context, packet type: {}, size in bytes: {} to player: {}", type.toString(), data.getSizeInBytes(), serverPlayNetworkHandler.getPlayer());
             try {
                 SyncmaticaNbtData payload = new SyncmaticaNbtData(data);
                 ServerNetworkPlayHandler.sendSyncPacket(payload, serverPlayNetworkHandler.getPlayer());
             } catch (Exception e) {
                 SyncLog.debug("ExchangeTarget#sendPacket(): in Server Context, Caught Null Exception.");
             }
-
-            //NbtCompound payload;
-            //payload = PayloadUtils.fromByteBuf(packetBuf, SyncmaticaNbtData.KEY);
-            //assert payload != null;
-            //payload.putInt("version", PacketType.SYNCMATICA_PROTOCOL_VERSION.hashCode());
-            //payload.putString("packetType", type.toString());
-            //SyncLog.debug("ExchangeTarget#sendPacket(): in Server Context, packet type: {}, size in bytes: {}", type.toString(), payload.getSizeInBytes());
             // What player are we sending this to?
-            //context.
-
 
             // #FIXME : Internally, this is sort of how it functions when calling .send(), which obfuscates the Network Handler interface
             //SyncmaticaPayload packet = new SyncmaticaPayload(payload);
