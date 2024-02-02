@@ -21,12 +21,13 @@ public class VersionHandshakeServer extends FeatureExchange
     @Override
     public boolean checkPacket(final PacketType type, final PacketByteBuf packetBuf)
     {
+        SyncLog.debug("VersionHandshaleServer#checkPacket(): received byteBuf packet of type: {}", type.getId().toString());
         return type.equals(PacketType.REGISTER_VERSION)
                 || super.checkPacket(type, packetBuf);
     }
 
     @Override
-    public boolean checkPacket(PacketType type, NbtCompound nbt)
+    public boolean checkPacket(final PacketType type, final NbtCompound nbt)
     {
         return type.equals(PacketType.NBT_DATA);
     }
@@ -34,6 +35,7 @@ public class VersionHandshakeServer extends FeatureExchange
     @Override
     public void handle(final PacketType type, final PacketByteBuf packetBuf)
     {
+        SyncLog.debug("VersionHandshakeServer#handle(): received type: {}, size: {}", type.getId().toString(), packetBuf.readableBytes());
         if (type.equals(PacketType.REGISTER_VERSION))
         {
             partnerVersion = packetBuf.readString(PACKET_MAX_STRING_SIZE);
@@ -86,7 +88,6 @@ public class VersionHandshakeServer extends FeatureExchange
     @Override
     public void init()
     {
-        // #FIXME
         final PacketByteBuf newBuf = new PacketByteBuf(Unpooled.buffer());
         newBuf.writeString(SyncmaticaReference.MOD_VERSION);
         getPartner().sendPacket(PacketType.REGISTER_VERSION, newBuf, getContext());

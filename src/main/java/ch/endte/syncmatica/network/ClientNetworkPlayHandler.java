@@ -36,6 +36,8 @@ public class ClientNetworkPlayHandler
             ClientPlayNetworking.send(payload);
             SyncLog.debug("ClientNetworkPlayHandler#sendSyncPacket(): [API] sending payload id: {}", payload.getId().id().toString());
         }
+        else
+            SyncLog.error("ClientNetworkPlayHandler#sendSyncPacket(): [API] can't send packet (not accepted).");
     }
 
     // Uses ClientPlayNetworkHandler method
@@ -48,6 +50,8 @@ public class ClientNetworkPlayHandler
             handler.sendPacket(packet);
             SyncLog.debug("ClientNetworkPlayHandler#sendSyncPacket(): [Handler] sending payload id: {}", payload.getId().id().toString());
         }
+        else
+            SyncLog.error("ClientNetworkPlayHandler#sendSyncPacket(): [Handler] can't send packet (not accepted).");
     }
 
     // --> ((SyncPacketClientHandler) SyncPacketClientHandler.getInstance()).receiveSyncmaticaPayload(payload.data(), ctx);
@@ -59,7 +63,14 @@ public class ClientNetworkPlayHandler
         PacketByteBuf out = PayloadUtils.fromSyncBuf(data);
         SyncLog.debug("ClientNetworkPlayHandler#receiveSyncPacket(): received payload id: {}, size in bytes {}", type.getId().toString(), out.readableBytes());
 
-        ActorClientPlayNetworkHandler.getInstance().packetEvent(type, out, handler, ci);
+        if (handler == null)
+        {
+            SyncLog.warn("ClientNetworkPlayHandler#receiveSyncPacket(): ignored because handler is null.");
+        }
+        else
+        {
+            ActorClientPlayNetworkHandler.getInstance().packetEvent(type, out, handler, ci);
+        }
     }
     public static void receiveSyncNbt(PacketType type, NbtCompound data, ClientPlayNetworkHandler handler)
     {
@@ -67,7 +78,14 @@ public class ClientNetworkPlayHandler
         SyncLog.debug("ClientNetworkPlayHandler#receiveSyncPacket(): received payload id: {}, size in bytes {}", type.getId().toString(), data.getSizeInBytes());
         SyncLog.debug("ClientNetworkPlayHandler#receiveSyncPacket(): payload.readString(): {}", data.getString(SyncmaticaNbtData.KEY));
 
-        ActorClientPlayNetworkHandler.getInstance().packetNbtEvent(type, data, handler, ci);
+        if (handler == null)
+        {
+            SyncLog.warn("ClientNetworkPlayHandler#receiveSyncPacket(): ignored because handler is null.");
+        }
+        else
+        {
+            ActorClientPlayNetworkHandler.getInstance().packetNbtEvent(type, data, handler, ci);
+        }
     }
     public static void receiveCancelShare(CancelShare data, ClientPlayNetworking.Context context)
     {

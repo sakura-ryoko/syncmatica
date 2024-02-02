@@ -43,7 +43,12 @@ public class ActorClientPlayNetworkHandler
 
     public void startEvent(final ClientPlayNetworkHandler handler)
     {
-        setClientContext(handler);
+        SyncLog.debug("ActorClientPlayNetworkHandler#startEvent(): invoked.");
+        if (clientPlayNetworkHandler == null)
+        {
+            SyncLog.debug("ActorClientPlayNetworkHandler#startEvent(): setClientContent().");
+            setClientContext(handler);
+        }
         startClient();
     }
 
@@ -71,7 +76,6 @@ public class ActorClientPlayNetworkHandler
         {
             ActorClientPlayNetworkHandler.getInstance().startEvent(clientContext);
         }
-        // No longer called from a Mixin.
         if (packetEvent(type, data))
             if (ci.isCancellable())
                 ci.cancel();
@@ -118,5 +122,4 @@ public class ActorClientPlayNetworkHandler
     }
 
     private static void setClientContext(final ClientPlayNetworkHandler clientHandler) { ActorClientPlayNetworkHandler.clientPlayNetworkHandler = clientHandler; }
-
 }

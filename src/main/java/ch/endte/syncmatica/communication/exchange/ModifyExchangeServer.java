@@ -27,18 +27,21 @@ public class ModifyExchangeServer extends AbstractExchange
     @Override
     public boolean checkPacket(final PacketType type, final PacketByteBuf packetBuf)
     {
+        SyncLog.debug("ModifyExchangeServer#checkPacket(): received byteBuf packet.");
         return type.equals(PacketType.MODIFY_FINISH) && checkUUID(packetBuf, placement.getId());
     }
 
     @Override
     public boolean checkPacket(PacketType type, NbtCompound nbt)
     {
+        SyncLog.debug("ModifyExchangeServer#handle(): received nbtData packet.");
         return type.equals(PacketType.NBT_DATA);
     }
 
     @Override
     public void handle(final PacketType type, final PacketByteBuf packetBuf)
     {
+        SyncLog.debug("ModifyExchangeServer#handle(): received byteBuf packet.");
         packetBuf.readUuid(); // consume uuid
         if (type.equals(PacketType.MODIFY_FINISH))
         {
@@ -74,7 +77,6 @@ public class ModifyExchangeServer extends AbstractExchange
 
     private void accept()
     {
-        // #FIXME
         final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeUuid(placement.getId());
         getPartner().sendPacket(PacketType.MODIFY_REQUEST_ACCEPT, buf, getContext());
@@ -84,7 +86,6 @@ public class ModifyExchangeServer extends AbstractExchange
     @Override
     protected void sendCancelPacket()
     {
-        // #FIXME
         final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeUuid(placementId);
         getPartner().sendPacket(PacketType.MODIFY_REQUEST_DENY, buf, getContext());

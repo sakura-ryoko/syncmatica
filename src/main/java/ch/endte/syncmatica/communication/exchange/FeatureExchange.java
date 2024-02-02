@@ -16,18 +16,21 @@ public abstract class FeatureExchange extends AbstractExchange
     @Override
     public boolean checkPacket(final PacketType type, final PacketByteBuf packetBuf)
     {
+        SyncLog.debug("FeatureExchange#checkPacket(): received byteBuf packet.");
         return type.equals(PacketType.FEATURE_REQUEST)
                 || type.equals(PacketType.FEATURE);
     }
     @Override
     public boolean checkPacket(final PacketType type, final NbtCompound nbt)
     {
+        SyncLog.debug("FeatureExchange#checkPacket(): received nbtData packet.");
         return type.equals(PacketType.NBT_DATA);
     }
 
     @Override
     public void handle(final PacketType type, final PacketByteBuf packetBuf)
     {
+        SyncLog.debug("FeatureExchange#handle(): received byteBuf packet.");
         if (type.equals(PacketType.FEATURE_REQUEST))
         {
             sendFeatures();
@@ -48,13 +51,11 @@ public abstract class FeatureExchange extends AbstractExchange
 
     public void requestFeatureSet()
     {
-        // #FIXME
         getPartner().sendPacket(PacketType.FEATURE_REQUEST, new PacketByteBuf(Unpooled.buffer()), getContext());
     }
 
     private void sendFeatures()
     {
-        // #FIXME
         final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         final FeatureSet fs = getContext().getFeatureSet();
         buf.writeString(fs.toString(), PACKET_MAX_STRING_SIZE);

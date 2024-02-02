@@ -31,6 +31,8 @@ public class ModifyExchangeClient extends AbstractExchange
     @Override
     public boolean checkPacket(final PacketType type, final PacketByteBuf packetBuf)
     {
+        SyncLog.debug("ModifyExchangeClient#checkPacket(): received byteBuf packet.");
+
         if (type.equals(PacketType.MODIFY_REQUEST_DENY)
                 || type.equals(PacketType.MODIFY_REQUEST_ACCEPT)
                 || (expectRemove && type.equals(PacketType.REMOVE_SYNCMATIC)))
@@ -43,12 +45,16 @@ public class ModifyExchangeClient extends AbstractExchange
     @Override
     public boolean checkPacket(PacketType type, NbtCompound nbt)
     {
+        SyncLog.debug("ModifyExchangeClient#checkPacket(): received nbtData packet.");
+
         return type.equals(PacketType.NBT_DATA);
     }
 
     @Override
     public void handle(final PacketType type, final PacketByteBuf packetBuf)
     {
+        SyncLog.debug("ModifyExchangeClient#handle(): received byteBuf packet.");
+
         if (type.equals(PacketType.MODIFY_REQUEST_DENY))
         {
             packetBuf.readUuid();
@@ -93,7 +99,6 @@ public class ModifyExchangeClient extends AbstractExchange
         getContext().getCommunicationManager().setModifier(placement, this);
         if (getPartner().getFeatureSet().hasFeature(Feature.MODIFY))
         {
-            // #FIXME
             final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
             buf.writeUuid(placement.getId());
             getPartner().sendPacket(PacketType.MODIFY_REQUEST, buf, getContext());
@@ -128,7 +133,6 @@ public class ModifyExchangeClient extends AbstractExchange
     private void sendFinish() {
         if (getPartner().getFeatureSet().hasFeature(Feature.MODIFY))
         {
-            // #FIXME
             final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
             buf.writeUuid(placement.getId());
             getContext().getCommunicationManager().putPositionData(placement, buf, getPartner());
@@ -138,7 +142,6 @@ public class ModifyExchangeClient extends AbstractExchange
         }
         else
         {
-            // #FIXME
             final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
             buf.writeUuid(placement.getId());
             getPartner().sendPacket(PacketType.REMOVE_SYNCMATIC, buf, getContext());
@@ -151,7 +154,6 @@ public class ModifyExchangeClient extends AbstractExchange
     {
         if (getPartner().getFeatureSet().hasFeature(Feature.MODIFY))
         {
-            // #FIXME
             final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
             buf.writeUuid(placement.getId());
             getContext().getCommunicationManager().putPositionData(placement, buf, getPartner());

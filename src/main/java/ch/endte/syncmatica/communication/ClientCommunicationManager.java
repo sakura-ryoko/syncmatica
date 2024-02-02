@@ -11,6 +11,7 @@ import ch.endte.syncmatica.communication.exchange.VersionHandshakeClient;
 import ch.endte.syncmatica.extended_core.PlayerIdentifier;
 import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.litematica.ScreenHelper;
+import ch.endte.syncmatica.network.packet.ActorClientPlayNetworkHandler;
 import ch.endte.syncmatica.network.payload.PacketType;
 import ch.endte.syncmatica.network.payload.channels.SyncmaticaNbtData;
 import ch.endte.syncmatica.util.SyncLog;
@@ -39,7 +40,9 @@ public class ClientCommunicationManager extends CommunicationManager
     }
 
     @Override
-    protected void handle(final ExchangeTarget source, final PacketType type, final PacketByteBuf packetBuf) {
+    protected void handle(final ExchangeTarget source, final PacketType type, final PacketByteBuf packetBuf)
+    {
+        SyncLog.debug("ClientCommunicationsManager#handle(): received type: {}, of size: {} // source: {}", type.getId().toString(), packetBuf.readableBytes(), source.getPersistentName());
         if (type.equals(PacketType.REGISTER_METADATA)) {
             final ServerPlacement placement = receiveMetaData(packetBuf, source);
             context.getSyncmaticManager().addPlacement(placement);
@@ -62,14 +65,13 @@ public class ClientCommunicationManager extends CommunicationManager
             return;
         }
         if (type.equals(PacketType.MODIFY)) {
-            // #FIXME
             final UUID placementId = packetBuf.readUuid();
             final ServerPlacement toModify = context.getSyncmaticManager().getPlacement(placementId);
             receivePositionData(toModify, packetBuf, source);
             if (source.getFeatureSet().hasFeature(Feature.CORE_EX)) {
                 final PlayerIdentifier lastModifiedBy = context.getPlayerIdentifierProvider().createOrGet(
                         packetBuf.readUuid(),
-                        packetBuf.readString(32767)
+                        packetBuf.readString(PACKET_MAX_STRING_SIZE)
                 );
 
                 toModify.setLastModifiedBy(lastModifiedBy);
@@ -79,16 +81,16 @@ public class ClientCommunicationManager extends CommunicationManager
             return;
         }
         if (type.equals(PacketType.MESSAGE)) {
-            final Message.MessageType msgType = mapMessageType(MessageType.valueOf(packetBuf.readString(32767)));
-            final String text = packetBuf.readString(32767);
+            final Message.MessageType msgType = mapMessageType(MessageType.valueOf(packetBuf.readString(PACKET_MAX_STRING_SIZE)));
+            final String text = packetBuf.readString(PACKET_MAX_STRING_SIZE);
             ScreenHelper.ifPresent(s -> s.addMessage(msgType, text));
             return;
         }
         if (type.equals(PacketType.REGISTER_VERSION)) {
             LitematicManager.clear();
             Syncmatica.restartClient();
-            // #FIXME
-            //ActorClientPlayNetworkHandler.getInstance().packetEvent(id, packetBuf);
+            // #FIXME ?
+            ActorClientPlayNetworkHandler.getInstance().packetEvent(type, packetBuf);
         }
     }
 

@@ -86,10 +86,10 @@ public class ExchangeTarget
         {
             ServerPlayerEntity player = serverPlayNetworkHandler.getPlayer();
             // #FIXME -- Which method works best?
-            SyncLog.debug("ExchangeTarget#sendPacket(): [ORIG] in Server Context, packet type: {}, size in bytes: {} to player: {}", type.getId().toString(), buf.readableBytes(), player);
+            SyncLog.debug("ExchangeTarget#sendPacket(): [ORIG] in Server Context, packet type: {}, size in bytes: {} to player: {}", type.getId().toString(), buf.readableBytes(), player.getName().getLiteralString());
             ServerNetworkPlayHandler.sendSyncPacket(payload, serverPlayNetworkHandler);
 
-            //SyncLog.debug("ExchangeTarget#sendPacket(): [TEST] in Server Context, packet type: {}, size in bytes: {} to player: {}", type.getId().toString(), buf.readableBytes(), player);
+            //SyncLog.debug("ExchangeTarget#sendPacket(): [TEST] in Server Context, packet type: {}, size in bytes: {} to player: {}", type.getId().toString(), buf.readableBytes(), player.getName().getLiteralString());
             //assert payload != null;
             //ServerNetworkPlayHandler.sendSyncPacket(payload, player);
 
@@ -132,10 +132,10 @@ public class ExchangeTarget
         {
             ServerPlayerEntity player = serverPlayNetworkHandler.getPlayer();
             // #FIXME
-            SyncLog.debug("ExchangeTarget#sendPacket(): [ORIG] in Server Context, packet type: {}, size in bytes: {} to player: {}", type.getId().toString(), data.getSizeInBytes(), player);
+            SyncLog.debug("ExchangeTarget#sendPacket(): [ORIG] in Server Context, packet type: {}, size in bytes: {} to player: {}", type.getId().toString(), data.getSizeInBytes(), player.getName().getLiteralString());
             ServerNetworkPlayHandler.sendSyncPacket(payload, serverPlayNetworkHandler);
 
-            //SyncLog.debug("ExchangeTarget#sendPacket(): [TEST] in Server Context, packet type: {}, size in bytes: {} to player: {}", type.getId().toString(), data.getSizeInBytes(), player);
+            //SyncLog.debug("ExchangeTarget#sendPacket(): [TEST] in Server Context, packet type: {}, size in bytes: {} to player: {}", type.getId().toString(), data.getSizeInBytes(), player.getName().getLiteralString());
             //ServerNetworkPlayHandler.sendSyncPacket(payload, player);
 
             // #FIXME : Internally, this is sort of how it functions when calling .send(), which obfuscates the Network Handler interface

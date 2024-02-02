@@ -38,6 +38,8 @@ public abstract class ServerNetworkPlayHandler
             //player.networkHandler.sendPacket(new CustomPayloadC2SPacket(payload));
             SyncLog.debug("ServerNetworkPlayHandler#sendSyncPacket(): [API] sending payload id: {} to player: {}", payload.getId().id().toString(), player.getName().getLiteralString());
         }
+        else
+            SyncLog.error("ServerNetworkPlayHandler#sendSyncPacket(): [API] can't send packet (not accepted).");
     }
 
     // Uses ServerPlayNetworkHandler method
@@ -51,6 +53,8 @@ public abstract class ServerNetworkPlayHandler
             handler.sendPacket(packet);
             SyncLog.debug("ServerNetworkPlayHandler#sendSyncPacket(): [Handler] sending payload id: {} to player: {}", payload.getId().id().toString(), player.getName().getLiteralString());
         }
+        else
+          SyncLog.error("ServerNetworkPlayHandler#sendSyncPacket(): [Handler] can't send packet (not accepted).");
     }
 
     // Server-bound packet sent by a Client
@@ -61,16 +65,30 @@ public abstract class ServerNetworkPlayHandler
         SyncLog.debug("ServerNetworkPlayHandler#receiveSyncPacket(): received payload id: {}, size in bytes {}", type.getId().toString(), out.readableBytes());
         //SyncLog.debug("ServerNetworkPlayHandler#receiveSyncPacket(): payload.readString(): {}", out.readString(256));
 
-        IServerPlayerNetworkHandler iDo = ((IServerPlayerNetworkHandler) handler);
-        iDo.syncmatica$operateComms(sm -> sm.onPacket(iDo.syncmatica$getExchangeTarget(), type, out));
+        if (handler == null)
+        {
+            SyncLog.warn("ServerNetworkPlayHandler#receiveSyncPacket(): ignored because handler is null.");
+        }
+        else
+        {
+            IServerPlayerNetworkHandler iDo = ((IServerPlayerNetworkHandler) handler);
+            iDo.syncmatica$operateComms(sm -> sm.onPacket(iDo.syncmatica$getExchangeTarget(player), type, out));
+        }
     }
     public static void receiveSyncNbt(PacketType type, NbtCompound data, ServerPlayNetworkHandler handler, ServerPlayerEntity player)
     {
         SyncLog.debug("ServerNetworkPlayHandler#receiveSyncNbt(): received payload id: {}, size in bytes {}", type.getId().toString(), data.getSizeInBytes());
         SyncLog.debug("ServerNetworkPlayHandler#receiveSyncNbt(): payload.readString(): {}", data.getString(SyncmaticaNbtData.KEY));
 
-        IServerPlayerNetworkHandler iDo = ((IServerPlayerNetworkHandler) handler);
-        iDo.syncmatica$operateComms(sm -> sm.onNbtPacket(iDo.syncmatica$getExchangeTarget(), type, data));
+        if (handler == null)
+        {
+            SyncLog.warn("ServerNetworkPlayHandler#receiveSyncPacket(): ignored because handler is null.");
+        }
+        else
+        {
+            IServerPlayerNetworkHandler iDo = ((IServerPlayerNetworkHandler) handler);
+            iDo.syncmatica$operateComms(sm -> sm.onNbtPacket(iDo.syncmatica$getExchangeTarget(player), type, data));
+        }
     }
     public static void receiveCancelShare(CancelShare data, ServerPlayNetworking.Context context)
     {

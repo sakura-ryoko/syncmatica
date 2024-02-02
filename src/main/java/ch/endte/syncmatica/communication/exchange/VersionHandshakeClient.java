@@ -20,6 +20,7 @@ public class VersionHandshakeClient extends FeatureExchange
     @Override
     public boolean checkPacket(final PacketType type, final PacketByteBuf packetBuf)
     {
+        SyncLog.debug("VersionHandshaleClient#checkPacket(): received byteBuf packet of type: {}", type.getId().toString());
         return type.equals(PacketType.CONFIRM_USER)
                 || type.equals(PacketType.REGISTER_VERSION)
                 || super.checkPacket(type, packetBuf);
@@ -34,17 +35,19 @@ public class VersionHandshakeClient extends FeatureExchange
     @Override
     public void handle(final PacketType type, final PacketByteBuf packetBuf)
     {
+        SyncLog.debug("VersionHandshaleClient#handle(): received byteBuf packet");
         if (type.equals(PacketType.REGISTER_VERSION))
         {
             final String version = packetBuf.readString(PACKET_MAX_STRING_SIZE);
             if (!getContext().checkPartnerVersion(version))
             {
                 // any further packets are risky so no further packets should get send
-                SyncLog.info("Denying syncmatica join due to outdated server with local version {} and server version {}", SyncmaticaReference.MOD_VERSION, version);
+                SyncLog.warn("Denying syncmatica join due to outdated server with local version {} and server version {}", SyncmaticaReference.MOD_VERSION, version);
                 close(false);
             }
             else
             {
+                SyncLog.debug("VersionHandshaleClient#handle(): Accepting version {} from parter", version);
                 partnerVersion = version;
                 final FeatureSet fs = FeatureSet.fromVersionString(version);
                 if (fs == null)
