@@ -72,7 +72,7 @@ public abstract class ServerNetworkPlayHandler
         else
         {
             IServerPlayerNetworkHandler iDo = ((IServerPlayerNetworkHandler) handler);
-            iDo.syncmatica$operateComms(sm -> sm.onPacket(iDo.syncmatica$getExchangeTarget(player), type, out));
+            iDo.syncmatica$operateComms(sm -> sm.onPacket(iDo.syncmatica$getExchangeTarget(), type, out));
         }
     }
     public static void receiveSyncNbt(PacketType type, NbtCompound data, ServerPlayNetworkHandler handler, ServerPlayerEntity player)
@@ -87,7 +87,7 @@ public abstract class ServerNetworkPlayHandler
         else
         {
             IServerPlayerNetworkHandler iDo = ((IServerPlayerNetworkHandler) handler);
-            iDo.syncmatica$operateComms(sm -> sm.onNbtPacket(iDo.syncmatica$getExchangeTarget(player), type, data));
+            iDo.syncmatica$operateComms(sm -> sm.onNbtPacket(iDo.syncmatica$getExchangeTarget(), type, data));
         }
     }
     public static void receiveCancelShare(CancelShare data, ServerPlayNetworking.Context context)
