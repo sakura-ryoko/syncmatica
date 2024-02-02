@@ -6,6 +6,8 @@ import ch.endte.syncmatica.features.FeatureSet;
 import ch.endte.syncmatica.data.IFileStorage;
 import ch.endte.syncmatica.data.SyncmaticManager;
 import ch.endte.syncmatica.extended_core.PlayerIdentifierProvider;
+import ch.endte.syncmatica.network.ClientNetworkPlayInitHandler;
+import ch.endte.syncmatica.network.ServerNetworkPlayInitHandler;
 import ch.endte.syncmatica.service.DebugService;
 import ch.endte.syncmatica.service.IService;
 import ch.endte.syncmatica.service.JsonConfiguration;
@@ -85,6 +87,7 @@ public class Context {
         integratedServer = integrated;
         this.worldFolder = worldFolder;
         loadConfiguration();
+        registerChannels();
     }
 
     public PlayerIdentifierProvider getPlayerIdentifierProvider() {
@@ -138,14 +141,49 @@ public class Context {
         fs = new FeatureSet(Arrays.asList(Feature.values()));
     }
 
+    public void registerChannels()
+    {
+        if (this.isServer())
+        {
+            ServerNetworkPlayInitHandler.registerPlayChannels();
+        }
+        else
+        {
+            ClientNetworkPlayInitHandler.registerPlayChannels();
+        }
+    }
+    public void registerReceivers()
+    {
+        if (this.isServer())
+        {
+            ServerNetworkPlayInitHandler.registerReceivers();
+        }
+        else
+        {
+            ClientNetworkPlayInitHandler.registerReceivers();
+        }
+    }
+    public void unregisterReceivers()
+    {
+        if (this.isServer())
+        {
+            ServerNetworkPlayInitHandler.unregisterReceivers();
+        }
+        else
+        {
+            ClientNetworkPlayInitHandler.unregisterReceivers();
+        }
+    }
     public void startup() {
         startupServices();
+        registerReceivers();
         isStarted = true;
         synMan.startup();
     }
 
     public void shutdown() {
         shutdownServices();
+        unregisterReceivers();
         isStarted = false;
         synMan.shutdown();
     }

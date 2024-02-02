@@ -13,7 +13,7 @@ import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.litematica.ScreenHelper;
 import ch.endte.syncmatica.network.packet.ActorClientPlayNetworkHandler;
 import ch.endte.syncmatica.network.payload.PacketType;
-import ch.endte.syncmatica.network.payload.channels.SyncmaticaNbtData;
+import ch.endte.syncmatica.network.payload.channels.SyncNbtData;
 import ch.endte.syncmatica.util.SyncLog;
 import fi.dy.masa.malilib.gui.Message;
 import net.minecraft.nbt.NbtCompound;
@@ -97,7 +97,7 @@ public class ClientCommunicationManager extends CommunicationManager
     @Override
     protected void handle(ExchangeTarget source, PacketType type, NbtCompound nbt)
     {
-        SyncLog.debug("ClientCommunicationManager#handle(): received Nbt Packet type: {}, size : {}, from: {}, key data: {}", type.toString(), nbt.getSizeInBytes(), source.getPersistentName(), nbt.getString(SyncmaticaNbtData.KEY));
+        SyncLog.debug("ClientCommunicationManager#handle(): received Nbt Packet type: {}, size : {}, from: {}, key data: {}", type.toString(), nbt.getSizeInBytes(), source.getPersistentName(), nbt.getString(SyncNbtData.KEY));
     }
 
     @Override

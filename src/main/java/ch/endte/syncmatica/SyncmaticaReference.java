@@ -8,7 +8,7 @@ import net.fabricmc.loader.api.ModContainer;
 import java.util.Optional;
 
 /**
- * Main Reference Calls
+ * Main Reference Calls -- Should use the "Context" versions of some of these.
  */
 public class SyncmaticaReference
 {

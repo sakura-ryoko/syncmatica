@@ -50,71 +50,75 @@ public class PayloadUtils
         CustomPayload payload;
         if (type.equals(PacketType.CANCEL_SHARE))
         {
-            payload = new CancelShare(buf);
+            payload = new SyncCancelShare(buf);
+        }
+        else if (type.equals(PacketType.CANCEL_LITEMATIC))
+        {
+            payload = new SyncCancelLitematic(buf);
         }
         else if (type.equals(PacketType.CONFIRM_USER))
         {
-            payload = new ConfirmUser(buf);
+            payload = new SyncConfirmUser(buf);
         }
         else if (type.equals(PacketType.FEATURE))
         {
-            payload = new Feature(buf);
+            payload = new SyncFeature(buf);
         }
         else if (type.equals(PacketType.FEATURE_REQUEST))
         {
-            payload = new FeatureRequest(buf);
+            payload = new SyncFeatureRequest(buf);
         }
         else if (type.equals(PacketType.FINISHED_LITEMATIC))
         {
-            payload = new FinishedLitematic(buf);
+            payload = new SyncFinishedLitematic(buf);
         }
         else if (type.equals(PacketType.MESSAGE))
         {
-            payload = new Message(buf);
+            payload = new SyncMessage(buf);
         }
         else if (type.equals(PacketType.MODIFY))
         {
-            payload = new Modify(buf);
+            payload = new SyncModify(buf);
         }
         else if (type.equals(PacketType.MODIFY_FINISH))
         {
-            payload = new ModifyFinish(buf);
+            payload = new SyncModifyFinish(buf);
         }
         else if (type.equals(PacketType.MODIFY_REQUEST))
         {
-            payload = new ModifyRequest(buf);
+            payload = new SyncModifyRequest(buf);
         }
         else if (type.equals(PacketType.MODIFY_REQUEST_ACCEPT))
         {
-            payload = new ModifyRequestAccept(buf);
+            payload = new SyncModifyRequestAccept(buf);
         }
         else if (type.equals(PacketType.MODIFY_REQUEST_DENY))
         {
-            payload = new ModifyRequestDeny(buf);
+            payload = new SyncModifyRequestDeny(buf);
         }
         else if (type.equals(PacketType.RECEIVED_LITEMATIC))
         {
-            payload = new ReceivedLitematic(buf);
+            payload = new SyncReceivedLitematic(buf);
         }
         else if (type.equals(PacketType.REGISTER_METADATA))
         {
-            payload = new RegisterMetadata(buf);
+            payload = new SyncRegisterMetadata(buf);
         }
         else if (type.equals(PacketType.REGISTER_VERSION))
         {
-            payload = new RegisterVersion(buf);
+            payload = new SyncRegisterVersion(buf);
         }
         else if (type.equals(PacketType.REMOVE_SYNCMATIC))
         {
-            payload = new RemoveSyncmatic(buf);
+            payload = new SyncRemoveSyncmatic(buf);
         }
         else if (type.equals(PacketType.REQUEST_LITEMATIC))
         {
-            payload = new RequestDownload(buf);
+            payload = new SyncRequestDownload(buf);
         }
         else if (type.equals(PacketType.SEND_LITEMATIC))
         {
-            payload = new SendLitematic(buf);
+            payload = new SyncSendLitematic(buf);
         }
         else
         {
@@ -127,7 +131,7 @@ public class PayloadUtils
     {
         if (type.equals(PacketType.NBT_DATA))
         {
-            return new SyncmaticaNbtData(data);
+            return new SyncNbtData(data);
         }
         else return null;
     }

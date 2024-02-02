@@ -7,7 +7,7 @@ import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.communication.exchange.*;
 import ch.endte.syncmatica.extended_core.PlayerIdentifier;
 import ch.endte.syncmatica.network.payload.PacketType;
-import ch.endte.syncmatica.network.payload.channels.SyncmaticaNbtData;
+import ch.endte.syncmatica.network.payload.channels.SyncNbtData;
 import ch.endte.syncmatica.util.SyncLog;
 import com.mojang.authlib.GameProfile;
 import io.netty.buffer.Unpooled;
@@ -175,7 +175,7 @@ public class ServerCommunicationManager extends CommunicationManager
     @Override
     protected void handle(ExchangeTarget source, PacketType type, NbtCompound nbt)
     {
-        SyncLog.debug("ServerCommunicationManager#handle(): received Nbt Packet type: {}, size : {}, from: {}, key data: {}", type.toString(), nbt.getSizeInBytes(), source.getPersistentName(), nbt.getString(SyncmaticaNbtData.KEY));
+        SyncLog.debug("ServerCommunicationManager#handle(): received Nbt Packet type: {}, size : {}, from: {}, key data: {}", type.toString(), nbt.getSizeInBytes(), source.getPersistentName(), nbt.getString(SyncNbtData.KEY));
     }
 
     @Override

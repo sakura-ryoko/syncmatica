@@ -4,9 +4,7 @@ import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.SyncmaticaReference;
 import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.litematica.ScreenHelper;
-import ch.endte.syncmatica.network.ServerNetworkPlayInitHandler;
 import ch.endte.syncmatica.network.packet.ActorClientPlayNetworkHandler;
-import ch.endte.syncmatica.network.ClientNetworkPlayInitHandler;
 import ch.endte.syncmatica.util.SyncLog;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.resource.ResourcePackManager;
@@ -38,11 +36,11 @@ public class MixinMinecraftClient {
         SyncLog.debug("MixinMinecraftClient#shutdownSyncmatica(): calling LitematicManager.clear()");
         LitematicManager.clear();
 
-        if (SyncmaticaReference.isIntegratedServer())
-        {
-            ServerNetworkPlayInitHandler.unregisterReceivers();
-        }
-        ClientNetworkPlayInitHandler.unregisterReceivers();
+        //if (SyncmaticaReference.isIntegratedServer())
+        //{
+            //ServerNetworkPlayInitHandler.unregisterReceivers();
+        //}
+        //ClientNetworkPlayInitHandler.unregisterReceivers();
         SyncLog.debug("MixinMinecraftClient#shutdownSyncmatica(): calling ActorClientPlayNetworkHandler.getInstance().reset()");
         ActorClientPlayNetworkHandler.getInstance().reset();
         SyncmaticaReference.setIntegratedServer(false);

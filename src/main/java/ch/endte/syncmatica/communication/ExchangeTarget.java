@@ -7,7 +7,7 @@ import ch.endte.syncmatica.network.ClientNetworkPlayHandler;
 import ch.endte.syncmatica.network.ServerNetworkPlayHandler;
 import ch.endte.syncmatica.network.payload.PacketType;
 import ch.endte.syncmatica.network.payload.SyncByteBuf;
-import ch.endte.syncmatica.network.payload.channels.SyncmaticaNbtData;
+import ch.endte.syncmatica.network.payload.channels.SyncNbtData;
 import ch.endte.syncmatica.util.PayloadUtils;
 import ch.endte.syncmatica.util.SyncLog;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -109,7 +109,7 @@ public class ExchangeTarget
             SyncLog.error("ExchangeTarget#sendPacket(): Non-NBT PacketType rejected.");
             return;
         }
-        SyncmaticaNbtData payload = new SyncmaticaNbtData(data);
+        SyncNbtData payload = new SyncNbtData(data);
         // #FIXME -- these calls are inverted ?
         //  "clientPlayContext" is used to SEND to a player,
         //  while "serverPlayContext" is used to send to the Server.

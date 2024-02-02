@@ -18,6 +18,8 @@ public class PacketTypeRegister
         SyncLog.debug("PacketTypeRegister#registerPlayChannel(): register {} // {}:{}", id.hashCode(), id.id().getNamespace(), id.id().getPath());
         PayloadTypeRegistry.playC2S().register(id, codec);
         PayloadTypeRegistry.playS2C().register(id, codec);
+        PayloadTypeRegistry.configurationC2S().register(id, codec);
+        PayloadTypeRegistry.configurationS2C().register(id, codec);
     }
     public static void registerPlayChannels()
     {
@@ -26,24 +28,25 @@ public class PacketTypeRegister
             return;
 
         SyncLog.debug("PacketTypeRegister#registerPlayChannels(): registering play channels.");
-        registerPlayChannel(CancelShare.TYPE, CancelShare.CODEC);
-        registerPlayChannel(ConfirmUser.TYPE, ConfirmUser.CODEC);
-        registerPlayChannel(Feature.TYPE, Feature.CODEC);
-        registerPlayChannel(FeatureRequest.TYPE, FeatureRequest.CODEC);
-        registerPlayChannel(FinishedLitematic.TYPE, FinishedLitematic.CODEC);
-        registerPlayChannel(Message.TYPE, Message.CODEC);
-        registerPlayChannel(Modify.TYPE, Modify.CODEC);
-        registerPlayChannel(ModifyFinish.TYPE, ModifyFinish.CODEC);
-        registerPlayChannel(ModifyRequest.TYPE, ModifyRequest.CODEC);
-        registerPlayChannel(ModifyRequestAccept.TYPE, ModifyRequestAccept.CODEC);
-        registerPlayChannel(ModifyRequestDeny.TYPE, ModifyRequestDeny.CODEC);
-        registerPlayChannel(ReceivedLitematic.TYPE, ReceivedLitematic.CODEC);
-        registerPlayChannel(RegisterMetadata.TYPE, RegisterMetadata.CODEC);
-        registerPlayChannel(RegisterVersion.TYPE, RegisterVersion.CODEC);
-        registerPlayChannel(RemoveSyncmatic.TYPE, RemoveSyncmatic.CODEC);
-        registerPlayChannel(RequestDownload.TYPE, RequestDownload.CODEC);
-        registerPlayChannel(SendLitematic.TYPE, SendLitematic.CODEC);
-        registerPlayChannel(SyncmaticaNbtData.TYPE, SyncmaticaNbtData.CODEC);
+        registerPlayChannel(SyncCancelShare.TYPE, SyncCancelShare.CODEC);
+        registerPlayChannel(SyncCancelLitematic.TYPE, SyncCancelLitematic.CODEC);
+        registerPlayChannel(SyncConfirmUser.TYPE, SyncConfirmUser.CODEC);
+        registerPlayChannel(SyncFeature.TYPE, SyncFeature.CODEC);
+        registerPlayChannel(SyncFeatureRequest.TYPE, SyncFeatureRequest.CODEC);
+        registerPlayChannel(SyncFinishedLitematic.TYPE, SyncFinishedLitematic.CODEC);
+        registerPlayChannel(SyncMessage.TYPE, SyncMessage.CODEC);
+        registerPlayChannel(SyncModify.TYPE, SyncModify.CODEC);
+        registerPlayChannel(SyncModifyFinish.TYPE, SyncModifyFinish.CODEC);
+        registerPlayChannel(SyncModifyRequest.TYPE, SyncModifyRequest.CODEC);
+        registerPlayChannel(SyncModifyRequestAccept.TYPE, SyncModifyRequestAccept.CODEC);
+        registerPlayChannel(SyncModifyRequestDeny.TYPE, SyncModifyRequestDeny.CODEC);
+        registerPlayChannel(SyncReceivedLitematic.TYPE, SyncReceivedLitematic.CODEC);
+        registerPlayChannel(SyncRegisterMetadata.TYPE, SyncRegisterMetadata.CODEC);
+        registerPlayChannel(SyncRegisterVersion.TYPE, SyncRegisterVersion.CODEC);
+        registerPlayChannel(SyncRemoveSyncmatic.TYPE, SyncRemoveSyncmatic.CODEC);
+        registerPlayChannel(SyncRequestDownload.TYPE, SyncRequestDownload.CODEC);
+        registerPlayChannel(SyncSendLitematic.TYPE, SyncSendLitematic.CODEC);
+        registerPlayChannel(SyncNbtData.TYPE, SyncNbtData.CODEC);
 
         playRegistered = true;
     }

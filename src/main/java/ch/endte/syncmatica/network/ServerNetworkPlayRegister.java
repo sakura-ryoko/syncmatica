@@ -7,24 +7,25 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
 public class ServerNetworkPlayRegister
 {
-    static ServerPlayNetworking.PlayPayloadHandler<CancelShare> C2SSyncHandler_CancelShare;
-    static ServerPlayNetworking.PlayPayloadHandler<ConfirmUser> C2SSyncHandler_ConfirmUser;
-    static ServerPlayNetworking.PlayPayloadHandler<Feature> C2SSyncHandler_Feature;
-    static ServerPlayNetworking.PlayPayloadHandler<FeatureRequest> C2SSyncHandler_FeatureRequest;
-    static ServerPlayNetworking.PlayPayloadHandler<FinishedLitematic> C2SSyncHandler_FinishedLitematic;
-    static ServerPlayNetworking.PlayPayloadHandler<Message> C2SSyncHandler_Message;
-    static ServerPlayNetworking.PlayPayloadHandler<Modify> C2SSyncHandler_Modify;
-    static ServerPlayNetworking.PlayPayloadHandler<ModifyFinish> C2SSyncHandler_ModifyFinish;
-    static ServerPlayNetworking.PlayPayloadHandler<ModifyRequest> C2SSyncHandler_ModifyRequest;
-    static ServerPlayNetworking.PlayPayloadHandler<ModifyRequestAccept> C2SSyncHandler_ModifyRequestAccept;
-    static ServerPlayNetworking.PlayPayloadHandler<ModifyRequestDeny> C2SSyncHandler_ModifyRequestDeny;
-    static ServerPlayNetworking.PlayPayloadHandler<ReceivedLitematic> C2SSyncHandler_ReceivedLitematic;
-    static ServerPlayNetworking.PlayPayloadHandler<RegisterMetadata> C2SSyncHandler_RegisterMetadata;
-    static ServerPlayNetworking.PlayPayloadHandler<RegisterVersion> C2SSyncHandler_RegisterVersion;
-    static ServerPlayNetworking.PlayPayloadHandler<RemoveSyncmatic> C2SSyncHandler_RemoveSyncmatic;
-    static ServerPlayNetworking.PlayPayloadHandler<RequestDownload> C2SSyncHandler_RequestDownload;
-    static ServerPlayNetworking.PlayPayloadHandler<SendLitematic> C2SSyncHandler_SendLitematic;
-    static ServerPlayNetworking.PlayPayloadHandler<SyncmaticaNbtData> C2SSyncHandler_NbtData;
+    static ServerPlayNetworking.PlayPayloadHandler<SyncCancelShare> C2SSyncHandler_CancelShare;
+    static ServerPlayNetworking.PlayPayloadHandler<SyncCancelLitematic> C2SSyncHandler_CancelLitematic;
+    static ServerPlayNetworking.PlayPayloadHandler<SyncConfirmUser> C2SSyncHandler_ConfirmUser;
+    static ServerPlayNetworking.PlayPayloadHandler<SyncFeature> C2SSyncHandler_Feature;
+    static ServerPlayNetworking.PlayPayloadHandler<SyncFeatureRequest> C2SSyncHandler_FeatureRequest;
+    static ServerPlayNetworking.PlayPayloadHandler<SyncFinishedLitematic> C2SSyncHandler_FinishedLitematic;
+    static ServerPlayNetworking.PlayPayloadHandler<SyncMessage> C2SSyncHandler_Message;
+    static ServerPlayNetworking.PlayPayloadHandler<SyncModify> C2SSyncHandler_Modify;
+    static ServerPlayNetworking.PlayPayloadHandler<SyncModifyFinish> C2SSyncHandler_ModifyFinish;
+    static ServerPlayNetworking.PlayPayloadHandler<SyncModifyRequest> C2SSyncHandler_ModifyRequest;
+    static ServerPlayNetworking.PlayPayloadHandler<SyncModifyRequestAccept> C2SSyncHandler_ModifyRequestAccept;
+    static ServerPlayNetworking.PlayPayloadHandler<SyncModifyRequestDeny> C2SSyncHandler_ModifyRequestDeny;
+    static ServerPlayNetworking.PlayPayloadHandler<SyncReceivedLitematic> C2SSyncHandler_ReceivedLitematic;
+    static ServerPlayNetworking.PlayPayloadHandler<SyncRegisterMetadata> C2SSyncHandler_RegisterMetadata;
+    static ServerPlayNetworking.PlayPayloadHandler<SyncRegisterVersion> C2SSyncHandler_RegisterVersion;
+    static ServerPlayNetworking.PlayPayloadHandler<SyncRemoveSyncmatic> C2SSyncHandler_RemoveSyncmatic;
+    static ServerPlayNetworking.PlayPayloadHandler<SyncRequestDownload> C2SSyncHandler_RequestDownload;
+    static ServerPlayNetworking.PlayPayloadHandler<SyncSendLitematic> C2SSyncHandler_SendLitematic;
+    static ServerPlayNetworking.PlayPayloadHandler<SyncNbtData> C2SSyncHandler_NbtData;
     private static boolean receiversInit = false;
     public static void registerReceivers()
     {
@@ -37,24 +38,25 @@ public class ServerNetworkPlayRegister
             if (SyncmaticaReference.isDedicatedServer())
                 SyncLog.debug("ServerHandlerManager#registerReceivers(): Game is running in Dedicated Server Mode.");
             SyncLog.debug("ServerHandlerManager#registerReceivers(): isServer() true -> registerSyncmaticaHandlers ...");
-            ServerPlayNetworking.registerGlobalReceiver(CancelShare.TYPE, C2SSyncHandler_CancelShare);
-            ServerPlayNetworking.registerGlobalReceiver(ConfirmUser.TYPE, C2SSyncHandler_ConfirmUser);
-            ServerPlayNetworking.registerGlobalReceiver(Feature.TYPE, C2SSyncHandler_Feature);
-            ServerPlayNetworking.registerGlobalReceiver(FeatureRequest.TYPE, C2SSyncHandler_FeatureRequest);
-            ServerPlayNetworking.registerGlobalReceiver(FinishedLitematic.TYPE, C2SSyncHandler_FinishedLitematic);
-            ServerPlayNetworking.registerGlobalReceiver(Message.TYPE, C2SSyncHandler_Message);
-            ServerPlayNetworking.registerGlobalReceiver(Modify.TYPE, C2SSyncHandler_Modify);
-            ServerPlayNetworking.registerGlobalReceiver(ModifyFinish.TYPE, C2SSyncHandler_ModifyFinish);
-            ServerPlayNetworking.registerGlobalReceiver(ModifyRequest.TYPE, C2SSyncHandler_ModifyRequest);
-            ServerPlayNetworking.registerGlobalReceiver(ModifyRequestAccept.TYPE, C2SSyncHandler_ModifyRequestAccept);
-            ServerPlayNetworking.registerGlobalReceiver(ModifyRequestDeny.TYPE, C2SSyncHandler_ModifyRequestDeny);
-            ServerPlayNetworking.registerGlobalReceiver(ReceivedLitematic.TYPE, C2SSyncHandler_ReceivedLitematic);
-            ServerPlayNetworking.registerGlobalReceiver(RegisterMetadata.TYPE, C2SSyncHandler_RegisterMetadata);
-            ServerPlayNetworking.registerGlobalReceiver(RegisterVersion.TYPE, C2SSyncHandler_RegisterVersion);
-            ServerPlayNetworking.registerGlobalReceiver(RemoveSyncmatic.TYPE, C2SSyncHandler_RemoveSyncmatic);
-            ServerPlayNetworking.registerGlobalReceiver(RequestDownload.TYPE, C2SSyncHandler_RequestDownload);
-            ServerPlayNetworking.registerGlobalReceiver(SendLitematic.TYPE, C2SSyncHandler_SendLitematic);
-            ServerPlayNetworking.registerGlobalReceiver(SyncmaticaNbtData.TYPE, C2SSyncHandler_NbtData);
+            ServerPlayNetworking.registerGlobalReceiver(SyncCancelShare.TYPE, C2SSyncHandler_CancelShare);
+            ServerPlayNetworking.registerGlobalReceiver(SyncCancelLitematic.TYPE, C2SSyncHandler_CancelLitematic);
+            ServerPlayNetworking.registerGlobalReceiver(SyncConfirmUser.TYPE, C2SSyncHandler_ConfirmUser);
+            ServerPlayNetworking.registerGlobalReceiver(SyncFeature.TYPE, C2SSyncHandler_Feature);
+            ServerPlayNetworking.registerGlobalReceiver(SyncFeatureRequest.TYPE, C2SSyncHandler_FeatureRequest);
+            ServerPlayNetworking.registerGlobalReceiver(SyncFinishedLitematic.TYPE, C2SSyncHandler_FinishedLitematic);
+            ServerPlayNetworking.registerGlobalReceiver(SyncMessage.TYPE, C2SSyncHandler_Message);
+            ServerPlayNetworking.registerGlobalReceiver(SyncModify.TYPE, C2SSyncHandler_Modify);
+            ServerPlayNetworking.registerGlobalReceiver(SyncModifyFinish.TYPE, C2SSyncHandler_ModifyFinish);
+            ServerPlayNetworking.registerGlobalReceiver(SyncModifyRequest.TYPE, C2SSyncHandler_ModifyRequest);
+            ServerPlayNetworking.registerGlobalReceiver(SyncModifyRequestAccept.TYPE, C2SSyncHandler_ModifyRequestAccept);
+            ServerPlayNetworking.registerGlobalReceiver(SyncModifyRequestDeny.TYPE, C2SSyncHandler_ModifyRequestDeny);
+            ServerPlayNetworking.registerGlobalReceiver(SyncReceivedLitematic.TYPE, C2SSyncHandler_ReceivedLitematic);
+            ServerPlayNetworking.registerGlobalReceiver(SyncRegisterMetadata.TYPE, C2SSyncHandler_RegisterMetadata);
+            ServerPlayNetworking.registerGlobalReceiver(SyncRegisterVersion.TYPE, C2SSyncHandler_RegisterVersion);
+            ServerPlayNetworking.registerGlobalReceiver(SyncRemoveSyncmatic.TYPE, C2SSyncHandler_RemoveSyncmatic);
+            ServerPlayNetworking.registerGlobalReceiver(SyncRequestDownload.TYPE, C2SSyncHandler_RequestDownload);
+            ServerPlayNetworking.registerGlobalReceiver(SyncSendLitematic.TYPE, C2SSyncHandler_SendLitematic);
+            ServerPlayNetworking.registerGlobalReceiver(SyncNbtData.TYPE, C2SSyncHandler_NbtData);
             receiversInit = true;
         }
     }
@@ -65,30 +67,32 @@ public class ServerNetworkPlayRegister
         if (SyncmaticaReference.isServer())
         {
             SyncLog.debug("ServerHandlerManager#unregisterReceivers(): isServer() true -> unregisterSyncmaticaHandlers ...");
-            ServerPlayNetworking.unregisterGlobalReceiver(CancelShare.TYPE.id());
-            ServerPlayNetworking.unregisterGlobalReceiver(ConfirmUser.TYPE.id());
-            ServerPlayNetworking.unregisterGlobalReceiver(Feature.TYPE.id());
-            ServerPlayNetworking.unregisterGlobalReceiver(FeatureRequest.TYPE.id());
-            ServerPlayNetworking.unregisterGlobalReceiver(FinishedLitematic.TYPE.id());
-            ServerPlayNetworking.unregisterGlobalReceiver(Message.TYPE.id());
-            ServerPlayNetworking.unregisterGlobalReceiver(Modify.TYPE.id());
-            ServerPlayNetworking.unregisterGlobalReceiver(ModifyFinish.TYPE.id());
-            ServerPlayNetworking.unregisterGlobalReceiver(ModifyRequest.TYPE.id());
-            ServerPlayNetworking.unregisterGlobalReceiver(ModifyRequestAccept.TYPE.id());
-            ServerPlayNetworking.unregisterGlobalReceiver(ModifyRequestDeny.TYPE.id());
-            ServerPlayNetworking.unregisterGlobalReceiver(ReceivedLitematic.TYPE.id());
-            ServerPlayNetworking.unregisterGlobalReceiver(RegisterMetadata.TYPE.id());
-            ServerPlayNetworking.unregisterGlobalReceiver(RegisterVersion.TYPE.id());
-            ServerPlayNetworking.unregisterGlobalReceiver(RemoveSyncmatic.TYPE.id());
-            ServerPlayNetworking.unregisterGlobalReceiver(RequestDownload.TYPE.id());
-            ServerPlayNetworking.unregisterGlobalReceiver(SendLitematic.TYPE.id());
-            ServerPlayNetworking.unregisterGlobalReceiver(SyncmaticaNbtData.TYPE.id());
+            ServerPlayNetworking.unregisterGlobalReceiver(SyncCancelShare.TYPE.id());
+            ServerPlayNetworking.unregisterGlobalReceiver(SyncCancelLitematic.TYPE.id());
+            ServerPlayNetworking.unregisterGlobalReceiver(SyncConfirmUser.TYPE.id());
+            ServerPlayNetworking.unregisterGlobalReceiver(SyncFeature.TYPE.id());
+            ServerPlayNetworking.unregisterGlobalReceiver(SyncFeatureRequest.TYPE.id());
+            ServerPlayNetworking.unregisterGlobalReceiver(SyncFinishedLitematic.TYPE.id());
+            ServerPlayNetworking.unregisterGlobalReceiver(SyncMessage.TYPE.id());
+            ServerPlayNetworking.unregisterGlobalReceiver(SyncModify.TYPE.id());
+            ServerPlayNetworking.unregisterGlobalReceiver(SyncModifyFinish.TYPE.id());
+            ServerPlayNetworking.unregisterGlobalReceiver(SyncModifyRequest.TYPE.id());
+            ServerPlayNetworking.unregisterGlobalReceiver(SyncModifyRequestAccept.TYPE.id());
+            ServerPlayNetworking.unregisterGlobalReceiver(SyncModifyRequestDeny.TYPE.id());
+            ServerPlayNetworking.unregisterGlobalReceiver(SyncReceivedLitematic.TYPE.id());
+            ServerPlayNetworking.unregisterGlobalReceiver(SyncRegisterMetadata.TYPE.id());
+            ServerPlayNetworking.unregisterGlobalReceiver(SyncRegisterVersion.TYPE.id());
+            ServerPlayNetworking.unregisterGlobalReceiver(SyncRemoveSyncmatic.TYPE.id());
+            ServerPlayNetworking.unregisterGlobalReceiver(SyncRequestDownload.TYPE.id());
+            ServerPlayNetworking.unregisterGlobalReceiver(SyncSendLitematic.TYPE.id());
+            ServerPlayNetworking.unregisterGlobalReceiver(SyncNbtData.TYPE.id());
             receiversInit = false;
         }
     }
     static
     {
         C2SSyncHandler_CancelShare = ServerNetworkPlayHandler::receiveCancelShare;
+        C2SSyncHandler_CancelLitematic = ServerNetworkPlayHandler::receiveCancelLitematic;
         C2SSyncHandler_ConfirmUser = ServerNetworkPlayHandler::receiveConfirmUser;
         C2SSyncHandler_Feature = ServerNetworkPlayHandler::receiveFeature;
         C2SSyncHandler_FeatureRequest = ServerNetworkPlayHandler::receiveFeatureRequest;

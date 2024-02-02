@@ -6,12 +6,12 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 
-public record Feature(SyncByteBuf byteBuf) implements CustomPayload
+public record SyncModifyRequest(SyncByteBuf byteBuf) implements CustomPayload
 {
-    public static final Id<Feature> TYPE = new Id<>(new Identifier("syncmatica", "feature"));
-    public static final PacketCodec<PacketByteBuf, Feature> CODEC = CustomPayload.codecOf(Feature::write, Feature::new);
+    public static final Id<SyncModifyRequest> TYPE = new Id<>(new Identifier("syncmatica", "modify_request"));
+    public static final PacketCodec<PacketByteBuf, SyncModifyRequest> CODEC = CustomPayload.codecOf(SyncModifyRequest::write, SyncModifyRequest::new);
 
-    public Feature(PacketByteBuf input)
+    public SyncModifyRequest(PacketByteBuf input)
     {
         this(new SyncByteBuf(input.readBytes(input.readableBytes())));
     }

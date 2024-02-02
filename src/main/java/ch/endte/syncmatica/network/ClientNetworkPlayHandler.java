@@ -76,7 +76,7 @@ public class ClientNetworkPlayHandler
     {
         CallbackInfo ci = new CallbackInfo("receiveSyncNbt", false);
         SyncLog.debug("ClientNetworkPlayHandler#receiveSyncPacket(): received payload id: {}, size in bytes {}", type.getId().toString(), data.getSizeInBytes());
-        SyncLog.debug("ClientNetworkPlayHandler#receiveSyncPacket(): payload.readString(): {}", data.getString(SyncmaticaNbtData.KEY));
+        SyncLog.debug("ClientNetworkPlayHandler#receiveSyncPacket(): payload.readString(): {}", data.getString(SyncNbtData.KEY));
 
         if (handler == null)
         {
@@ -87,91 +87,96 @@ public class ClientNetworkPlayHandler
             ActorClientPlayNetworkHandler.getInstance().packetNbtEvent(type, data, handler, ci);
         }
     }
-    public static void receiveCancelShare(CancelShare data, ClientPlayNetworking.Context context)
+    public static void receiveCancelShare(SyncCancelShare data, ClientPlayNetworking.Context context)
     {
         receiveSyncPacket(PacketType.CANCEL_SHARE, data.byteBuf(), context.client().getNetworkHandler());
     }
 
-    public static void receiveConfirmUser(ConfirmUser data, ClientPlayNetworking.Context context)
+    public static void receiveCancelLitematic(SyncCancelLitematic data, ClientPlayNetworking.Context context)
+    {
+        receiveSyncPacket(PacketType.CANCEL_LITEMATIC, data.byteBuf(), context.client().getNetworkHandler());
+    }
+
+    public static void receiveConfirmUser(SyncConfirmUser data, ClientPlayNetworking.Context context)
     {
         receiveSyncPacket(PacketType.CONFIRM_USER, data.byteBuf(), context.client().getNetworkHandler());
     }
 
-    public static void receiveFeature(Feature data, ClientPlayNetworking.Context context)
+    public static void receiveFeature(SyncFeature data, ClientPlayNetworking.Context context)
     {
         receiveSyncPacket(PacketType.FEATURE, data.byteBuf(), context.client().getNetworkHandler());
     }
 
-    public static void receiveFeatureRequest(FeatureRequest data, ClientPlayNetworking.Context context)
+    public static void receiveFeatureRequest(SyncFeatureRequest data, ClientPlayNetworking.Context context)
     {
         receiveSyncPacket(PacketType.FEATURE_REQUEST, data.byteBuf(), context.client().getNetworkHandler());
     }
 
-    public static void receiveFinishedLitematic(FinishedLitematic data, ClientPlayNetworking.Context context)
+    public static void receiveFinishedLitematic(SyncFinishedLitematic data, ClientPlayNetworking.Context context)
     {
         receiveSyncPacket(PacketType.FINISHED_LITEMATIC, data.byteBuf(), context.client().getNetworkHandler());
     }
 
-    public static void receiveMessage(Message data, ClientPlayNetworking.Context context)
+    public static void receiveMessage(SyncMessage data, ClientPlayNetworking.Context context)
     {
         receiveSyncPacket(PacketType.MESSAGE, data.byteBuf(), context.client().getNetworkHandler());
     }
 
-    public static void receiveModify(Modify data, ClientPlayNetworking.Context context)
+    public static void receiveModify(SyncModify data, ClientPlayNetworking.Context context)
     {
         receiveSyncPacket(PacketType.MODIFY, data.byteBuf(), context.client().getNetworkHandler());
     }
 
-    public static void receiveModifyFinish(ModifyFinish data, ClientPlayNetworking.Context context)
+    public static void receiveModifyFinish(SyncModifyFinish data, ClientPlayNetworking.Context context)
     {
         receiveSyncPacket(PacketType.MODIFY_FINISH, data.byteBuf(), context.client().getNetworkHandler());
     }
 
-    public static void receiveModifyRequest(ModifyRequest data, ClientPlayNetworking.Context context)
+    public static void receiveModifyRequest(SyncModifyRequest data, ClientPlayNetworking.Context context)
     {
         receiveSyncPacket(PacketType.MODIFY_REQUEST, data.byteBuf(), context.client().getNetworkHandler());
     }
 
-    public static void receiveModifyRequestAccept(ModifyRequestAccept data, ClientPlayNetworking.Context context)
+    public static void receiveModifyRequestAccept(SyncModifyRequestAccept data, ClientPlayNetworking.Context context)
     {
         receiveSyncPacket(PacketType.MODIFY_REQUEST_ACCEPT, data.byteBuf(), context.client().getNetworkHandler());
     }
 
-    public static void receiveModifyRequestDeny(ModifyRequestDeny data, ClientPlayNetworking.Context context)
+    public static void receiveModifyRequestDeny(SyncModifyRequestDeny data, ClientPlayNetworking.Context context)
     {
         receiveSyncPacket(PacketType.MODIFY_REQUEST_DENY, data.byteBuf(), context.client().getNetworkHandler());
     }
 
-    public static void receiveReceivedLitematic(ReceivedLitematic data, ClientPlayNetworking.Context context)
+    public static void receiveReceivedLitematic(SyncReceivedLitematic data, ClientPlayNetworking.Context context)
     {
         receiveSyncPacket(PacketType.RECEIVED_LITEMATIC, data.byteBuf(), context.client().getNetworkHandler());
     }
 
-    public static void receiveRegisterMetadata(RegisterMetadata data, ClientPlayNetworking.Context context)
+    public static void receiveRegisterMetadata(SyncRegisterMetadata data, ClientPlayNetworking.Context context)
     {
         receiveSyncPacket(PacketType.REGISTER_METADATA, data.byteBuf(), context.client().getNetworkHandler());
     }
 
-    public static void receiveRegisterVersion(RegisterVersion data, ClientPlayNetworking.Context context)
+    public static void receiveRegisterVersion(SyncRegisterVersion data, ClientPlayNetworking.Context context)
     {
         receiveSyncPacket(PacketType.REGISTER_VERSION, data.byteBuf(), context.client().getNetworkHandler());
     }
 
-    public static void receiveRemoveSyncmatic(RemoveSyncmatic data, ClientPlayNetworking.Context context)
+    public static void receiveRemoveSyncmatic(SyncRemoveSyncmatic data, ClientPlayNetworking.Context context)
     {
         receiveSyncPacket(PacketType.REMOVE_SYNCMATIC, data.byteBuf(), context.client().getNetworkHandler());
     }
-    public static void receiveRequestDownload(RequestDownload data, ClientPlayNetworking.Context context)
+    public static void receiveRequestDownload(SyncRequestDownload data, ClientPlayNetworking.Context context)
     {
         receiveSyncPacket(PacketType.REQUEST_LITEMATIC, data.byteBuf(), context.client().getNetworkHandler());
     }
 
-    public static void receiveSendLitematic(SendLitematic data, ClientPlayNetworking.Context context)
+    public static void receiveSendLitematic(SyncSendLitematic data, ClientPlayNetworking.Context context)
     {
         receiveSyncPacket(PacketType.SEND_LITEMATIC, data.byteBuf(), context.client().getNetworkHandler());
     }
 
-    public static void receiveSyncNbtData(SyncmaticaNbtData data, ClientPlayNetworking.Context context)
+    public static void receiveSyncNbtData(SyncNbtData data, ClientPlayNetworking.Context context)
     {
         receiveSyncNbt(PacketType.NBT_DATA, data.data(), context.client().getNetworkHandler());
     }

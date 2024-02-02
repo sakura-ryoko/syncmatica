@@ -6,12 +6,12 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 
-public record SendLitematic(SyncByteBuf byteBuf) implements CustomPayload
+public record SyncCancelShare(SyncByteBuf byteBuf) implements CustomPayload
 {
-    public static final Id<SendLitematic> TYPE = new Id<>(new Identifier("syncmatica", "send_litematic"));
-    public static final PacketCodec<PacketByteBuf, SendLitematic> CODEC = CustomPayload.codecOf(SendLitematic::write, SendLitematic::new);
+    public static final Id<SyncCancelShare> TYPE = new Id<>(new Identifier("syncmatica", "cancel_share"));
+    public static final PacketCodec<PacketByteBuf, SyncCancelShare> CODEC = CustomPayload.codecOf(SyncCancelShare::write, SyncCancelShare::new);
 
-    public SendLitematic(PacketByteBuf input)
+    public SyncCancelShare(PacketByteBuf input)
     {
         this(new SyncByteBuf(input.readBytes(input.readableBytes())));
     }

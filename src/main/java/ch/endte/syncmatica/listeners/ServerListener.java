@@ -18,34 +18,39 @@ public class ServerListener implements IServerListener
 {
     public void onServerStarting(MinecraftServer minecraftServer)
     {
-        // Register in case for whatever reason they aren't already
-        if (SyncmaticaReference.isServer())
-        {
-            ServerNetworkPlayInitHandler.registerPlayChannels();
-            //ServerDebugSuite.checkGlobalChannels();
-        }
-        else {
-            // MaLiLib Calls for Client Context
-            ClientNetworkPlayInitHandler.registerPlayChannels();
-            //ClientDebugSuite.checkGlobalChannels();
-        }
         SyncLog.debug("MinecraftServerEvents#onServerStarting(): invoked.");
-
         if (minecraftServer.isDedicated())
             SyncmaticaReference.setDedicatedServer(true);
         if (minecraftServer.isSingleplayer())
             SyncmaticaReference.setSinglePlayer(true);
+
+        // Register in case for whatever reason they aren't already
+        if (SyncmaticaReference.isServer() || SyncmaticaReference.isDedicatedServer() || SyncmaticaReference.isIntegratedServer())
+        {
+            ServerNetworkPlayInitHandler.registerPlayChannels();
+            //ServerDebugSuite.checkGlobalChannels();
+        }
+        if (SyncmaticaReference.isClient() || SyncmaticaReference.isSinglePlayer())
+        {
+            ClientNetworkPlayInitHandler.registerPlayChannels();
+            //ClientDebugSuite.checkGlobalChannels();
+        }
     }
     public void onServerStarted(MinecraftServer minecraftServer)
     {
-        if (SyncmaticaReference.isServer())
+        if (minecraftServer.isDedicated())
+            SyncmaticaReference.setDedicatedServer(true);
+        if (minecraftServer.isSingleplayer())
+            SyncmaticaReference.setSinglePlayer(true);
+        if (SyncmaticaReference.isServer() || SyncmaticaReference.isDedicatedServer() || SyncmaticaReference.isIntegratedServer())
         {
             ServerNetworkPlayInitHandler.registerReceivers();
             ServerDebugSuite.checkGlobalChannels();
         }
-        else
+        if (SyncmaticaReference.isClient() || SyncmaticaReference.isSinglePlayer())
         {
             ClientNetworkPlayInitHandler.registerReceivers();
+            ClientDebugSuite.checkGlobalChannels();
         }
         SyncLog.debug("MinecraftServerEvents#onServerStarted(): invoked.");
 
@@ -61,27 +66,25 @@ public class ServerListener implements IServerListener
     }
     public void onServerStopping(MinecraftServer minecraftServer)
     {
-        if (SyncmaticaReference.isServer())
+        if (SyncmaticaReference.isServer() || SyncmaticaReference.isDedicatedServer() || SyncmaticaReference.isIntegratedServer())
         {
             ServerDebugSuite.checkGlobalChannels();
         }
-        else
+        if (SyncmaticaReference.isClient() || SyncmaticaReference.isSinglePlayer())
         {
-            // MaLiLib Calls for Client Context
             ClientDebugSuite.checkGlobalChannels();
         }
         SyncLog.debug("MinecraftServerEvents#onServerStopping(): invoked.");
     }
     public void onServerStopped(MinecraftServer minecraftServer)
     {
-        if (SyncmaticaReference.isServer())
+        if (SyncmaticaReference.isServer() || SyncmaticaReference.isDedicatedServer() || SyncmaticaReference.isIntegratedServer())
         {
             ServerNetworkPlayInitHandler.unregisterReceivers();
             //ServerDebugSuite.checkGlobalChannels();
         }
-        else
+        if (SyncmaticaReference.isClient() || SyncmaticaReference.isSinglePlayer())
         {
-            // MaLiLib Calls for Client Context
             ClientNetworkPlayInitHandler.unregisterReceivers();
             //ClientDebugSuite.checkGlobalChannels();
         }

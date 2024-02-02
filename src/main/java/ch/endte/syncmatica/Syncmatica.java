@@ -106,6 +106,9 @@ public class Syncmatica {
 
     public static Context initClient(final CommunicationManager comms, final IFileStorage fileStorage, final SyncmaticManager schematics) {
         SyncLog.debug("Syncmatica#initClient(): invoked.");
+        ClientNetworkPlayInitHandler.registerPlayChannels();
+        ClientNetworkPlayInitHandler.registerReceivers();
+
         final Context clientContext = new Context(
                 fileStorage,
                 comms,
@@ -131,6 +134,9 @@ public class Syncmatica {
     }
     public static Context initServer(final CommunicationManager comms, final IFileStorage fileStorage, final SyncmaticManager schematics, final boolean isIntegratedServer, final File worldPath) {
         SyncLog.debug("Syncmatica#initServer(): invoked.");
+        ServerNetworkPlayInitHandler.registerPlayChannels();
+        ServerNetworkPlayInitHandler.registerReceivers();
+
         final Context serverContext = new Context(
                 fileStorage,
                 comms,

@@ -6,12 +6,12 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 
-public record ModifyRequestDeny(SyncByteBuf byteBuf) implements CustomPayload
+public record SyncRemoveSyncmatic(SyncByteBuf byteBuf) implements CustomPayload
 {
-    public static final Id<ModifyRequestDeny> TYPE = new Id<>(new Identifier("syncmatica", "modify_request_deny"));
-    public static final PacketCodec<PacketByteBuf, ModifyRequestDeny> CODEC = CustomPayload.codecOf(ModifyRequestDeny::write, ModifyRequestDeny::new);
+    public static final Id<SyncRemoveSyncmatic> TYPE = new Id<>(new Identifier("syncmatica", "remove_syncmatic"));
+    public static final PacketCodec<PacketByteBuf, SyncRemoveSyncmatic> CODEC = CustomPayload.codecOf(SyncRemoveSyncmatic::write, SyncRemoveSyncmatic::new);
 
-    public ModifyRequestDeny(PacketByteBuf input)
+    public SyncRemoveSyncmatic(PacketByteBuf input)
     {
         this(new SyncByteBuf(input.readBytes(input.readableBytes())));
     }
