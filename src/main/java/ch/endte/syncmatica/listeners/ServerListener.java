@@ -22,25 +22,19 @@ public class ServerListener implements IServerListener
         if (SyncmaticaReference.isServer())
         {
             ServerNetworkPlayInitHandler.registerPlayChannels();
-            ServerDebugSuite.checkGlobalChannels();
+            //ServerDebugSuite.checkGlobalChannels();
         }
         else {
             // MaLiLib Calls for Client Context
             ClientNetworkPlayInitHandler.registerPlayChannels();
-            ClientDebugSuite.checkGlobalChannels();
+            //ClientDebugSuite.checkGlobalChannels();
         }
         SyncLog.debug("MinecraftServerEvents#onServerStarting(): invoked.");
 
         if (minecraftServer.isDedicated())
-            SyncmaticaReference.setDedicatedServer();
-        // Process Syncmatica Server Context
-        Syncmatica.initServer(
-                new ServerCommunicationManager(),
-                new FileStorage(),
-                new SyncmaticManager(),
-                SyncmaticaReference.isDedicatedServer(),
-                minecraftServer.getSavePath(WorldSavePath.ROOT).toFile()
-        ).startup();
+            SyncmaticaReference.setDedicatedServer(true);
+        if (minecraftServer.isSingleplayer())
+            SyncmaticaReference.setSinglePlayer(true);
     }
     public void onServerStarted(MinecraftServer minecraftServer)
     {
@@ -51,10 +45,19 @@ public class ServerListener implements IServerListener
         }
         else
         {
-            // MaLiLib Calls for Client Context
             ClientNetworkPlayInitHandler.registerReceivers();
         }
         SyncLog.debug("MinecraftServerEvents#onServerStarted(): invoked.");
+
+        SyncLog.debug("ServerListener#onServerStarted(): processing Syncmatica.initServer().");
+        // Process Syncmatica Server Context
+        Syncmatica.initServer(
+                new ServerCommunicationManager(),
+                new FileStorage(),
+                new SyncmaticManager(),
+                SyncmaticaReference.isIntegratedServer(),
+                minecraftServer.getSavePath(WorldSavePath.ROOT).toFile()
+        ).startup();
     }
     public void onServerStopping(MinecraftServer minecraftServer)
     {
@@ -74,17 +77,20 @@ public class ServerListener implements IServerListener
         if (SyncmaticaReference.isServer())
         {
             ServerNetworkPlayInitHandler.unregisterReceivers();
-            ServerDebugSuite.checkGlobalChannels();
+            //ServerDebugSuite.checkGlobalChannels();
         }
         else
         {
             // MaLiLib Calls for Client Context
             ClientNetworkPlayInitHandler.unregisterReceivers();
-            ClientDebugSuite.checkGlobalChannels();
+            //ClientDebugSuite.checkGlobalChannels();
         }
+        SyncmaticaReference.setIntegratedServer(false);
+        SyncmaticaReference.setSinglePlayer(false);
         SyncLog.debug("MinecraftServerEvents#onServerStopped(): invoked.");
 
         // Process Syncmatica Shutdown
+        SyncLog.debug("ServerListener#onServerStopped(): processing Syncmatica.shutdown().");
         Syncmatica.shutdown();
     }
 }

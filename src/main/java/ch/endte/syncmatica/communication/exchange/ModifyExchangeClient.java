@@ -7,9 +7,11 @@ import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.litematica.ScreenHelper;
 import ch.endte.syncmatica.network.payload.PacketType;
+import ch.endte.syncmatica.util.SyncLog;
 import fi.dy.masa.litematica.schematic.placement.SchematicPlacement;
 import fi.dy.masa.malilib.gui.Message;
 import io.netty.buffer.Unpooled;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 
 public class ModifyExchangeClient extends AbstractExchange
@@ -36,6 +38,12 @@ public class ModifyExchangeClient extends AbstractExchange
             return AbstractExchange.checkUUID(packetBuf, placement.getId());
         }
         return false;
+    }
+
+    @Override
+    public boolean checkPacket(PacketType type, NbtCompound nbt)
+    {
+        return type.equals(PacketType.NBT_DATA);
     }
 
     @Override
@@ -66,6 +74,12 @@ public class ModifyExchangeClient extends AbstractExchange
             getContext().getCommunicationManager().startExchange(legacyModify);
             succeed(); // the adding portion of this is handled by the ShareLitematicExchange
         }
+    }
+
+    @Override
+    public void handle(PacketType type, NbtCompound nbt)
+    {
+        SyncLog.debug("ModifyExchangeClient#handle(): received nbtData packet.");
     }
 
     @Override

@@ -9,7 +9,7 @@ import ch.endte.syncmatica.listeners.PlayerListener;
 import ch.endte.syncmatica.listeners.ServerListener;
 import ch.endte.syncmatica.network.ClientNetworkPlayInitHandler;
 import ch.endte.syncmatica.network.ServerNetworkPlayInitHandler;
-import ch.endte.syncmatica.network.ActorClientPlayNetworkHandler;
+import ch.endte.syncmatica.network.packet.ActorClientPlayNetworkHandler;
 import ch.endte.syncmatica.util.SyncLog;
 import net.minecraft.util.Identifier;
 
@@ -31,8 +31,12 @@ public class Syncmatica {
     protected static boolean MOD_INIT = false;
     protected static boolean hasMaLiLib = false;
     protected static boolean hasLitematica = false;
-    public static Context getContext(final Identifier id) {
-        return contexts.get(id);
+    protected static boolean context_init = false;
+    public static Context getContext(final Identifier id)
+    {
+        if (context_init)
+            return contexts.get(id);
+        else return null;
     }
 
     /** This preInit() calls are for early network API initialization / Play Channel registration;
@@ -73,15 +77,18 @@ public class Syncmatica {
         PlayerHandler.getInstance().registerPlayerHandler(playerListener);
     }
     static void init(final Context con, final Identifier contextId) {
+        SyncLog.debug("Syncmatica#init(): invoked.");
         if (contexts == null) {
             contexts = new HashMap<>();
         }
         if (!contexts.containsKey(contextId)) {
             contexts.put(contextId, con);
         }
+        context_init = true;
     }
 
     public static void shutdown() {
+        SyncLog.debug("Syncmatica#shutdown(): invoked.");
         if (contexts != null) {
             for (final Context con : contexts.values()) {
                 if (con.isStarted()) {
@@ -94,9 +101,11 @@ public class Syncmatica {
 
     private static void deinit() {
         contexts = null;
+        context_init = false;
     }
 
     public static Context initClient(final CommunicationManager comms, final IFileStorage fileStorage, final SyncmaticManager schematics) {
+        SyncLog.debug("Syncmatica#initClient(): invoked.");
         final Context clientContext = new Context(
                 fileStorage,
                 comms,
@@ -107,6 +116,7 @@ public class Syncmatica {
         return clientContext;
     }
     public static void restartClient() {
+        SyncLog.debug("Syncmatica#restartClient(): invoked.");
         final Context oldClient = getContext(CLIENT_CONTEXT);
         if (oldClient != null) {
             if (oldClient.isStarted()) {
@@ -120,6 +130,7 @@ public class Syncmatica {
         ActorClientPlayNetworkHandler.getInstance().startClient();
     }
     public static Context initServer(final CommunicationManager comms, final IFileStorage fileStorage, final SyncmaticManager schematics, final boolean isIntegratedServer, final File worldPath) {
+        SyncLog.debug("Syncmatica#initServer(): invoked.");
         final Context serverContext = new Context(
                 fileStorage,
                 comms,

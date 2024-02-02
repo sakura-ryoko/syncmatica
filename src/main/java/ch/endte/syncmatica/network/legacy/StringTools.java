@@ -1,4 +1,4 @@
-package ch.endte.syncmatica.util;
+package ch.endte.syncmatica.network.legacy;
 
 import java.util.ArrayList;
 import java.util.List;

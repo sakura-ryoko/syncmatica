@@ -36,7 +36,14 @@ public class PayloadUtils
         }
         else return null;
     }
-
+    public static PacketByteBuf fromSyncBuf(SyncByteBuf in)
+    {
+        return new PacketByteBuf(in.asByteBuf());
+    }
+    public static SyncByteBuf fromByteBuf(PacketByteBuf in)
+    {
+        return new SyncByteBuf(in.asByteBuf());
+    }
     @Nullable
     public static CustomPayload getPayload(PacketType type, SyncByteBuf buf)
     {

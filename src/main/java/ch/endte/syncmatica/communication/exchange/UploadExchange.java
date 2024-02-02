@@ -4,7 +4,9 @@ import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.network.payload.PacketType;
+import ch.endte.syncmatica.util.SyncLog;
 import io.netty.buffer.Unpooled;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 
 import java.io.*;
@@ -40,6 +42,12 @@ public class UploadExchange extends AbstractExchange
     }
 
     @Override
+    public boolean checkPacket(PacketType type, NbtCompound nbt)
+    {
+        return type.equals(PacketType.NBT_DATA);
+    }
+
+    @Override
     public void handle(final PacketType type, final PacketByteBuf packetBuf)
     {
 
@@ -52,6 +60,12 @@ public class UploadExchange extends AbstractExchange
         {
             close(false);
         }
+    }
+
+    @Override
+    public void handle(PacketType type, NbtCompound nbt)
+    {
+        SyncLog.debug("UploadExchange#handle(): received nbtData packet.");
     }
 
     private void send()

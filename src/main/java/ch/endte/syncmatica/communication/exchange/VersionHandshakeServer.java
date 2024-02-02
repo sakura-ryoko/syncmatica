@@ -8,6 +8,7 @@ import ch.endte.syncmatica.features.FeatureSet;
 import ch.endte.syncmatica.network.payload.PacketType;
 import ch.endte.syncmatica.util.SyncLog;
 import io.netty.buffer.Unpooled;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 
 import java.util.Collection;
@@ -22,6 +23,12 @@ public class VersionHandshakeServer extends FeatureExchange
     {
         return type.equals(PacketType.REGISTER_VERSION)
                 || super.checkPacket(type, packetBuf);
+    }
+
+    @Override
+    public boolean checkPacket(PacketType type, NbtCompound nbt)
+    {
+        return type.equals(PacketType.NBT_DATA);
     }
 
     @Override
@@ -52,6 +59,12 @@ public class VersionHandshakeServer extends FeatureExchange
         {
             super.handle(type, packetBuf);
         }
+    }
+
+    @Override
+    public void handle(PacketType type, NbtCompound nbt)
+    {
+        SyncLog.debug("VersionHandshakeServer#handle(): received nbtData packet.");
     }
 
     @Override

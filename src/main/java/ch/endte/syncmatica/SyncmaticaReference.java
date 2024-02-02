@@ -4,11 +4,8 @@ import ch.endte.syncmatica.util.SyncLog;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
-import net.minecraft.util.Identifier;
 
-import java.io.File;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * Main Reference Calls
@@ -34,25 +31,25 @@ public class SyncmaticaReference
     {
         return SINGLE_PLAYER;
     }
-    public static void setSinglePlayer()
+    public static void setSinglePlayer(boolean toggle)
     {
-        SINGLE_PLAYER = true;
+        SINGLE_PLAYER = toggle;
     }
     public static boolean isDedicatedServer()
     {
         return DEDICATED_SERVER;
     }
-    public static void setDedicatedServer()
+    public static void setDedicatedServer(boolean toggle)
     {
-        DEDICATED_SERVER = true;
+        DEDICATED_SERVER = toggle;
     }
     public static boolean isIntegratedServer()
     {
         return INTEGRATED_SERVER;
     }
-    public static void setIntegratedServer()
+    public static void setIntegratedServer(boolean toggle)
     {
-        INTEGRATED_SERVER = true;
+        INTEGRATED_SERVER = toggle;
     }
     protected static String getModVersion()
     {

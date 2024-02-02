@@ -115,4 +115,5 @@ public enum PacketType {
         }
         return null;
     }
+    public Identifier getId() { return this.identifier; }
 }

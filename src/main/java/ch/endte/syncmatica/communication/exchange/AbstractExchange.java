@@ -3,6 +3,7 @@ package ch.endte.syncmatica.communication.exchange;
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.communication.CommunicationManager;
 import ch.endte.syncmatica.communication.ExchangeTarget;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 
 import java.util.UUID;
@@ -67,6 +68,12 @@ public abstract class AbstractExchange implements Exchange
         final int r = sourceBuf.readerIndex();
         final UUID sourceId = sourceBuf.readUuid();
         sourceBuf.readerIndex(r);
+        return sourceId.equals(targetId);
+    }
+    protected static boolean checkUUID(final NbtCompound data, final UUID targetId)
+    {
+        // Should just use "uuid" as the key record
+        final UUID sourceId = data.getUuid("uuid");
         return sourceId.equals(targetId);
     }
 }

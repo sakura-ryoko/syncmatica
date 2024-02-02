@@ -13,23 +13,23 @@ public class MixinMinecraftServer {
      *  Call Backs for IServerManager
      */
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;setupServer()Z"), method = "runServer")
-    private void syncmatica_onServerStarting(CallbackInfo ci)
+    private void syncmatica$onServerStarting(CallbackInfo ci)
     {
         ((ServerHandler) ServerHandler.getInstance()).onServerStarting((MinecraftServer) (Object) this);
     }
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;createMetadata()Lnet/minecraft/server/ServerMetadata;", ordinal = 0), method = "runServer")
-    private void syncmatica_onServerStarted(CallbackInfo ci)
+    private void syncmatica$onServerStarted(CallbackInfo ci)
     {
         ((ServerHandler) ServerHandler.getInstance()).onServerStarted((MinecraftServer) (Object) this);
     }
     @Inject(at = @At("HEAD"), method = "shutdown")
-    private void syncmatica_onServerStopping(CallbackInfo info)
+    private void syncmatica$onServerStopping(CallbackInfo info)
     {
         ((ServerHandler) ServerHandler.getInstance()).onServerStopping((MinecraftServer) (Object) this);
     }
 
     @Inject(at = @At("TAIL"), method = "shutdown")
-    private void syncmatica_onServerStopped(CallbackInfo info)
+    private void syncmatica$onServerStopped(CallbackInfo info)
     {
         ((ServerHandler) ServerHandler.getInstance()).onServerStopped((MinecraftServer) (Object) this);
     }

@@ -173,7 +173,6 @@ public class ServerCommunicationManager extends CommunicationManager
     @Override
     protected void handle(ExchangeTarget source, PacketType type, NbtCompound nbt)
     {
-        // Can code in a Nbt Compound handler here.
         SyncLog.debug("ServerCommunicationManager#handle(): received Nbt Packet type: {}, size : {}, from: {}, key data: {}", type.toString(), nbt.getSizeInBytes(), source.getPersistentName(), nbt.getString(SyncmaticaNbtData.KEY));
     }
 

@@ -10,6 +10,7 @@
   ],
   "client": [
     "MixinClientPlayNetworkHandler",
+    "MixinIntegratedServer",
     "MixinMinecraftClient"
   ],
   "server": [

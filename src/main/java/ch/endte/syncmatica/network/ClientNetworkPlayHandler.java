@@ -1,15 +1,19 @@
 package ch.endte.syncmatica.network;
 
+import ch.endte.syncmatica.network.packet.ActorClientPlayNetworkHandler;
 import ch.endte.syncmatica.network.payload.PacketType;
 import ch.endte.syncmatica.network.payload.SyncByteBuf;
 import ch.endte.syncmatica.network.payload.channels.*;
+import ch.endte.syncmatica.util.PayloadUtils;
 import ch.endte.syncmatica.util.SyncLog;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
  * canSend()
@@ -51,17 +55,19 @@ public class ClientNetworkPlayHandler
     // Client-bound packet sent from the Server
     public static void receiveSyncPacket(PacketType type, SyncByteBuf data, ClientPlayNetworkHandler handler)
     {
-        SyncLog.debug("ClientNetworkPlayHandler#receiveSyncPacket(): received payload id: {}, size in bytes {}", type.toString(), data.readableBytes());
+        CallbackInfo ci = new CallbackInfo("receiveSyncPacket", false);
+        PacketByteBuf out = PayloadUtils.fromSyncBuf(data);
+        SyncLog.debug("ClientNetworkPlayHandler#receiveSyncPacket(): received payload id: {}, size in bytes {}", type.getId().toString(), out.readableBytes());
 
-        // Call Syncmatica internal handler
-        ActorClientPlayNetworkHandler.getInstance().packetEvent(type, data, handler);
+        ActorClientPlayNetworkHandler.getInstance().packetEvent(type, out, handler, ci);
     }
     public static void receiveSyncNbt(PacketType type, NbtCompound data, ClientPlayNetworkHandler handler)
     {
-        SyncLog.debug("ClientNetworkPlayHandler#receiveSyncPacket(): received payload id: {}, size in bytes {}", type.toString(), data.getSizeInBytes());
-        //SyncLog.debug("ClientNetworkPlayHandler#receiveSyncPacket(): payload.readString(): {}", data.getString(SyncmaticaNbtData.KEY));
+        CallbackInfo ci = new CallbackInfo("receiveSyncNbt", false);
+        SyncLog.debug("ClientNetworkPlayHandler#receiveSyncPacket(): received payload id: {}, size in bytes {}", type.getId().toString(), data.getSizeInBytes());
+        SyncLog.debug("ClientNetworkPlayHandler#receiveSyncPacket(): payload.readString(): {}", data.getString(SyncmaticaNbtData.KEY));
 
-        ActorClientPlayNetworkHandler.getInstance().packetNbtEvent(type, data, handler);
+        ActorClientPlayNetworkHandler.getInstance().packetNbtEvent(type, data, handler, ci);
     }
     public static void receiveCancelShare(CancelShare data, ClientPlayNetworking.Context context)
     {
