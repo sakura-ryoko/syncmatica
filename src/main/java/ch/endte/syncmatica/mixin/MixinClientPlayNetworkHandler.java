@@ -1,7 +1,11 @@
 package ch.endte.syncmatica.mixin;
 
+import ch.endte.syncmatica.Context;
+import ch.endte.syncmatica.Syncmatica;
+import ch.endte.syncmatica.communication.ClientCommunicationManager;
 import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.network.packet.ActorClientPlayNetworkHandler;
+import ch.endte.syncmatica.network.packet.IClientPlayerNetworkHandler;
 import ch.endte.syncmatica.network.payload.PacketType;
 import ch.endte.syncmatica.network.payload.channels.*;
 import ch.endte.syncmatica.util.SyncLog;
@@ -15,11 +19,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.function.Consumer;
+
 @Mixin(value = ClientPlayNetworkHandler.class, priority = 998)
-public abstract class MixinClientPlayNetworkHandler
+public abstract class MixinClientPlayNetworkHandler implements IClientPlayerNetworkHandler
 {
     @Unique
     public ExchangeTarget exTarget = null;
+    @Unique
+    private ClientCommunicationManager comManager = null;
 
     /**
      * This is required for "exposing" Custom Payload Packets that are getting obfuscated by Minecraft's Login/Config/Play channel filters,
@@ -139,8 +147,24 @@ public abstract class MixinClientPlayNetworkHandler
         }
         // Not for us
     }
-    @Unique
-    private ExchangeTarget getExchangeTarget()
+    @Override
+    public void syncmatica$operateComms(final Consumer<ClientCommunicationManager> operation)
+    {
+        if (comManager == null)
+        {
+            final Context con = Syncmatica.getContext(Syncmatica.CLIENT_CONTEXT);
+            if (con != null)
+            {
+                comManager = (ClientCommunicationManager) con.getCommunicationManager();
+            }
+        }
+        if (comManager != null)
+        {
+            operation.accept(comManager);
+        }
+    }
+    @Override
+    public ExchangeTarget syncmatica$getExchangeTarget()
     {
         if (exTarget == null)
         {
@@ -151,7 +175,7 @@ public abstract class MixinClientPlayNetworkHandler
     @Inject(method = "onGameJoin", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/client/MinecraftClient;joinWorld(" +
                     "Lnet/minecraft/client/world/ClientWorld;)V"))
-    private void syncmatica_onPreGameJoin(GameJoinS2CPacket packet, CallbackInfo ci)
+    private void syncmatica$onPreGameJoin(GameJoinS2CPacket packet, CallbackInfo ci)
     {
         SyncLog.debug("MixinClientPlayNetworkHandler#syncmatica_onPreGameJoin(): invoked");
         //if (SyncmaticaReference.isClient())
@@ -159,7 +183,7 @@ public abstract class MixinClientPlayNetworkHandler
     }
 
     @Inject(method = "onGameJoin", at = @At("RETURN"))
-    private void syncmatica_onPostGameJoin(GameJoinS2CPacket packet, CallbackInfo ci)
+    private void syncmatica$onPostGameJoin(GameJoinS2CPacket packet, CallbackInfo ci)
     {
         SyncLog.debug("MixinClientPlayNetworkHandler#syncmatica_onPostGameJoin(): invoked");
     //    if (SyncmaticaReference.isClient())

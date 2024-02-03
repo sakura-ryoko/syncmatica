@@ -20,7 +20,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.function.Consumer;
 
 @Mixin(value = ServerPlayNetworkHandler.class, priority = 998)
-public abstract class MixinServerPlayNetworkHandler implements IServerPlayerNetworkHandler {
+public abstract class MixinServerPlayNetworkHandler implements IServerPlayerNetworkHandler
+{
     @Unique
     private ExchangeTarget exTarget = null;
     @Unique
