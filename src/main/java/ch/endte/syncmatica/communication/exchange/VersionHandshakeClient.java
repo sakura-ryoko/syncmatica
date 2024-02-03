@@ -4,7 +4,7 @@ import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.SyncmaticaReference;
 import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.communication.ExchangeTarget;
-import ch.endte.syncmatica.features.FeatureSet;
+import ch.endte.syncmatica.communication.FeatureSet;
 import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.network.payload.PacketType;
 import ch.endte.syncmatica.util.SyncLog;

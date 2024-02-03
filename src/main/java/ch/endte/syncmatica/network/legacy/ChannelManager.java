@@ -1,17 +1,27 @@
 package ch.endte.syncmatica.network.legacy;
 
+import ch.endte.syncmatica.communication.ExchangeTarget;
+import ch.endte.syncmatica.network.payload.PacketType;
+import io.netty.buffer.Unpooled;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.Identifier;
+import org.slf4j.LoggerFactory;
+
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * I really think this code is nifty, but unfortunately it's obsolete.
+ * I really think this code is nifty, but unfortunately, it's not needed if using Fabric Network API
+ * to handle the channel registrations for us.
  */
 @Deprecated
 public class ChannelManager {
-    /*
     private static final Identifier MINECRAFT_REGISTER = new Identifier("minecraft:register");
     private static final Identifier MINECRAFT_UNREGISTER = new Identifier("minecraft:unregister");
     private static final List<Identifier> serverRegisterChannels = new ArrayList<>();
     private static final List<Identifier> clientRegisterChannels = new ArrayList<>();
 
-    @Deprecated
     private static List<Identifier> onReadRegisterIdentifier(PacketByteBuf data) {
         List<Identifier> identifiers = new ArrayList<>();
         int start = 0;
@@ -27,7 +37,6 @@ public class ChannelManager {
         return identifiers;
     }
 
-    @Deprecated
     public static void onChannelRegisterHandle(ExchangeTarget target, Identifier channel, PacketByteBuf data) {
         if (channel.equals(MINECRAFT_REGISTER)) {
             // 拷贝一份数据, 因为可能其他插件也存在通道
@@ -45,7 +54,10 @@ public class ChannelManager {
             }
             // 有数据时才有意义发送
             if (byteBuf2.writerIndex() > 0) {
-                target.sendPacket(MINECRAFT_REGISTER, byteBuf2, null);
+                /**
+                 * This would need to get refactored
+                 */
+                //target.sendPacket(MINECRAFT_REGISTER, byteBuf2, null);
             }
         }
 //        else if (channel.equals(MINECRAFT_UNREGISTER)) {
@@ -53,11 +65,8 @@ public class ChannelManager {
 //        }
     }
 
-
-    @Deprecated
     public static void onDisconnected() {
         clientRegisterChannels.clear();
         serverRegisterChannels.clear();
     }
-     */
 }

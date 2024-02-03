@@ -5,7 +5,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Introduces a common logging format.
+ * Introduces a common logging format that can be used across the entire mod.
+ * Could possibly be merged into DebugService, but I simply used this as a general
+ * debugger.
  */
 public class SyncLog
 {
@@ -13,6 +15,7 @@ public class SyncLog
     private static boolean enabled;
     private static final String SYNC_ID = SyncmaticaReference.MOD_ID;
     private static final boolean SYNC_DEBUG = SyncmaticaReference.MOD_DEBUG;
+    private static final boolean WRAP_ID = false;
     public static void initLogger()
     {
         LOGGER = LogManager.getLogger(SYNC_ID);
@@ -22,42 +25,49 @@ public class SyncLog
 
     public static void debug(String msg, Object... args)
     {
-        String wrap1 = "["+SYNC_ID+":DEBUG] " + msg;
-        String wrap2 = "["+SYNC_ID+"] " + msg;
+        String wrapDebug;
+        if (WRAP_ID)
+            wrapDebug = "[" + SYNC_ID + ":DEBUG] " + msg;
+        else
+            wrapDebug = "[DEBUG] " + msg;
         if (enabled)
         {
             if (SYNC_DEBUG)
-                LOGGER.info(wrap1, args);
+                LOGGER.info(wrapDebug, args);
             else
-                LOGGER.debug(wrap2, args);
+                LOGGER.debug(wrap(msg), args);
         }
     }
 
     public static void info(String msg, Object... args)
     {
-        String wrap = "["+SYNC_ID+"] " + msg;
         if (enabled)
-            LOGGER.info(wrap, args);
+            LOGGER.info(wrap(msg), args);
     }
 
     public static void warn(String msg, Object... args)
     {
-        String wrap = "["+SYNC_ID+"] " + msg;
         if (enabled)
-            LOGGER.warn(wrap, args);
+            LOGGER.warn(wrap(msg), args);
     }
 
     public static void error(String msg, Object... args)
     {
-        String wrap = "["+SYNC_ID+"] " + msg;
         if (enabled)
-            LOGGER.error(wrap, args);
+            LOGGER.error(wrap(msg), args);
     }
 
     public static void fatal(String msg, Object... args)
     {
-        String wrap = "["+SYNC_ID+"] " + msg;
         if (enabled)
-            LOGGER.fatal(wrap, args);
+            LOGGER.fatal(wrap(msg), args);
+    }
+
+    private static String wrap(String msg)
+    {
+        if (WRAP_ID)
+            return "["+SYNC_ID+"] " + msg;
+        else
+            return msg;
     }
 }

@@ -8,12 +8,15 @@ import net.fabricmc.loader.api.ModContainer;
 import java.util.Optional;
 
 /**
- * Main Reference Calls -- Should use the "Context" versions of some of these.
+ * Main (Generic) Reference Calls --
+ * Should use the "Context" versions of some of these for their respective context.
+ * These are used to control what channels get registered, and various "preInit" items
+ * Using the Syncmatica.startup() as a wrapper doesn't seem to work.
  */
 public class SyncmaticaReference
 {
     public static final String MOD_ID = "syncmatica";
-    public static final String MOD_VERSION = getModVersion();
+    public static final String MOD_VERSION = getModVersion();       // Get this value from the fabric.mod.json :)
     private static final EnvType MOD_ENV = FabricLoader.getInstance().getEnvironmentType();
     public static final boolean MOD_DEBUG = true;
     private static boolean SINGLE_PLAYER = false;
@@ -66,12 +69,12 @@ public class SyncmaticaReference
         if (CONTAINER.isPresent())
         {
             String ver =  CONTAINER.get().getMetadata().getVersion().getFriendlyString();
-            SyncLog.info("MaLiLib {} has been found", ver);
+            SyncLog.info("MaLiLib {} has been found.", ver);
             return true;
         }
         else
         {
-            SyncLog.fatal("SyncmaticaReference#checkForMaLiLib(): MaLiLib has NOT been found.");
+            SyncLog.error("checkForMaLiLib(): MaLiLib has NOT been found.");
             return false;
         }
     }
@@ -81,12 +84,12 @@ public class SyncmaticaReference
         if (CONTAINER.isPresent())
         {
             String ver =  CONTAINER.get().getMetadata().getVersion().getFriendlyString();
-            SyncLog.info("Litematica {} has been found", ver);
+            SyncLog.info("Litematica {} has been found.", ver);
             return true;
         }
         else
         {
-            SyncLog.fatal("SyncmaticaReference#checkForLitematica(): Litematica has NOT been found.");
+            SyncLog.error("checkForLitematica(): Litematica has NOT been found.");
             return false;
         }
     }

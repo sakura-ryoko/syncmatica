@@ -1,8 +1,7 @@
 package ch.endte.syncmatica;
 
 import ch.endte.syncmatica.communication.CommunicationManager;
-import ch.endte.syncmatica.features.Feature;
-import ch.endte.syncmatica.features.FeatureSet;
+import ch.endte.syncmatica.communication.FeatureSet;
 import ch.endte.syncmatica.data.IFileStorage;
 import ch.endte.syncmatica.data.SyncmaticManager;
 import ch.endte.syncmatica.extended_core.PlayerIdentifierProvider;

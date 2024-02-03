@@ -26,6 +26,7 @@
 		"syncmatica.litematica_mixin.json"
 	],
 	"depends": {
+		"fabric-networking-api-v1": ">=4.0.0"
 	},
 	"suggests": {
 		"litematica": "*",

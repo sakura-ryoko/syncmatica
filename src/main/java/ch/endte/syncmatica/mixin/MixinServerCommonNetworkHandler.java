@@ -17,9 +17,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ServerCommonNetworkHandler.class)
 public class MixinServerCommonNetworkHandler {
     /**
-     * This is required for "exposing" Custom Payload Packets that are getting obfuscated by Minecraft's Login/Config/Play channel filters,
+     * This is required for "exposing" Custom Payload Packets that are getting obfuscated behind Config/Play channel filters, etc.
      * And it also allows for "OpenToLan" functionality to work, because via the Fabric API, the network handlers are NULL.
-     * Perhaps it's a bug?
+     * Perhaps it's a bug in Fabric?
      */
     @Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
     private void syncmatica$onCustomPayload(CustomPayloadC2SPacket packet, CallbackInfo ci)

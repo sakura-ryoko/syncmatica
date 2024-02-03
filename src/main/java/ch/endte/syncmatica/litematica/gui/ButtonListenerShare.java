@@ -1,7 +1,7 @@
 package ch.endte.syncmatica.litematica.gui;
 
 import ch.endte.syncmatica.Context;
-import ch.endte.syncmatica.features.Feature;
+import ch.endte.syncmatica.Feature;
 import ch.endte.syncmatica.communication.ClientCommunicationManager;
 import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.communication.exchange.ShareLitematicExchange;

@@ -1,7 +1,7 @@
 package ch.endte.syncmatica.communication;
 
 import ch.endte.syncmatica.Context;
-import ch.endte.syncmatica.features.Feature;
+import ch.endte.syncmatica.Feature;
 import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.communication.exchange.DownloadExchange;
 import ch.endte.syncmatica.communication.exchange.Exchange;

@@ -1,4 +1,4 @@
-package ch.endte.syncmatica.features;
+package ch.endte.syncmatica.communication;
 
 public enum MessageType {
     SUCCESS,

@@ -5,6 +5,9 @@ import ch.endte.syncmatica.network.payload.channels.*;
 import ch.endte.syncmatica.util.SyncLog;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
+/**
+ * Registers Fabric API Networking payload handlers -- They have to be mapped per a Payload Type / Context
+ */
 public class ClientNetworkPlayRegister
 {
     static ClientPlayNetworking.PlayPayloadHandler<SyncCancelShare> S2CSyncHandler_CancelShare;

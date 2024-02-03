@@ -8,9 +8,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MinecraftServer.class)
-public class MixinMinecraftServer {
+public class MixinMinecraftServer
+{
     /**
-     *  Call Backs for IServerManager
+     *  Call Backs for IServerManager (maybe remove/Simplify)
      */
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;setupServer()Z"), method = "runServer")
     private void syncmatica$onServerStarting(CallbackInfo ci)

@@ -1,8 +1,7 @@
 package ch.endte.syncmatica.communication;
 
-import ch.endte.syncmatica.features.Feature;
+import ch.endte.syncmatica.Feature;
 import ch.endte.syncmatica.data.LocalLitematicState;
-import ch.endte.syncmatica.features.MessageType;
 import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.communication.exchange.*;
 import ch.endte.syncmatica.extended_core.PlayerIdentifier;

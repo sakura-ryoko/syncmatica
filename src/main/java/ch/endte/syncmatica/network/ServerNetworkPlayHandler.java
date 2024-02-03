@@ -16,6 +16,8 @@ import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 /**
+ * Main Fabric API Networking-based packet senders / receivers (Server Context)
+ * -
  * canSend()
  * Wraps: canSend(player.networkHandler, payload.getId().id());
  * --> Wraps Internally as:
@@ -27,7 +29,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 public abstract class ServerNetworkPlayHandler
 {
     // Simple unified "sendPacket()" method
-    // --> It doesn't care what payload/packet type it is.
+    // --> It doesn't care what payload/packet type it is, as long as it extends CustomPayload
     public static <T extends CustomPayload> void sendSyncPacket(T payload, ServerPlayerEntity player)
     {
         // Client-bound packet sent by the Server
@@ -39,7 +41,7 @@ public abstract class ServerNetworkPlayHandler
             SyncLog.debug("ServerNetworkPlayHandler#sendSyncPacket(): [API] sending payload id: {} to player: {}", payload.getId().id().toString(), player.getName().getLiteralString());
         }
         else
-            SyncLog.error("ServerNetworkPlayHandler#sendSyncPacket(): [API] can't send packet (not accepted).");
+            SyncLog.warn("ServerNetworkPlayHandler#sendSyncPacket(): [API] can't send packet (not accepted).");
     }
 
     // Uses ServerPlayNetworkHandler method
@@ -54,7 +56,7 @@ public abstract class ServerNetworkPlayHandler
             SyncLog.debug("ServerNetworkPlayHandler#sendSyncPacket(): [Handler] sending payload id: {} to player: {}", payload.getId().id().toString(), player.getName().getLiteralString());
         }
         else
-          SyncLog.error("ServerNetworkPlayHandler#sendSyncPacket(): [Handler] can't send packet (not accepted).");
+          SyncLog.warn("ServerNetworkPlayHandler#sendSyncPacket(): [Handler] can't send packet (not accepted).");
     }
 
     // Server-bound packet sent by a Client

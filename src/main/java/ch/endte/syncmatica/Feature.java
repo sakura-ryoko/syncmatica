@@ -1,4 +1,4 @@
-package ch.endte.syncmatica.features;
+package ch.endte.syncmatica;
 
 public enum Feature {
     CORE, // every feature that's part of 0.1.0 - it doesn't make sense to divide those further since compatability with 0.0 of future versions

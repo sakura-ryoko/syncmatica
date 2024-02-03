@@ -45,12 +45,12 @@ public class ServerListener implements IServerListener
         if (SyncmaticaReference.isServer() || SyncmaticaReference.isDedicatedServer() || SyncmaticaReference.isIntegratedServer())
         {
             ServerNetworkPlayInitHandler.registerReceivers();
-            ServerDebugSuite.checkGlobalChannels();
+            //ServerDebugSuite.checkGlobalChannels();
         }
         if (SyncmaticaReference.isClient() || SyncmaticaReference.isSinglePlayer())
         {
             ClientNetworkPlayInitHandler.registerReceivers();
-            ClientDebugSuite.checkGlobalChannels();
+            //ClientDebugSuite.checkGlobalChannels();
         }
         SyncLog.debug("MinecraftServerEvents#onServerStarted(): invoked.");
 
@@ -66,6 +66,7 @@ public class ServerListener implements IServerListener
     }
     public void onServerStopping(MinecraftServer minecraftServer)
     {
+        /*
         if (SyncmaticaReference.isServer() || SyncmaticaReference.isDedicatedServer() || SyncmaticaReference.isIntegratedServer())
         {
             ServerDebugSuite.checkGlobalChannels();
@@ -74,6 +75,7 @@ public class ServerListener implements IServerListener
         {
             ClientDebugSuite.checkGlobalChannels();
         }
+        */
         SyncLog.debug("MinecraftServerEvents#onServerStopping(): invoked.");
     }
     public void onServerStopped(MinecraftServer minecraftServer)

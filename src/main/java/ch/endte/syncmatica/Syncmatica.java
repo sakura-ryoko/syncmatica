@@ -41,7 +41,7 @@ public class Syncmatica {
 
     /** This preInit() calls are for early network API initialization / Play Channel registration;
      * and is used to set up the Player / Server Handler interfaces for calling init() and handling
-     * incoming packets.
+     * incoming packets correctly.
      */
     public static void preInitClient()
     {
@@ -55,7 +55,6 @@ public class Syncmatica {
 
             preInit();
         }
-        // DO NOT init without MaLiLib / Litematica present
     }
     public static void preInitServer()
     {
@@ -64,6 +63,10 @@ public class Syncmatica {
         ServerNetworkPlayInitHandler.registerPlayChannels();
         preInit();
     }
+
+    /**
+     * These Listeners could be simplified; I just copied my code from MaLiLib and ServUX.
+     */
     private static void preInit()
     {
         SyncLog.debug("Syncmatica#preInit(): invoked.");
@@ -106,6 +109,7 @@ public class Syncmatica {
 
     public static Context initClient(final CommunicationManager comms, final IFileStorage fileStorage, final SyncmaticManager schematics) {
         SyncLog.debug("Syncmatica#initClient(): invoked.");
+        // These just try to verify that the Fabric API Networking is initialized.
         ClientNetworkPlayInitHandler.registerPlayChannels();
         ClientNetworkPlayInitHandler.registerReceivers();
 
@@ -134,6 +138,7 @@ public class Syncmatica {
     }
     public static Context initServer(final CommunicationManager comms, final IFileStorage fileStorage, final SyncmaticManager schematics, final boolean isIntegratedServer, final File worldPath) {
         SyncLog.debug("Syncmatica#initServer(): invoked.");
+        // These just try to verify that the Fabric API Networking is initialized.
         ServerNetworkPlayInitHandler.registerPlayChannels();
         ServerNetworkPlayInitHandler.registerReceivers();
 

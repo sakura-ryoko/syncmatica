@@ -16,6 +16,8 @@ import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
+ * Main Fabric API Networking-based packet senders / receivers (Client Context)
+ * -
  * canSend()
  * Wraps: canSend(payload.getId().id());
  * -> Wraps Internally as:
@@ -27,7 +29,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ClientNetworkPlayHandler
 {
     // Simple unified "sendPacket()" method
-    // --> It doesn't care what payload/packet type it is.
+    // --> It doesn't care what payload/packet type it is, as long as it extends CustomPayload
     public static <T extends CustomPayload> void sendSyncPacket(T payload)
     {
         // Server-bound packet sent from the Client
@@ -37,7 +39,7 @@ public class ClientNetworkPlayHandler
             SyncLog.debug("ClientNetworkPlayHandler#sendSyncPacket(): [API] sending payload id: {}", payload.getId().id().toString());
         }
         else
-            SyncLog.error("ClientNetworkPlayHandler#sendSyncPacket(): [API] can't send packet (not accepted).");
+            SyncLog.warn("ClientNetworkPlayHandler#sendSyncPacket(): [API] can't send packet (not accepted).");
     }
 
     // Uses ClientPlayNetworkHandler method
@@ -51,10 +53,8 @@ public class ClientNetworkPlayHandler
             SyncLog.debug("ClientNetworkPlayHandler#sendSyncPacket(): [Handler] sending payload id: {}", payload.getId().id().toString());
         }
         else
-            SyncLog.error("ClientNetworkPlayHandler#sendSyncPacket(): [Handler] can't send packet (not accepted).");
+            SyncLog.warn("ClientNetworkPlayHandler#sendSyncPacket(): [Handler] can't send packet (not accepted).");
     }
-
-    // --> ((SyncPacketClientHandler) SyncPacketClientHandler.getInstance()).receiveSyncmaticaPayload(payload.data(), ctx);
 
     // Client-bound packet sent from the Server
     public static void receiveSyncPacket(PacketType type, SyncByteBuf data, ClientPlayNetworkHandler handler)

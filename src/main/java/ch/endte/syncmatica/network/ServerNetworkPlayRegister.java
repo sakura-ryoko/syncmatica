@@ -5,6 +5,9 @@ import ch.endte.syncmatica.network.payload.channels.*;
 import ch.endte.syncmatica.util.SyncLog;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
+/**
+ * Registers Fabric API Networking payload handlers -- They have to be mapped per a Payload Type / Context
+ */
 public class ServerNetworkPlayRegister
 {
     static ServerPlayNetworking.PlayPayloadHandler<SyncCancelShare> C2SSyncHandler_CancelShare;
@@ -33,7 +36,7 @@ public class ServerNetworkPlayRegister
         if (receiversInit)
             return;
         // Do when the server starts, not before
-        if (SyncmaticaReference.isServer())
+        if (SyncmaticaReference.isServer() || SyncmaticaReference.isIntegratedServer())
         {
             if (SyncmaticaReference.isDedicatedServer())
                 SyncLog.debug("ServerHandlerManager#registerReceivers(): Game is running in Dedicated Server Mode.");
@@ -64,7 +67,7 @@ public class ServerNetworkPlayRegister
     public static void unregisterReceivers()
     {
         // Do when server stops
-        if (SyncmaticaReference.isServer())
+        if (SyncmaticaReference.isServer() || SyncmaticaReference.isIntegratedServer())
         {
             SyncLog.debug("ServerHandlerManager#unregisterReceivers(): isServer() true -> unregisterSyncmaticaHandlers ...");
             ServerPlayNetworking.unregisterGlobalReceiver(SyncCancelShare.TYPE.id());

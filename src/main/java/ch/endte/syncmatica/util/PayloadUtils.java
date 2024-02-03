@@ -10,7 +10,8 @@ import net.minecraft.network.packet.CustomPayload;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Utility to convert NbtCompound into/from a PacketByteBuf
+ * Utility to convert NbtCompound into/from a PacketByteBuf,
+ * And some Payload/PacketType-related calls
  */
 public class PayloadUtils
 {

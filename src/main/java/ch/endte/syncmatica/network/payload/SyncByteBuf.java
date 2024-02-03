@@ -5,7 +5,7 @@ import net.minecraft.network.PacketByteBuf;
 
 /**
  * Hacky way to get around the errors not being able to create a CustomPayload based on a PacketByteBuf directly
- * Just create your own that extends it.
+ * Just create your own that extends it... xD
  */
 public class SyncByteBuf extends PacketByteBuf
 {

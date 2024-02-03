@@ -2,7 +2,7 @@ package ch.endte.syncmatica.communication.exchange;
 
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.communication.ExchangeTarget;
-import ch.endte.syncmatica.features.FeatureSet;
+import ch.endte.syncmatica.communication.FeatureSet;
 import ch.endte.syncmatica.network.payload.PacketType;
 import ch.endte.syncmatica.util.SyncLog;
 import io.netty.buffer.Unpooled;
