@@ -105,7 +105,6 @@ public abstract class CommunicationManager
 
     public void sendMetaData(final ServerPlacement metaData, final ExchangeTarget target)
     {
-        // #FIXME
         final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         putMetaData(metaData, buf, target);
         target.sendPacket(PacketType.REGISTER_METADATA, buf, context);

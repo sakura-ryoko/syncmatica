@@ -32,7 +32,6 @@ public class ServerCommunicationManager extends CommunicationManager
     {
         if (client.getFeatureSet().hasFeature(Feature.MESSAGE))
         {
-            // #FIXME
             final PacketByteBuf newPacketBuf = new PacketByteBuf(Unpooled.buffer());
             newPacketBuf.writeString(msgType.toString());
             newPacketBuf.writeString(identifier);
@@ -40,15 +39,16 @@ public class ServerCommunicationManager extends CommunicationManager
         }
         else if (playerMap.containsKey(client))
         {
-            // #FIXME
             final ServerPlayerEntity player = playerMap.get(client);
             player.sendMessage(Text.of("Syncmatica " + msgType.toString() + " " + identifier), false);
         }
     }
 
+    /**
+     * Registers a new player
+     */
     public void onPlayerJoin(final ExchangeTarget newPlayer, final ServerPlayerEntity player)
     {
-        // #FIXME Register player (Phase 1?)
         final VersionHandshakeServer hi = new VersionHandshakeServer(newPlayer, context);
         playerMap.put(newPlayer, player);
         final GameProfile profile = player.getGameProfile();
@@ -74,7 +74,8 @@ public class ServerCommunicationManager extends CommunicationManager
     @Override
     protected void handle(final ExchangeTarget source, final PacketType type, final PacketByteBuf packetBuf)
     {
-        SyncLog.debug("ServerCommunicationMnanager#handle(): type: {}, size: {} // from: {}", type.getId().toString(), packetBuf.readableBytes(), source.getPersistentName());
+        //SyncLog.debug("ServerCommunicationMnanager#handle(): type: {}, size: {} // from: {}", type.getId().toString(), packetBuf.readableBytes(), source.getPersistentName());
+
         if (type.equals(PacketType.REQUEST_LITEMATIC))
         {
             final UUID syncmaticaId = packetBuf.readUuid();
@@ -156,7 +157,6 @@ public class ServerCommunicationManager extends CommunicationManager
                 context.getSyncmaticManager().removePlacement(placement);
                 for (final ExchangeTarget client : broadcastTargets)
                 {
-                    // #FIXME
                     final PacketByteBuf newPacketBuf = new PacketByteBuf(Unpooled.buffer());
                     newPacketBuf.writeUuid(placement.getId());
                     client.sendPacket(PacketType.REMOVE_SYNCMATIC, newPacketBuf, context);
@@ -222,7 +222,6 @@ public class ServerCommunicationManager extends CommunicationManager
                 if (client.getFeatureSet().hasFeature(Feature.MODIFY))
                 {
                     // client supports modify so just send modify
-                    // #FIXME
                     final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
                     buf.writeUuid(placement.getId());
                     putPositionData(placement, buf, client);
@@ -237,7 +236,6 @@ public class ServerCommunicationManager extends CommunicationManager
                 {
                     // client doesn't support modification so
                     // send data and then
-                    // #FIXME
                     final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
                     buf.writeUuid(placement.getId());
                     client.sendPacket(PacketType.REMOVE_SYNCMATIC, buf, context);
@@ -265,7 +263,6 @@ public class ServerCommunicationManager extends CommunicationManager
 
     private void cancelShare(final ExchangeTarget source, final ServerPlacement placement)
     {
-        // #FIXME
         final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
         packetByteBuf.writeUuid(placement.getId());
         source.sendPacket(PacketType.CANCEL_SHARE, packetByteBuf, context);

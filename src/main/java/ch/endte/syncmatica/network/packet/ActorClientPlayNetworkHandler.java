@@ -11,7 +11,6 @@ import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.litematica.ScreenHelper;
 import ch.endte.syncmatica.network.payload.PacketType;
-import ch.endte.syncmatica.util.SyncLog;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
@@ -43,10 +42,10 @@ public class ActorClientPlayNetworkHandler
 
     public void startEvent(final ClientPlayNetworkHandler handler)
     {
-        SyncLog.debug("ActorClientPlayNetworkHandler#startEvent(): invoked.");
+        //SyncLog.debug("ActorClientPlayNetworkHandler#startEvent(): invoked.");
         if (clientPlayNetworkHandler == null)
         {
-            SyncLog.debug("ActorClientPlayNetworkHandler#startEvent(): setClientContent().");
+            //SyncLog.debug("ActorClientPlayNetworkHandler#startEvent(): setClientContent().");
             setClientContext(handler);
         }
         startClient();
@@ -54,7 +53,7 @@ public class ActorClientPlayNetworkHandler
 
     public void startClient()
     {
-        SyncLog.debug("ActorClientPlayNetworkHandler#startClient(): invoked.");
+        //SyncLog.debug("ActorClientPlayNetworkHandler#startClient(): invoked.");
         if (clientPlayNetworkHandler == null)
         {
             throw new RuntimeException("Tried to start client before receiving a connection");
@@ -71,7 +70,7 @@ public class ActorClientPlayNetworkHandler
 
     public void packetEvent(final PacketType type, final PacketByteBuf data, final ClientPlayNetworkHandler clientContext, CallbackInfo ci)
     {
-        SyncLog.debug("ActorClientPlayNetworkHandler#packetEvent(): A invoked.");
+        //SyncLog.debug("ActorClientPlayNetworkHandler#packetEvent(): A invoked.");
         if (clientCommunication == null)
         {
             ActorClientPlayNetworkHandler.getInstance().startEvent(clientContext);
@@ -82,7 +81,7 @@ public class ActorClientPlayNetworkHandler
     }
     public void packetNbtEvent(final PacketType type, final NbtCompound data, final ClientPlayNetworkHandler clientContext, CallbackInfo ci)
     {
-        SyncLog.debug("ActorClientPlayNetworkHandler#packetNbtEvent(): A invoked.");
+        //SyncLog.debug("ActorClientPlayNetworkHandler#packetNbtEvent(): A invoked.");
         if (clientCommunication == null)
         {
             ActorClientPlayNetworkHandler.getInstance().startEvent(clientContext);
@@ -94,7 +93,7 @@ public class ActorClientPlayNetworkHandler
 
     public boolean packetEvent(final PacketType type, final PacketByteBuf bufSupplier)
     {
-        SyncLog.debug("ActorClientPlayNetworkHandler#packetEvent(): B invoked.");
+        //SyncLog.debug("ActorClientPlayNetworkHandler#packetEvent(): B invoked.");
         if (clientCommunication.handlePacket(type))
         {
             clientCommunication.onPacket(exTarget, type, bufSupplier);
@@ -105,7 +104,7 @@ public class ActorClientPlayNetworkHandler
 
     public boolean packetNbtEvent(final PacketType type, final NbtCompound data)
     {
-        SyncLog.debug("ActorClientPlayNetworkHandler#packetNbtEvent(): B invoked.");
+        //SyncLog.debug("ActorClientPlayNetworkHandler#packetNbtEvent(): B invoked.");
         if (clientCommunication.handlePacket(type))
         {
             clientCommunication.onNbtPacket(exTarget, type, data);

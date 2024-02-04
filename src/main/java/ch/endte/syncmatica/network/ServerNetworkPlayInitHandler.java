@@ -13,7 +13,7 @@ public class ServerNetworkPlayInitHandler
     {
         PacketTypeRegister.registerPlayChannels();
         //PacketProvider.registerPayloads();
-        ServerDebugSuite.checkGlobalChannels();
+        //ServerDebugSuite.checkGlobalChannels();
     }
     public static void registerReceivers()
     {

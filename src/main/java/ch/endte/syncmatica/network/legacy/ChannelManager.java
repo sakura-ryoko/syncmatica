@@ -13,7 +13,9 @@ import java.util.List;
 
 /**
  * I really think this code is nifty, but unfortunately, it's not needed if using Fabric Network API
- * to handle the channel registrations for us.
+ * to handle the channel registrations for us.  This doesn't even register the channels, only reports
+ * on what channels are registered, and would need to be broken down to check for all Syncmatica
+ * Payload types, then cast to it before using .sendPacket()
  */
 @Deprecated
 public class ChannelManager {
@@ -38,6 +40,7 @@ public class ChannelManager {
     }
 
     public static void onChannelRegisterHandle(ExchangeTarget target, Identifier channel, PacketByteBuf data) {
+        //if (channel.equals(PacketType.MINECRAFT_REGISTER.identifier)) {
         if (channel.equals(MINECRAFT_REGISTER)) {
             // 拷贝一份数据, 因为可能其他插件也存在通道
             List<Identifier> identifiers = onReadRegisterIdentifier(new PacketByteBuf(data.copy()));
@@ -55,8 +58,9 @@ public class ChannelManager {
             // 有数据时才有意义发送
             if (byteBuf2.writerIndex() > 0) {
                 /**
-                 * This would need to get refactored
+                 * This would need to get refactored if you want to experiment with this
                  */
+                //target.sendPacket(PacketType.MINECRAFT_REGISTER, byteBuf2, null);
                 //target.sendPacket(MINECRAFT_REGISTER, byteBuf2, null);
             }
         }

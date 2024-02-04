@@ -8,22 +8,25 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 
 /**
- * This is a Simplified version of my channel registration code that calls the Fabric API Networking.
+ * This is a Simplified version of my channel registration code that calls the Fabric API Networking to handle it.
  */
 public class PacketTypeRegister
 {
-    // This is how it looks in the static context per a MOD,
-    // Where each channel must each include its own Custom Payload Records.
-    // --> The send/receive handlers can be made into an interface method
+    /**
+     * This is how it looks in the static context per a MOD,
+     * Where each channel must each include its own Custom Payload Records.
+     * The send/receive handlers can be made into an interface method
+     */
     private static boolean playRegistered = false;
     public static <T extends CustomPayload> void registerPlayChannel(CustomPayload.Id<T> id, PacketCodec<PacketByteBuf, T> codec)
     {
-        SyncLog.debug("PacketTypeRegister#registerPlayChannel(): register {} // {}:{}", id.hashCode(), id.id().getNamespace(), id.id().getPath());
+        //SyncLog.debug("PacketTypeRegister#registerPlayChannel(): register {} // {}:{}", id.hashCode(), id.id().getNamespace(), id.id().getPath());
         PayloadTypeRegistry.configurationC2S().register(id, codec);
         PayloadTypeRegistry.configurationS2C().register(id, codec);
+
         PayloadTypeRegistry.playC2S().register(id, codec);
         PayloadTypeRegistry.playS2C().register(id, codec);
-        // Both directions need to get registered.  The "configuration" mode might not be needed
+        // Both directions S2C / C2S need to get registered.  The "configuration" channel might not be needed, though
     }
     public static void registerPlayChannels()
     {

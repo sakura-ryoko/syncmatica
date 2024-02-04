@@ -8,12 +8,12 @@ import ch.endte.syncmatica.network.packet.ActorClientPlayNetworkHandler;
 import ch.endte.syncmatica.network.packet.IClientPlayerNetworkHandler;
 import ch.endte.syncmatica.network.payload.PacketType;
 import ch.endte.syncmatica.network.payload.channels.*;
-import ch.endte.syncmatica.util.SyncLog;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.network.ClientConnection;
 import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -24,6 +24,8 @@ import java.util.function.Consumer;
 @Mixin(value = ClientPlayNetworkHandler.class, priority = 998)
 public abstract class MixinClientPlayNetworkHandler implements IClientPlayerNetworkHandler
 {
+    @Shadow public abstract ClientConnection getConnection();
+
     @Unique
     public ExchangeTarget exTarget = null;
     @Unique
@@ -35,8 +37,16 @@ public abstract class MixinClientPlayNetworkHandler implements IClientPlayerNetw
      * Perhaps it's a bug in Fabric?
      */
     @Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
-    private void syncmatica$handlePacket(CustomPayload packet, CallbackInfo ci) {
-        // ChannelManager.onChannelRegisterHandle(getExchangeTarget(), packet.getChannel(), packet.getData());
+    private void syncmatica$handlePacket(CustomPayload packet, CallbackInfo ci)
+    {
+        /**
+         * You can't use packet.getData() here anymore, it no longer exists.
+         * You probably can put this under each Payload Type,
+         * But to what end if Fabric API can handle this safely & not risk breaking
+         * CustomPayload for every mod that uses it?
+         * If you want a list of all the registered Global Play Channels, use the Client/ServerDebugSuite method.
+         */
+        //ChannelManager.onChannelRegisterHandle(syncmatica$getExchangeTarget(), packet.getId().id(), packet.getData());
         if (!MinecraftClient.getInstance().isOnThread())
         {
             return; //only execute packet on main thread
@@ -44,8 +54,10 @@ public abstract class MixinClientPlayNetworkHandler implements IClientPlayerNetw
 
         // Let's get this done
         PacketType type =  PacketType.getType(packet.getId().id());
-        if (type != null) {
-            // For all "early" handshake packets, because they probably aren't coming from the normal "PLAY" channel.
+        if (type != null)
+        {
+            // For all packets, because they probably aren't coming from the normal "PLAY" channel (?)
+            // I don't know, it just works...
             if (type.equals(PacketType.NBT_DATA))
             {
                 SyncNbtData payload = (SyncNbtData) packet;
@@ -141,11 +153,11 @@ public abstract class MixinClientPlayNetworkHandler implements IClientPlayerNetw
                 SyncMessage payload = (SyncMessage) packet;
                 ActorClientPlayNetworkHandler.getInstance().packetEvent(type, payload.byteBuf(), (ClientPlayNetworkHandler) (Object) this, ci);
             }
-            // Cancel unnecessary processing
+            // Cancel unnecessary processing if a PacketType we own is caught
             if (ci.isCancellable())
                 ci.cancel();
         }
-        // Not for us
+        // NO-OP
     }
     @Override
     public void syncmatica$operateComms(final Consumer<ClientCommunicationManager> operation)
@@ -172,36 +184,40 @@ public abstract class MixinClientPlayNetworkHandler implements IClientPlayerNetw
         }
         return exTarget;
     }
+    /*
+    @Inject(method = "onGameJoin", at = @At("HEAD"))
+    private void syncmatica$onPreJoinGameHead(GameJoinS2CPacket packet, CallbackInfo ci)
+    {
+        if (SyncmaticaReference.isClient())
+        {
+            ClientNetworkPlayInitHandler.registerPlayChannels();
+        }
+        SyncLog.debug("MixinClientPlayNetworkHandler#syncmatica$onPreJoinGameHead(): invoked");
+    }
+
     @Inject(method = "onGameJoin", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/client/MinecraftClient;joinWorld(" +
                     "Lnet/minecraft/client/world/ClientWorld;)V"))
     private void syncmatica$onPreGameJoin(GameJoinS2CPacket packet, CallbackInfo ci)
     {
-        SyncLog.debug("MixinClientPlayNetworkHandler#syncmatica_onPreGameJoin(): invoked");
-        //if (SyncmaticaReference.isClient())
-        //    ClientNetworkPlayInitHandler.registerPlayChannels();
+        SyncLog.debug("MixinClientPlayNetworkHandler#syncmatica$onPreGameJoin(): invoked");
+
+        if (SyncmaticaReference.isClient())
+        {
+            ClientNetworkPlayInitHandler.registerReceivers();
+        }
     }
 
     @Inject(method = "onGameJoin", at = @At("RETURN"))
     private void syncmatica$onPostGameJoin(GameJoinS2CPacket packet, CallbackInfo ci)
     {
-        SyncLog.debug("MixinClientPlayNetworkHandler#syncmatica_onPostGameJoin(): invoked");
-    //    if (SyncmaticaReference.isClient())
-  //      {
-        //    ClientNetworkPlayInitHandler.registerReceivers();
+        SyncLog.debug("MixinClientPlayNetworkHandler#syncmatica$onPostGameJoin(): invoked");
 
-            //ActorClientPlayNetworkHandler.getInstance().startClient();
-
-        //    if (!SyncmaticaReference.isSinglePlayer()) {
-//                SyncLog.debug("MixinClientPlayNetworkHandler#syncmatica_onPostGameJoin(): yeet test hello packet.");
-//                // Test hello packet (NBT)
-//                NbtCompound nbt = new NbtCompound();
-//                nbt.putString(SyncNbtData.KEY, "hello");
-//                SyncNbtData payload = new SyncNbtData(nbt);
-//                ClientNetworkPlayHandler.sendSyncPacket(payload);
-        //    }
-        //    else
-        //        SyncLog.debug("MixinClientPlayNetworkHandler#syncmatica_onPostGameJoin(): Single player detected; skipping.");
-//        }
+        if (SyncmaticaReference.isClient())
+        {
+            // This seems to work, but then doesn't.  Why?
+            ActorClientPlayNetworkHandler.getInstance().startEvent((ClientPlayNetworkHandler) (Object) this);
+        }
     }
+     */
 }

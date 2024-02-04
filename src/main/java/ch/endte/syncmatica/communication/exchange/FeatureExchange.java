@@ -16,21 +16,21 @@ public abstract class FeatureExchange extends AbstractExchange
     @Override
     public boolean checkPacket(final PacketType type, final PacketByteBuf packetBuf)
     {
-        SyncLog.debug("FeatureExchange#checkPacket(): received byteBuf packet.");
+        //SyncLog.debug("FeatureExchange#checkPacket(): received byteBuf packet.");
         return type.equals(PacketType.FEATURE_REQUEST)
                 || type.equals(PacketType.FEATURE);
     }
     @Override
     public boolean checkPacket(final PacketType type, final NbtCompound nbt)
     {
-        SyncLog.debug("FeatureExchange#checkPacket(): received nbtData packet.");
+        //SyncLog.debug("FeatureExchange#checkPacket(): received nbtData packet.");
         return type.equals(PacketType.NBT_DATA);
     }
 
     @Override
     public void handle(final PacketType type, final PacketByteBuf packetBuf)
     {
-        SyncLog.debug("FeatureExchange#handle(): received byteBuf packet.");
+        //SyncLog.debug("FeatureExchange#handle(): received byteBuf packet.");
         if (type.equals(PacketType.FEATURE_REQUEST))
         {
             sendFeatures();
@@ -39,6 +39,8 @@ public abstract class FeatureExchange extends AbstractExchange
             final FeatureSet fs = FeatureSet.fromString(packetBuf.readString(PACKET_MAX_STRING_SIZE));
             getPartner().setFeatureSet(fs);
             onFeatureSetReceive();
+
+            // Now let's send our "TEST" Payloads from here _AFTER_ Syncmatica registers its partner
         }
     }
 

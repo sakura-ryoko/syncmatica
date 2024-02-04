@@ -21,7 +21,7 @@ public class VersionHandshakeServer extends FeatureExchange
     @Override
     public boolean checkPacket(final PacketType type, final PacketByteBuf packetBuf)
     {
-        SyncLog.debug("VersionHandshaleServer#checkPacket(): received byteBuf packet of type: {}", type.getId().toString());
+        //SyncLog.debug("VersionHandshaleServer#checkPacket(): received byteBuf packet of type: {}", type.getId().toString());
         return type.equals(PacketType.REGISTER_VERSION)
                 || super.checkPacket(type, packetBuf);
     }
@@ -35,13 +35,14 @@ public class VersionHandshakeServer extends FeatureExchange
     @Override
     public void handle(final PacketType type, final PacketByteBuf packetBuf)
     {
-        SyncLog.debug("VersionHandshakeServer#handle(): received type: {}, size: {}", type.getId().toString(), packetBuf.readableBytes());
+        //SyncLog.debug("VersionHandshakeServer#handle(): received type: {}, size: {}", type.getId().toString(), packetBuf.readableBytes());
+
         if (type.equals(PacketType.REGISTER_VERSION))
         {
             partnerVersion = packetBuf.readString(PACKET_MAX_STRING_SIZE);
             if (!getContext().checkPartnerVersion(partnerVersion))
             {
-                SyncLog.info("Denying syncmatica join due to outdated client with local version {} and client version {}", SyncmaticaReference.MOD_VERSION, partnerVersion);
+                SyncLog.info("Denying syncmatica join due to outdated client with local version {} and client version {} from partner {}", SyncmaticaReference.MOD_VERSION, partnerVersion, getPartner().getPersistentName());
                 // same as client - avoid further packets
                 close(false);
                 return;
@@ -73,7 +74,6 @@ public class VersionHandshakeServer extends FeatureExchange
     public void onFeatureSetReceive()
     {
         SyncLog.info("Syncmatica client joining with local version {} and client version {}", SyncmaticaReference.MOD_VERSION, partnerVersion);
-        // #FIXME
         final PacketByteBuf newBuf = new PacketByteBuf(Unpooled.buffer());
         final Collection<ServerPlacement> l = getContext().getSyncmaticManager().getAll();
         newBuf.writeInt(l.size());

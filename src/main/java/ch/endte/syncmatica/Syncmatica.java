@@ -3,10 +3,6 @@ package ch.endte.syncmatica;
 import ch.endte.syncmatica.communication.CommunicationManager;
 import ch.endte.syncmatica.data.IFileStorage;
 import ch.endte.syncmatica.data.SyncmaticManager;
-import ch.endte.syncmatica.event.PlayerHandler;
-import ch.endte.syncmatica.event.ServerHandler;
-import ch.endte.syncmatica.listeners.PlayerListener;
-import ch.endte.syncmatica.listeners.ServerListener;
 import ch.endte.syncmatica.network.ClientNetworkPlayInitHandler;
 import ch.endte.syncmatica.network.ServerNetworkPlayInitHandler;
 import ch.endte.syncmatica.network.packet.ActorClientPlayNetworkHandler;
@@ -39,21 +35,23 @@ public class Syncmatica {
         else return null;
     }
 
-    /** This preInit() calls are for early network API initialization / Play Channel registration;
-     * and is used to set up the Player / Server Handler interfaces for calling init() and handling
-     * incoming packets correctly.
+    /**
+     * This preInit() calls are for early network API initialization / Play Channel registration;
+     * and is used to set up the handling incoming packets correctly.
+     * Using the Mixin's to do this doesn't seem to work correctly, as it must be breaking setting
+     * the EnvType isClient() or isServer(), and some edge cases fail to work, such as OpenToLan for
+     * Clients.
+     * Perhaps with enough testing, using the Context method may be a functional replacement
      */
     public static void preInitClient()
     {
         SyncLog.initLogger();
         hasMaLiLib = SyncmaticaReference.checkForMaLiLib();
         hasLitematica = SyncmaticaReference.checkForLitematica();
-        if (hasMaLiLib && hasLitematica) {
-
+        if (hasMaLiLib && hasLitematica)
+        {
             SyncLog.debug("Syncmatica#preInitClient(): Register Client Play Channels.");
             ClientNetworkPlayInitHandler.registerPlayChannels();
-
-            preInit();
         }
     }
     public static void preInitServer()
@@ -61,24 +59,8 @@ public class Syncmatica {
         SyncLog.initLogger();
         SyncLog.debug("Syncmatica#preInitServer(): Register Server Play Channels.");
         ServerNetworkPlayInitHandler.registerPlayChannels();
-        preInit();
     }
 
-    /**
-     * These Listeners could be simplified; I just copied my code from MaLiLib and ServUX.
-     */
-    private static void preInit()
-    {
-        SyncLog.debug("Syncmatica#preInit(): invoked.");
-
-        // ServerListener interface (init() callbacks)
-        ServerListener serverListener = new ServerListener();
-        ServerHandler.getInstance().registerServerHandler(serverListener);
-
-        // PlayerListener interface (onGameJoin callbacks)
-        PlayerListener playerListener = new PlayerListener();
-        PlayerHandler.getInstance().registerPlayerHandler(playerListener);
-    }
     static void init(final Context con, final Identifier contextId) {
         SyncLog.debug("Syncmatica#init(): invoked.");
         if (contexts == null) {
@@ -108,8 +90,13 @@ public class Syncmatica {
     }
 
     public static Context initClient(final CommunicationManager comms, final IFileStorage fileStorage, final SyncmaticManager schematics) {
+        //SyncLog.initLogger();
         SyncLog.debug("Syncmatica#initClient(): invoked.");
+
         // These just try to verify that the Fabric API Networking is initialized.
+        // In my testing, this really isn't useful to put here, it's probably redundant
+        hasMaLiLib = SyncmaticaReference.checkForMaLiLib();
+        hasLitematica = SyncmaticaReference.checkForLitematica();
         ClientNetworkPlayInitHandler.registerPlayChannels();
         ClientNetworkPlayInitHandler.registerReceivers();
 
@@ -133,12 +120,14 @@ public class Syncmatica {
             contexts.remove(CLIENT_CONTEXT);
         }
 
-        // #FIXME Perhaps?
         ActorClientPlayNetworkHandler.getInstance().startClient();
     }
     public static Context initServer(final CommunicationManager comms, final IFileStorage fileStorage, final SyncmaticManager schematics, final boolean isIntegratedServer, final File worldPath) {
+        //SyncLog.initLogger();
         SyncLog.debug("Syncmatica#initServer(): invoked.");
+
         // These just try to verify that the Fabric API Networking is initialized.
+        // In my testing, this really isn't useful to put here, it's a redundant call
         ServerNetworkPlayInitHandler.registerPlayChannels();
         ServerNetworkPlayInitHandler.registerReceivers();
 

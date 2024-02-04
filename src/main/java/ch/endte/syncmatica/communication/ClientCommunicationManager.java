@@ -41,7 +41,8 @@ public class ClientCommunicationManager extends CommunicationManager
     @Override
     protected void handle(final ExchangeTarget source, final PacketType type, final PacketByteBuf packetBuf)
     {
-        SyncLog.debug("ClientCommunicationsManager#handle(): received type: {}, of size: {} // source: {}", type.getId().toString(), packetBuf.readableBytes(), source.getPersistentName());
+        //SyncLog.debug("ClientCommunicationsManager#handle(): received type: {}, of size: {} // source: {}", type.getId().toString(), packetBuf.readableBytes(), source.getPersistentName());
+
         if (type.equals(PacketType.REGISTER_METADATA)) {
             final ServerPlacement placement = receiveMetaData(packetBuf, source);
             context.getSyncmaticManager().addPlacement(placement);

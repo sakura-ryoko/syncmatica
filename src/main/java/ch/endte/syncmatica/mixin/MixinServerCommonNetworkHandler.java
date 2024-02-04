@@ -15,7 +15,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerCommonNetworkHandler.class)
-public class MixinServerCommonNetworkHandler {
+public class MixinServerCommonNetworkHandler
+{
     /**
      * This is required for "exposing" Custom Payload Packets that are getting obfuscated behind Config/Play channel filters, etc.
      * And it also allows for "OpenToLan" functionality to work, because via the Fabric API, the network handlers are NULL.
@@ -33,11 +34,12 @@ public class MixinServerCommonNetworkHandler {
 
             if (type != null)
             {
-                // For all "early" handshake packets, because they probably aren't coming from the normal "PLAY" channel.
+                // For all packets, because they probably aren't coming from the normal "PLAY" channel (?)
+                // I don't know, it just works...
                 if (type.equals(PacketType.NBT_DATA))
                 {
                     SyncNbtData payload = (SyncNbtData) thisPayload;
-                    //ActorClientPlayNetworkHandler.getInstance().packetNbtEvent(type, payload.data(), (ClientPlayNetworkHandler) (Object) this, ci);
+                    //SyncLog.debug("ServerCommonNetworkHandler#syncmatica$onCustomPayload(): packet type: {}, size: {}", type.getId().toString(), payload.data().getSizeInBytes());
                     NetworkThreadUtils.forceMainThread(packet, impl, impl.player.getServerWorld());
                     IServerPlayerNetworkHandler impll = ((IServerPlayerNetworkHandler) impl);
                     impll.syncmatica$operateComms(sm -> sm.onNbtPacket(impll.syncmatica$getExchangeTarget(), type, payload.data()));
@@ -186,11 +188,11 @@ public class MixinServerCommonNetworkHandler {
                     IServerPlayerNetworkHandler impll = ((IServerPlayerNetworkHandler) impl);
                     impll.syncmatica$operateComms(sm -> sm.onPacket(impll.syncmatica$getExchangeTarget(), type, payload.byteBuf()));
                 }
-                // Cancel unnecessary processing
+                // Cancel unnecessary processing if a PacketType we own is caught
                 if (ci.isCancellable())
                     ci.cancel();
             }
-            // Not for us
+            // NO-OP
         }
     }
 }

@@ -49,7 +49,7 @@ public class ExchangeTarget
     // this class handles the sending of either S2C or C2S packets
     public void sendPacket(final PacketType type, final PacketByteBuf packet, final Context context)
     {
-        SyncLog.debug("ExchangeTarget#sendPacket(): invoked.");
+        //SyncLog.debug("ExchangeTarget#sendPacket(): invoked.");
         if (context != null) {
             context.getDebugService().logSendPacket(type, persistentName);
         }
@@ -65,7 +65,7 @@ public class ExchangeTarget
          */
         if (clientPlayNetworkHandler != null)
         {
-            SyncLog.debug("ExchangeTarget#sendPacket(): [ORIG] in Client Context, packet type: {}, size in bytes: {}", type.getId().toString(), buf.readableBytes());
+            //SyncLog.debug("ExchangeTarget#sendPacket(): [ORIG] in Client Context, packet type: {}, size in bytes: {}", type.getId().toString(), buf.readableBytes());
             ClientNetworkPlayHandler.sendSyncPacket(payload, clientPlayNetworkHandler);
 
             //SyncLog.debug("ExchangeTarget#sendPacket(): [TEST] in Client Context, packet type: {}, size in bytes: {}", type.getId().toString(), buf.readableBytes());
@@ -75,7 +75,7 @@ public class ExchangeTarget
         if (serverPlayNetworkHandler != null)
         {
             ServerPlayerEntity player = serverPlayNetworkHandler.getPlayer();
-            SyncLog.debug("ExchangeTarget#sendPacket(): [ORIG] in Server Context, packet type: {}, size in bytes: {} to player: {}", type.getId().toString(), buf.readableBytes(), player.getName().getLiteralString());
+            //SyncLog.debug("ExchangeTarget#sendPacket(): [ORIG] in Server Context, packet type: {}, size in bytes: {} to player: {}", type.getId().toString(), buf.readableBytes(), player.getName().getLiteralString());
             ServerNetworkPlayHandler.sendSyncPacket(payload, serverPlayNetworkHandler);
 
             //SyncLog.debug("ExchangeTarget#sendPacket(): [TEST] in Server Context, packet type: {}, size in bytes: {} to player: {}", type.getId().toString(), buf.readableBytes(), player.getName().getLiteralString());
@@ -102,7 +102,7 @@ public class ExchangeTarget
      */
     public void sendPacket(final PacketType type, final NbtCompound data, final Context context)
     {
-        SyncLog.debug("ExchangeTarget#sendPacket(): invoked.");
+        //SyncLog.debug("ExchangeTarget#sendPacket(): invoked.");
         if (context != null) {
             context.getDebugService().logSendPacket(type, persistentName);
         }
@@ -117,7 +117,7 @@ public class ExchangeTarget
         SyncNbtData payload = new SyncNbtData(data);
         if (clientPlayNetworkHandler != null)
         {
-            SyncLog.debug("ExchangeTarget#sendPacket(): [ORIG] in Client Context, packet type: {}, size in bytes: {}", type.getId().toString(), data.getSizeInBytes());
+            //SyncLog.debug("ExchangeTarget#sendPacket(): [ORIG] in Client Context, packet type: {}, size in bytes: {}", type.getId().toString(), data.getSizeInBytes());
             ClientNetworkPlayHandler.sendSyncPacket(payload, clientPlayNetworkHandler);
 
             //SyncLog.debug("ExchangeTarget#sendPacket(): [TEST] in Client Context, packet type: {}, size in bytes: {}", type.getId().toString(), data.getSizeInBytes());
@@ -127,7 +127,7 @@ public class ExchangeTarget
         {
             ServerPlayerEntity player = serverPlayNetworkHandler.getPlayer();
             // #FIXME
-            SyncLog.debug("ExchangeTarget#sendPacket(): [ORIG] in Server Context, packet type: {}, size in bytes: {} to player: {}", type.getId().toString(), data.getSizeInBytes(), player.getName().getLiteralString());
+            //SyncLog.debug("ExchangeTarget#sendPacket(): [ORIG] in Server Context, packet type: {}, size in bytes: {} to player: {}", type.getId().toString(), data.getSizeInBytes(), player.getName().getLiteralString());
             ServerNetworkPlayHandler.sendSyncPacket(payload, serverPlayNetworkHandler);
 
             //SyncLog.debug("ExchangeTarget#sendPacket(): [TEST] in Server Context, packet type: {}, size in bytes: {} to player: {}", type.getId().toString(), data.getSizeInBytes(), player.getName().getLiteralString());

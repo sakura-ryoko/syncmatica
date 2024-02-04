@@ -24,7 +24,8 @@ import java.util.Objects;
 /**
  * Remove "CommunicationsManager" / "ExchangeTarget" interface in favor of new network API ?
  */
-public class Context {
+public class Context
+{
     private final IFileStorage files;
     private final CommunicationManager comMan;
     private final SyncmaticManager synMan;
@@ -79,7 +80,7 @@ public class Context {
             try
             {
                 if (!litematicFolder.mkdirs())
-                    SyncLog.fatal("Context(): Fatal error creating litematic Folder");
+                    SyncLog.fatal("Context(): Fatal error creating litematic Folder.  Check that Syncmatica has the permissions to do so.");
             }
             catch (Exception ignored) {}
         }
@@ -174,6 +175,7 @@ public class Context {
         }
     }
     public void startup() {
+        SyncLog.debug("Context#startup(): invoked");
         startupServices();
         registerReceivers();
         isStarted = true;
@@ -181,6 +183,7 @@ public class Context {
     }
 
     public void shutdown() {
+        SyncLog.debug("Context#shutdown(): invoked");
         shutdownServices();
         unregisterReceivers();
         isStarted = false;

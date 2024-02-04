@@ -152,9 +152,13 @@ public class DownloadExchange extends AbstractExchange
         }
         if (!isSuccessful() && downloadFile.exists())
         {
-            if (!downloadFile.delete())
-                SyncLog.error("DownloadExchange#onClose(): failed to delete file: {}", downloadFile.toString());
-            // NOSONAR
+            try
+            {
+                if (!downloadFile.delete())
+                    SyncLog.error("DownloadExchange#onClose(): failed to delete file: {}", downloadFile.toString());
+            }
+            catch (Exception ignored) {}
+            // NO-OP
         }
     }
 

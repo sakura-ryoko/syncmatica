@@ -27,21 +27,21 @@ public class ModifyExchangeServer extends AbstractExchange
     @Override
     public boolean checkPacket(final PacketType type, final PacketByteBuf packetBuf)
     {
-        SyncLog.debug("ModifyExchangeServer#checkPacket(): received byteBuf packet.");
+        //SyncLog.debug("ModifyExchangeServer#checkPacket(): received byteBuf packet.");
         return type.equals(PacketType.MODIFY_FINISH) && checkUUID(packetBuf, placement.getId());
     }
 
     @Override
     public boolean checkPacket(PacketType type, NbtCompound nbt)
     {
-        SyncLog.debug("ModifyExchangeServer#handle(): received nbtData packet.");
+        //SyncLog.debug("ModifyExchangeServer#handle(): received nbtData packet.");
         return type.equals(PacketType.NBT_DATA);
     }
 
     @Override
     public void handle(final PacketType type, final PacketByteBuf packetBuf)
     {
-        SyncLog.debug("ModifyExchangeServer#handle(): received byteBuf packet.");
+        //SyncLog.debug("ModifyExchangeServer#handle(): received byteBuf packet.");
         packetBuf.readUuid(); // consume uuid
         if (type.equals(PacketType.MODIFY_FINISH))
         {

@@ -6,7 +6,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Introduces a common logging format that can be used across the entire mod.
- * Could possibly be merged into DebugService, but I simply used this as a general
+ * Could possibly be merged into DebugService, but I simply use this as a general
  * debugger.
  */
 public class SyncLog

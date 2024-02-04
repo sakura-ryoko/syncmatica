@@ -31,7 +31,7 @@ public class ModifyExchangeClient extends AbstractExchange
     @Override
     public boolean checkPacket(final PacketType type, final PacketByteBuf packetBuf)
     {
-        SyncLog.debug("ModifyExchangeClient#checkPacket(): received byteBuf packet.");
+        //SyncLog.debug("ModifyExchangeClient#checkPacket(): received byteBuf packet.");
 
         if (type.equals(PacketType.MODIFY_REQUEST_DENY)
                 || type.equals(PacketType.MODIFY_REQUEST_ACCEPT)
@@ -45,7 +45,7 @@ public class ModifyExchangeClient extends AbstractExchange
     @Override
     public boolean checkPacket(PacketType type, NbtCompound nbt)
     {
-        SyncLog.debug("ModifyExchangeClient#checkPacket(): received nbtData packet.");
+        //SyncLog.debug("ModifyExchangeClient#checkPacket(): received nbtData packet.");
 
         return type.equals(PacketType.NBT_DATA);
     }
@@ -53,7 +53,7 @@ public class ModifyExchangeClient extends AbstractExchange
     @Override
     public void handle(final PacketType type, final PacketByteBuf packetBuf)
     {
-        SyncLog.debug("ModifyExchangeClient#handle(): received byteBuf packet.");
+        //SyncLog.debug("ModifyExchangeClient#handle(): received byteBuf packet.");
 
         if (type.equals(PacketType.MODIFY_REQUEST_DENY))
         {

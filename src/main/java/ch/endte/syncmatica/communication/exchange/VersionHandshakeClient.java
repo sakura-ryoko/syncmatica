@@ -20,7 +20,7 @@ public class VersionHandshakeClient extends FeatureExchange
     @Override
     public boolean checkPacket(final PacketType type, final PacketByteBuf packetBuf)
     {
-        SyncLog.debug("VersionHandshaleClient#checkPacket(): received byteBuf packet of type: {}", type.getId().toString());
+        //SyncLog.debug("VersionHandshaleClient#checkPacket(): received byteBuf packet of type: {}", type.getId().toString());
         return type.equals(PacketType.CONFIRM_USER)
                 || type.equals(PacketType.REGISTER_VERSION)
                 || super.checkPacket(type, packetBuf);
@@ -35,7 +35,7 @@ public class VersionHandshakeClient extends FeatureExchange
     @Override
     public void handle(final PacketType type, final PacketByteBuf packetBuf)
     {
-        SyncLog.debug("VersionHandshaleClient#handle(): received byteBuf packet");
+        //SyncLog.debug("VersionHandshaleClient#handle(): received byteBuf packet");
         if (type.equals(PacketType.REGISTER_VERSION))
         {
             final String version = packetBuf.readString(PACKET_MAX_STRING_SIZE);
@@ -47,7 +47,7 @@ public class VersionHandshakeClient extends FeatureExchange
             }
             else
             {
-                SyncLog.debug("VersionHandshaleClient#handle(): Accepting version {} from parter", version);
+                SyncLog.info("Accepting version {} from partner {}", version, getPartner().getPersistentName());
                 partnerVersion = version;
                 final FeatureSet fs = FeatureSet.fromVersionString(version);
                 if (fs == null)
@@ -69,7 +69,7 @@ public class VersionHandshakeClient extends FeatureExchange
                 final ServerPlacement p = getManager().receiveMetaData(packetBuf, getPartner());
                 getContext().getSyncmaticManager().addPlacement(p);
             }
-            SyncLog.info("Joining syncmatica server with local version {} and server version {}", SyncmaticaReference.MOD_VERSION, partnerVersion);
+            SyncLog.info("Joining syncmatica server with local version {}", SyncmaticaReference.MOD_VERSION);
             LitematicManager.getInstance().commitLoad();
             getContext().startup();
             succeed();

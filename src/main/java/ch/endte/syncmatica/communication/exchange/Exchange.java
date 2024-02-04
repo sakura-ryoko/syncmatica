@@ -30,10 +30,12 @@ public interface Exchange
     // this test should have no side effects.
     // doesn't handle packets directly
     boolean checkPacket(PacketType type, PacketByteBuf packetBuf);
+    // For NbtCompound Packets
     boolean checkPacket(PacketType type, NbtCompound nbt);
 
     // handles the data of this specific packet
     void handle(PacketType type, PacketByteBuf packetBuf);
+    // For NbtCompound Packets
     void handle(PacketType type, NbtCompound nbt);
 
     // marks an exchange that has terminated
