@@ -21,8 +21,8 @@ public class PacketTypeRegister
     public static <T extends CustomPayload> void registerPlayChannel(CustomPayload.Id<T> id, PacketCodec<PacketByteBuf, T> codec)
     {
         //SyncLog.debug("PacketTypeRegister#registerPlayChannel(): register {} // {}:{}", id.hashCode(), id.id().getNamespace(), id.id().getPath());
-        PayloadTypeRegistry.configurationC2S().register(id, codec);
-        PayloadTypeRegistry.configurationS2C().register(id, codec);
+        //PayloadTypeRegistry.configurationC2S().register(id, codec);
+        //PayloadTypeRegistry.configurationS2C().register(id, codec);
 
         PayloadTypeRegistry.playC2S().register(id, codec);
         PayloadTypeRegistry.playS2C().register(id, codec);

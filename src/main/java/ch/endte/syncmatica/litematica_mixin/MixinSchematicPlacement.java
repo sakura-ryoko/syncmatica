@@ -45,7 +45,7 @@ public abstract class MixinSchematicPlacement implements IIDContainer, MovingFin
         if (JsonUtils.hasString(obj, "syncmatica_uuid")) {
             final SchematicPlacement newInstance = cir.getReturnValue();
             if (newInstance != null) {
-                ((IIDContainer) newInstance).setServerId(UUID.fromString(obj.get("syncmatica_uuid").getAsString()));
+                ((IIDContainer) newInstance).syncmatica$setServerId(UUID.fromString(obj.get("syncmatica_uuid").getAsString()));
                 cir.setReturnValue(null);
                 LitematicManager.getInstance().preLoad(newInstance);
             }
@@ -58,12 +58,12 @@ public abstract class MixinSchematicPlacement implements IIDContainer, MovingFin
     }
 
     @Override
-    public void setServerId(final UUID i) {
+    public void syncmatica$setServerId(final UUID i) {
         serverId = i;
     }
 
     @Override
-    public UUID getServerId() {
+    public UUID syncmatica$getServerId() {
         return serverId;
     }
 

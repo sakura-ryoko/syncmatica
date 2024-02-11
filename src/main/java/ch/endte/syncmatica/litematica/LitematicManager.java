@@ -93,7 +93,7 @@ public class LitematicManager {
 
         final SchematicPlacement litematicaPlacement = SchematicPlacement.createFor(schematic, origin, file.getName(), true, true);
         rendering.put(placement, litematicaPlacement);
-        ((IIDContainer) litematicaPlacement).setServerId(placement.getId());
+        ((IIDContainer) litematicaPlacement).syncmatica$setServerId(placement.getId());
         if (litematicaPlacement.isLocked()) {
             litematicaPlacement.toggleLocked();
         }
@@ -206,11 +206,11 @@ public class LitematicManager {
             return;
         }
         final IIDContainer modPlacement = (IIDContainer) litematicaPlacement;
-        if (modPlacement.getServerId() != null && !modPlacement.getServerId().equals(placement.getId())) {
+        if (modPlacement.syncmatica$getServerId() != null && !modPlacement.syncmatica$getServerId().equals(placement.getId())) {
             return;
         }
         rendering.put(placement, litematicaPlacement);
-        modPlacement.setServerId(placement.getId());
+        modPlacement.syncmatica$setServerId(placement.getId());
 
         if (litematicaPlacement.isLocked()) {
             litematicaPlacement.toggleLocked();
@@ -288,7 +288,7 @@ public class LitematicManager {
     // until a time where the server has told the client which syncmatics actually are still loaded
     public void preLoad(final SchematicPlacement schem) {
         if (context != null && context.isStarted()) {
-            final UUID id = ((IIDContainer) schem).getServerId();
+            final UUID id = ((IIDContainer) schem).syncmatica$getServerId();
             final ServerPlacement p = context.getSyncmaticManager().getPlacement(id);
             if (isRendered(p)) {
                 rendering.put(p, schem);
@@ -302,7 +302,7 @@ public class LitematicManager {
     public void commitLoad() {
         final SyncmaticManager man = context.getSyncmaticManager();
         for (final SchematicPlacement schem : preLoadList) {
-            final UUID id = ((IIDContainer) schem).getServerId();
+            final UUID id = ((IIDContainer) schem).syncmatica$getServerId();
             final ServerPlacement p = man.getPlacement(id);
             if (p != null) {
                 if (context.getFileStorage().getLocalLitematic(p) != schem.getSchematicFile()) {
@@ -325,7 +325,7 @@ public class LitematicManager {
     }
 
     public void unrenderSchematicPlacement(final SchematicPlacement placement) {
-        final UUID id = ((IIDContainer) placement).getServerId();
+        final UUID id = ((IIDContainer) placement).syncmatica$getServerId();
         final ServerPlacement p = context.getSyncmaticManager().getPlacement(id);
         if (p != null) {
             unrenderSyncmatic(p);

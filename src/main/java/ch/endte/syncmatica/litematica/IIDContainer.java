@@ -3,7 +3,7 @@ package ch.endte.syncmatica.litematica;
 import java.util.UUID;
 
 public interface IIDContainer {
-	void setServerId(UUID i);
+	void syncmatica$setServerId(UUID i);
 
-	UUID getServerId();
+	UUID syncmatica$getServerId();
 }

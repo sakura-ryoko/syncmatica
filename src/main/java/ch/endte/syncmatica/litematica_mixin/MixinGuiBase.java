@@ -5,6 +5,7 @@ import fi.dy.masa.malilib.gui.button.ButtonBase;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ public abstract class MixinGuiBase {
     @Shadow(remap = false)
     private List<ButtonBase> buttons;
 
+    @Unique
     public List<ButtonBase> getButtons() {
         return buttons;
     }

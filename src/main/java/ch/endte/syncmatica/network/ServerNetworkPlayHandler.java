@@ -17,14 +17,6 @@ import net.minecraft.server.network.ServerPlayerEntity;
 
 /**
  * Main Fabric API Networking-based packet senders / receivers (Server Context)
- * -
- * canSend()
- * Wraps: canSend(player.networkHandler, payload.getId().id());
- * --> Wraps Internally as:
- * `--> ServerNetworkingImpl.getAddon(player.networkHandler).getSendableChannels().contains(payload.getId().id());
- * send()
- * Wraps internally as:
- * --> player.networkHandler.sendPacket(ServerPlayNetworking.createS2CPacket(payload));
  */
 public abstract class ServerNetworkPlayHandler
 {

@@ -17,14 +17,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
  * Main Fabric API Networking-based packet senders / receivers (Client Context)
- * -
- * canSend()
- * Wraps: canSend(payload.getId().id());
- * -> Wraps Internally as:
- * `--> ClientNetworkingImpl.getAddon(MinecraftClient.getInstance().getNetworkHandler()).getSendableChannels().contains(payload.getId().id());
- * send()
- * Wraps internally as:
- * --> MinecraftClient.getInstance().getNetworkHandler().sendPacket();
  */
 public class ClientNetworkPlayHandler
 {

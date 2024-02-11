@@ -16,6 +16,7 @@ import fi.dy.masa.malilib.gui.button.ButtonBase;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -46,6 +47,7 @@ public abstract class MixinGuiPlacementConfiguration extends GuiBase {
         ScreenHelper.ifPresent(s -> s.setCurrentGui(this));
     }
 
+    @Unique
     private void requestModification() {
         final Context context = LitematicManager.getInstance().getActiveContext();
         final ExchangeTarget server = ((ClientCommunicationManager) context.getCommunicationManager()).getServer();
@@ -58,6 +60,7 @@ public abstract class MixinGuiPlacementConfiguration extends GuiBase {
         context.getCommunicationManager().startExchange(modifyExchange);
     }
 
+    @Unique
     private void finishModification() {
         final Context context = LitematicManager.getInstance().getActiveContext();
         final ExchangeTarget server = ((ClientCommunicationManager) context.getCommunicationManager()).getServer();
