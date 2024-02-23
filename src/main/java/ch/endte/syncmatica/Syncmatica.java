@@ -18,8 +18,6 @@ import java.util.UUID;
 public class Syncmatica {
     protected static final String SERVER_PATH = "." + File.separator + "syncmatics";
     protected static final String CLIENT_PATH = "." + File.separator + "schematics" + File.separator + "sync";
-
-    // #FIXME -- You really shouldn't be using Identifier's for this.  It works, but just don't pass it into a network interface.
     public static final Identifier CLIENT_CONTEXT = new Identifier("syncmatica", "client_context");
     public static final Identifier SERVER_CONTEXT = new Identifier("syncmatica", "server_context");
     public static final UUID syncmaticaId = UUID.fromString("4c1b738f-56fa-4011-8273-498c972424ea");
