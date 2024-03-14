@@ -32,8 +32,8 @@ public abstract class ServerNetworkPlayHandler
             //player.networkHandler.sendPacket(new CustomPayloadC2SPacket(payload));
             SyncLog.debug("ServerNetworkPlayHandler#sendSyncPacket(): [API] sending payload id: {} to player: {}", payload.getId().id().toString(), player.getName().getLiteralString());
         }
-        //else
-          //  SyncLog.warn("ServerNetworkPlayHandler#sendSyncPacket(): [API] can't send packet (not accepted).");
+        else
+          SyncLog.warn("ServerNetworkPlayHandler#sendSyncPacket(): [API] can't send packet (not accepted).");
     }
 
     // Uses ServerPlayNetworkHandler method
@@ -47,8 +47,8 @@ public abstract class ServerNetworkPlayHandler
             handler.sendPacket(packet);
             SyncLog.debug("ServerNetworkPlayHandler#sendSyncPacket(): [Handler] sending payload id: {} to player: {}", payload.getId().id().toString(), player.getName().getLiteralString());
         }
-        //else
-          //SyncLog.warn("ServerNetworkPlayHandler#sendSyncPacket(): [Handler] can't send packet (not accepted).");
+        else
+          SyncLog.warn("ServerNetworkPlayHandler#sendSyncPacket(): [Handler] can't send packet (not accepted).");
     }
 
     // Server-bound packet sent by a Client
@@ -71,7 +71,7 @@ public abstract class ServerNetworkPlayHandler
     public static void receiveSyncNbt(PacketType type, NbtCompound data, ServerPlayNetworkHandler handler, ServerPlayerEntity player)
     {
         SyncLog.debug("ServerNetworkPlayHandler#receiveSyncNbt(): received payload id: {}, size in bytes {}", type.getId().toString(), data.getSizeInBytes());
-        //SyncLog.debug("ServerNetworkPlayHandler#receiveSyncNbt(): payload.readString(): {}", data.getString(SyncNbtData.KEY));
+        SyncLog.debug("ServerNetworkPlayHandler#receiveSyncNbt(): payload.readString(): {}", data.getString(SyncNbtData.KEY));
 
         if (handler == null)
         {

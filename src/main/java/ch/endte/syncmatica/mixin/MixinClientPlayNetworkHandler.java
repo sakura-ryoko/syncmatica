@@ -12,6 +12,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.packet.CustomPayload;
+import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -51,9 +52,11 @@ public abstract class MixinClientPlayNetworkHandler implements IClientPlayerNetw
         {
             return; //only execute packet on main thread
         }
+        Identifier id = packet.getId().id();
+        //SyncLog.debug("MixinClientPlayNetworkHandler#syncmatica$handlePacket(): invoked id {}", id.toString());
 
         // Let's get this done
-        PacketType type =  PacketType.getType(packet.getId().id());
+        PacketType type =  PacketType.getType(id);
         if (type != null)
         {
             // For all packets, because they probably aren't coming from the normal "PLAY" channel (?)

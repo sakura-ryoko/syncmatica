@@ -3,12 +3,12 @@ package ch.endte.syncmatica.mixin;
 import ch.endte.syncmatica.network.packet.IServerPlayerNetworkHandler;
 import ch.endte.syncmatica.network.payload.PacketType;
 import ch.endte.syncmatica.network.payload.channels.*;
-import ch.endte.syncmatica.util.SyncLog;
 import net.minecraft.network.NetworkThreadUtils;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
 import net.minecraft.server.network.ServerCommonNetworkHandler;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
+import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -25,12 +25,14 @@ public class MixinServerCommonNetworkHandler
     @Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
     private void syncmatica$onCustomPayload(CustomPayloadC2SPacket packet, CallbackInfo ci)
     {
-        SyncLog.debug("ServerCommonNetworkHandler#syncmatica$onCustomPayload(): invoked");
+        //SyncLog.debug("ServerCommonNetworkHandler#syncmatica$onCustomPayload(): invoked");
         Object thiss = this;
         if (thiss instanceof ServerPlayNetworkHandler impl)
         {
             CustomPayload thisPayload = packet.payload();
-            PacketType type = PacketType.getType(thisPayload.getId().id());
+            Identifier id = thisPayload.getId().id();
+            PacketType type = PacketType.getType(id);
+            //SyncLog.debug("ServerCommonNetworkHandler#syncmatica$onCustomPayload(): id {}", id.toString());
 
             if (type != null)
             {

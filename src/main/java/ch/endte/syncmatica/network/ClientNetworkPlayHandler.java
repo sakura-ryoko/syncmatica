@@ -30,8 +30,8 @@ public class ClientNetworkPlayHandler
             ClientPlayNetworking.send(payload);
             SyncLog.debug("ClientNetworkPlayHandler#sendSyncPacket(): [API] sending payload id: {}", payload.getId().id().toString());
         }
-        //else
-            //SyncLog.warn("ClientNetworkPlayHandler#sendSyncPacket(): [API] can't send packet (not accepted).");
+        else
+            SyncLog.warn("ClientNetworkPlayHandler#sendSyncPacket(): [API] can't send packet (not accepted).");
     }
 
     // Uses ClientPlayNetworkHandler method
@@ -44,8 +44,8 @@ public class ClientNetworkPlayHandler
             handler.sendPacket(packet);
             SyncLog.debug("ClientNetworkPlayHandler#sendSyncPacket(): [Handler] sending payload id: {}", payload.getId().id().toString());
         }
-        //else
-            //SyncLog.warn("ClientNetworkPlayHandler#sendSyncPacket(): [Handler] can't send packet (not accepted).");
+        else
+            SyncLog.warn("ClientNetworkPlayHandler#sendSyncPacket(): [Handler] can't send packet (not accepted).");
     }
 
     // Client-bound packet sent from the Server
@@ -68,7 +68,7 @@ public class ClientNetworkPlayHandler
     {
         CallbackInfo ci = new CallbackInfo("receiveSyncNbt", false);
         SyncLog.debug("ClientNetworkPlayHandler#receiveSyncPacket(): received payload id: {}, size in bytes {}", type.getId().toString(), data.getSizeInBytes());
-        //SyncLog.debug("ClientNetworkPlayHandler#receiveSyncPacket(): payload.readString(): {}", data.getString(SyncNbtData.KEY));
+        SyncLog.debug("ClientNetworkPlayHandler#receiveSyncPacket(): payload.readString(): {}", data.getString(SyncNbtData.KEY));
 
         if (handler == null)
         {

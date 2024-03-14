@@ -69,7 +69,6 @@ public class ExchangeTarget
             ClientNetworkPlayHandler.sendSyncPacket(payload, clientPlayNetworkHandler);
 
             //SyncLog.debug("ExchangeTarget#sendPacket(): [TEST] in Client Context, packet type: {}, size in bytes: {}", type.getId().toString(), buf.readableBytes());
-            //assert payload != null;
             //ClientNetworkPlayHandler.sendSyncPacket(payload);
         }
         if (serverPlayNetworkHandler != null)
@@ -79,7 +78,6 @@ public class ExchangeTarget
             ServerNetworkPlayHandler.sendSyncPacket(payload, serverPlayNetworkHandler);
 
             //SyncLog.debug("ExchangeTarget#sendPacket(): [TEST] in Server Context, packet type: {}, size in bytes: {} to player: {}", type.getId().toString(), buf.readableBytes(), player.getName().getLiteralString());
-            //assert payload != null;
             //ServerNetworkPlayHandler.sendSyncPacket(payload, player);
         }
     }
@@ -126,7 +124,6 @@ public class ExchangeTarget
         if (serverPlayNetworkHandler != null)
         {
             ServerPlayerEntity player = serverPlayNetworkHandler.getPlayer();
-            // #FIXME
             //SyncLog.debug("ExchangeTarget#sendPacket(): [ORIG] in Server Context, packet type: {}, size in bytes: {} to player: {}", type.getId().toString(), data.getSizeInBytes(), player.getName().getLiteralString());
             ServerNetworkPlayHandler.sendSyncPacket(payload, serverPlayNetworkHandler);
 
