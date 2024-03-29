@@ -35,10 +35,11 @@
 	
 	"icon": "assets/syncmatica/icon/logo.png",
 	"custom": {
-    		"modmenu": {
-        		"links": {
-         	   		"modmenu.discord": "https://discord.gg/6NPDVNMZ3T"
-        		}
-    		}
+		"modmenu": {
+			"links": {
+				"modmenu.discord": "https://discord.gg/6NPDVNMZ3T"
+			},
+			"parent": "malilib"
+		}
 	}
 }
