@@ -2,8 +2,8 @@ package ch.endte.syncmatica.communication;
 
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.communication.exchange.Exchange;
-import ch.endte.syncmatica.network.ClientNetworkPlayHandler;
-import ch.endte.syncmatica.network.ServerNetworkPlayHandler;
+import ch.endte.syncmatica.network.client.ClientNetworkPlayHandler;
+import ch.endte.syncmatica.network.server.ServerNetworkPlayHandler;
 import ch.endte.syncmatica.network.payload.PacketType;
 import ch.endte.syncmatica.network.payload.SyncByteBuf;
 import ch.endte.syncmatica.network.payload.channels.SyncNbtData;
@@ -60,6 +60,7 @@ public class ExchangeTarget
         }
         final SyncByteBuf buf = PayloadUtils.fromByteBuf(packet);
         CustomPayload payload = PayloadUtils.getPayload(type, buf);
+
         /**
          * The Fabric API call mode sometimes fails here, because the channels might not be registered in PLAY mode, especially for Single Player.
          */
@@ -109,6 +110,7 @@ public class ExchangeTarget
             SyncLog.error("ExchangeTarget#sendPacket(): Non-NBT PacketType rejected.");
             return;
         }
+
         /**
          * The Fabric API call mode sometimes fails here, because the channels might not be registered yet in PLAY mode, especially for Single Player.
          */

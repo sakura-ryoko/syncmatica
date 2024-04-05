@@ -1,4 +1,4 @@
-package ch.endte.syncmatica.network;
+package ch.endte.syncmatica.network.client;
 
 import ch.endte.syncmatica.SyncmaticaReference;
 import ch.endte.syncmatica.network.payload.channels.*;
@@ -30,6 +30,7 @@ public class ClientNetworkPlayRegister
     static ClientPlayNetworking.PlayPayloadHandler<SyncSendLitematic> S2CSyncHandler_SendLitematic;
     static ClientPlayNetworking.PlayPayloadHandler<SyncNbtData> S2CSyncHandler_NbtData;
     private static boolean receiversInit = false;
+
     public static void registerReceivers()
     {
         // Don't register more than once
@@ -93,6 +94,7 @@ public class ClientNetworkPlayRegister
             receiversInit = false;
         }
     }
+
     static
     {
         S2CSyncHandler_CancelShare = ClientNetworkPlayHandler::receiveCancelShare;

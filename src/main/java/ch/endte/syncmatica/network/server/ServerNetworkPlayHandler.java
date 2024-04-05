@@ -1,4 +1,4 @@
-package ch.endte.syncmatica.network;
+package ch.endte.syncmatica.network.server;
 
 import ch.endte.syncmatica.network.packet.IServerPlayerNetworkHandler;
 import ch.endte.syncmatica.network.payload.PacketType;
@@ -20,11 +20,8 @@ import net.minecraft.server.network.ServerPlayerEntity;
  */
 public abstract class ServerNetworkPlayHandler
 {
-    // Simple unified "sendPacket()" method
-    // --> It doesn't care what payload/packet type it is, as long as it extends CustomPayload
     public static <T extends CustomPayload> void sendSyncPacket(T payload, ServerPlayerEntity player)
     {
-        // Client-bound packet sent by the Server
         if (ServerPlayNetworking.canSend(player, payload.getId()))
         {
             ServerPlayNetworking.send(player, payload);
@@ -36,10 +33,8 @@ public abstract class ServerNetworkPlayHandler
           SyncLog.warn("ServerNetworkPlayHandler#sendSyncPacket(): [API] can't send packet (not accepted).");
     }
 
-    // Uses ServerPlayNetworkHandler method
     public static <T extends CustomPayload> void sendSyncPacket(T payload, ServerPlayNetworkHandler handler)
     {
-        // Client-bound packet sent by the Server
         Packet<?> packet = new CustomPayloadS2CPacket(payload);
         ServerPlayerEntity player = handler.getPlayer();
         if (handler.accepts(packet))
@@ -51,10 +46,8 @@ public abstract class ServerNetworkPlayHandler
           SyncLog.warn("ServerNetworkPlayHandler#sendSyncPacket(): [Handler] can't send packet (not accepted).");
     }
 
-    // Server-bound packet sent by a Client
     public static void receiveSyncPacket(PacketType type, SyncByteBuf data, ServerPlayNetworkHandler handler, ServerPlayerEntity player)
     {
-        // Convert to PacketByteBuf
         PacketByteBuf out = PayloadUtils.fromSyncBuf(data);
         SyncLog.debug("ServerNetworkPlayHandler#receiveSyncPacket(): received payload id: {}, size in bytes {}", type.getId().toString(), out.readableBytes());
 
@@ -68,6 +61,7 @@ public abstract class ServerNetworkPlayHandler
             iDo.syncmatica$operateComms(sm -> sm.onPacket(iDo.syncmatica$getExchangeTarget(), type, out));
         }
     }
+
     public static void receiveSyncNbt(PacketType type, NbtCompound data, ServerPlayNetworkHandler handler, ServerPlayerEntity player)
     {
         SyncLog.debug("ServerNetworkPlayHandler#receiveSyncNbt(): received payload id: {}, size in bytes {}", type.getId().toString(), data.getSizeInBytes());
@@ -83,6 +77,7 @@ public abstract class ServerNetworkPlayHandler
             iDo.syncmatica$operateComms(sm -> sm.onNbtPacket(iDo.syncmatica$getExchangeTarget(), type, data));
         }
     }
+
     public static void receiveCancelShare(SyncCancelShare data, ServerPlayNetworking.Context context)
     {
         receiveSyncPacket(PacketType.CANCEL_SHARE, data.byteBuf(), context.player().networkHandler, context.player());

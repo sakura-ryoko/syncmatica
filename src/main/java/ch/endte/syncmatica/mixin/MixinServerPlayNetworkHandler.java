@@ -40,27 +40,21 @@ public abstract class MixinServerPlayNetworkHandler implements IServerPlayerNetw
     @Inject(method = "onDisconnected", at = @At("HEAD"))
     public void syncmatica$onDisconnected(final Text reason, final CallbackInfo ci)
     {
-        //ChannelManager.onDisconnected();
         syncmatica$operateComms(sm -> sm.onPlayerLeave(syncmatica$getExchangeTarget()));
     }
     @Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
     private void syncmatica$onCustomPayload(CustomPayloadC2SPacket packet, CallbackInfo ci)
     {
-        //SyncLog.debug("MixinServerPlayNetworkHandler#syncmatica$onCustomPayload(): invoked");
-
         CustomPayload thisPayload = packet.payload();
         Identifier id = thisPayload.getId().id();
         PacketType type = PacketType.getType(id);
-        //SyncLog.debug("MixinServerPlayNetworkHandler#syncmatica$onCustomPayload(): id {} // type {}", id.toString(), type);
 
+        // I don't know, it just works...
         if (type != null)
         {
-            // For all packets, because they probably aren't coming from the normal "PLAY" channel (?)
-            // I don't know, it just works...
             if (type.equals(PacketType.NBT_DATA))
             {
                 SyncNbtData payload = (SyncNbtData) thisPayload;
-                //SyncLog.debug("ServerCommonNetworkHandler#syncmatica$onCustomPayload(): packet type: {}, size: {}", type.getId().toString(), payload.data().getSizeInBytes());
                 //NetworkThreadUtils.forceMainThread(packet, this, this.player.getServerWorld());
                 IServerPlayerNetworkHandler impll = this;
                 impll.syncmatica$operateComms(sm -> sm.onNbtPacket(impll.syncmatica$getExchangeTarget(), type, payload.data()));
@@ -68,7 +62,6 @@ public abstract class MixinServerPlayNetworkHandler implements IServerPlayerNetw
             else if (type.equals(PacketType.REGISTER_METADATA))
             {
                 SyncRegisterMetadata payload = (SyncRegisterMetadata) thisPayload;
-                //SyncLog.debug("ServerCommonNetworkHandler#syncmatica$onCustomPayload(): packet type: {}, size: {}", type.getId().toString(), payload.byteBuf().readableBytes());
                 //NetworkThreadUtils.forceMainThread(packet, impl, impl.player.getServerWorld());
                 IServerPlayerNetworkHandler impll = this;
                 impll.syncmatica$operateComms(sm -> sm.onPacket(impll.syncmatica$getExchangeTarget(), type, payload.byteBuf()));
@@ -76,7 +69,6 @@ public abstract class MixinServerPlayNetworkHandler implements IServerPlayerNetw
             else if (type.equals(PacketType.CANCEL_SHARE))
             {
                 SyncCancelShare payload = (SyncCancelShare) thisPayload;
-                //SyncLog.debug("ServerCommonNetworkHandler#syncmatica$onCustomPayload(): packet type: {}, size: {}", type.getId().toString(), payload.byteBuf().readableBytes());
                 //NetworkThreadUtils.forceMainThread(packet, impl, impl.player.getServerWorld());
                 IServerPlayerNetworkHandler impll = this;
                 impll.syncmatica$operateComms(sm -> sm.onPacket(impll.syncmatica$getExchangeTarget(), type, payload.byteBuf()));
@@ -84,7 +76,6 @@ public abstract class MixinServerPlayNetworkHandler implements IServerPlayerNetw
             else if (type.equals(PacketType.REQUEST_LITEMATIC))
             {
                 SyncRequestDownload payload = (SyncRequestDownload) thisPayload;
-                //SyncLog.debug("ServerCommonNetworkHandler#syncmatica$onCustomPayload(): packet type: {}, size: {}", type.getId().toString(), payload.byteBuf().readableBytes());
                 //NetworkThreadUtils.forceMainThread(packet, impl, impl.player.getServerWorld());
                 IServerPlayerNetworkHandler impll = this;
                 impll.syncmatica$operateComms(sm -> sm.onPacket(impll.syncmatica$getExchangeTarget(), type, payload.byteBuf()));
@@ -92,7 +83,6 @@ public abstract class MixinServerPlayNetworkHandler implements IServerPlayerNetw
             else if (type.equals(PacketType.SEND_LITEMATIC))
             {
                 SyncSendLitematic payload = (SyncSendLitematic) thisPayload;
-                //SyncLog.debug("ServerCommonNetworkHandler#syncmatica$onCustomPayload(): packet type: {}, size: {}", type.getId().toString(), payload.byteBuf().readableBytes());
                 //NetworkThreadUtils.forceMainThread(packet, impl, impl.player.getServerWorld());
                 IServerPlayerNetworkHandler impll = this;
                 impll.syncmatica$operateComms(sm -> sm.onPacket(impll.syncmatica$getExchangeTarget(), type, payload.byteBuf()));
@@ -100,7 +90,6 @@ public abstract class MixinServerPlayNetworkHandler implements IServerPlayerNetw
             else if (type.equals(PacketType.RECEIVED_LITEMATIC))
             {
                 SyncReceivedLitematic payload = (SyncReceivedLitematic) thisPayload;
-                //SyncLog.debug("ServerCommonNetworkHandler#syncmatica$onCustomPayload(): packet type: {}, size: {}", type.getId().toString(), payload.byteBuf().readableBytes());
                 //NetworkThreadUtils.forceMainThread(packet, impl, impl.player.getServerWorld());
                 IServerPlayerNetworkHandler impll = this;
                 impll.syncmatica$operateComms(sm -> sm.onPacket(impll.syncmatica$getExchangeTarget(), type, payload.byteBuf()));
@@ -108,7 +97,6 @@ public abstract class MixinServerPlayNetworkHandler implements IServerPlayerNetw
             else if (type.equals(PacketType.FINISHED_LITEMATIC))
             {
                 SyncFinishedLitematic payload = (SyncFinishedLitematic) thisPayload;
-                //SyncLog.debug("ServerCommonNetworkHandler#syncmatica$onCustomPayload(): packet type: {}, size: {}", type.getId().toString(), payload.byteBuf().readableBytes());
                 //NetworkThreadUtils.forceMainThread(packet, impl, impl.player.getServerWorld());
                 IServerPlayerNetworkHandler impll = this;
                 impll.syncmatica$operateComms(sm -> sm.onPacket(impll.syncmatica$getExchangeTarget(), type, payload.byteBuf()));
@@ -116,7 +104,6 @@ public abstract class MixinServerPlayNetworkHandler implements IServerPlayerNetw
             else if (type.equals(PacketType.CANCEL_LITEMATIC))
             {
                 SyncCancelLitematic payload = (SyncCancelLitematic) thisPayload;
-                //SyncLog.debug("ServerCommonNetworkHandler#syncmatica$onCustomPayload(): packet type: {}, size: {}", type.getId().toString(), payload.byteBuf().readableBytes());
                 //NetworkThreadUtils.forceMainThread(packet, impl, impl.player.getServerWorld());
                 IServerPlayerNetworkHandler impll = this;
                 impll.syncmatica$operateComms(sm -> sm.onPacket(impll.syncmatica$getExchangeTarget(), type, payload.byteBuf()));
@@ -124,7 +111,6 @@ public abstract class MixinServerPlayNetworkHandler implements IServerPlayerNetw
             else if (type.equals(PacketType.REMOVE_SYNCMATIC))
             {
                 SyncRemoveSyncmatic payload = (SyncRemoveSyncmatic) thisPayload;
-                //SyncLog.debug("ServerCommonNetworkHandler#syncmatica$onCustomPayload(): packet type: {}, size: {}", type.getId().toString(), payload.byteBuf().readableBytes());
                 //NetworkThreadUtils.forceMainThread(packet, impl, impl.player.getServerWorld());
                 IServerPlayerNetworkHandler impll = this;
                 impll.syncmatica$operateComms(sm -> sm.onPacket(impll.syncmatica$getExchangeTarget(), type, payload.byteBuf()));
@@ -132,7 +118,6 @@ public abstract class MixinServerPlayNetworkHandler implements IServerPlayerNetw
             else if (type.equals(PacketType.REGISTER_VERSION))
             {
                 SyncRegisterVersion payload = (SyncRegisterVersion) thisPayload;
-                //SyncLog.debug("ServerCommonNetworkHandler#syncmatica$onCustomPayload(): packet type: {}, size: {}", type.getId().toString(), payload.byteBuf().readableBytes());
                 //NetworkThreadUtils.forceMainThread(packet, impl, impl.player.getServerWorld());
                 IServerPlayerNetworkHandler impll = this;
                 impll.syncmatica$operateComms(sm -> sm.onPacket(impll.syncmatica$getExchangeTarget(), type, payload.byteBuf()));
@@ -140,7 +125,6 @@ public abstract class MixinServerPlayNetworkHandler implements IServerPlayerNetw
             else if (type.equals(PacketType.CONFIRM_USER))
             {
                 SyncConfirmUser payload = (SyncConfirmUser) thisPayload;
-                //SyncLog.debug("ServerCommonNetworkHandler#syncmatica$onCustomPayload(): packet type: {}, size: {}", type.getId().toString(), payload.byteBuf().readableBytes());
                 //NetworkThreadUtils.forceMainThread(packet, impl, impl.player.getServerWorld());
                 IServerPlayerNetworkHandler impll = this;
                 impll.syncmatica$operateComms(sm -> sm.onPacket(impll.syncmatica$getExchangeTarget(), type, payload.byteBuf()));
@@ -148,7 +132,6 @@ public abstract class MixinServerPlayNetworkHandler implements IServerPlayerNetw
             else if (type.equals(PacketType.FEATURE))
             {
                 SyncFeature payload = (SyncFeature) thisPayload;
-                //SyncLog.debug("ServerCommonNetworkHandler#syncmatica$onCustomPayload(): packet type: {}, size: {}", type.getId().toString(), payload.byteBuf().readableBytes());
                 //NetworkThreadUtils.forceMainThread(packet, impl, impl.player.getServerWorld());
                 IServerPlayerNetworkHandler impll = this;
                 impll.syncmatica$operateComms(sm -> sm.onPacket(impll.syncmatica$getExchangeTarget(), type, payload.byteBuf()));
@@ -156,7 +139,6 @@ public abstract class MixinServerPlayNetworkHandler implements IServerPlayerNetw
             else if (type.equals(PacketType.FEATURE_REQUEST))
             {
                 SyncFeatureRequest payload = (SyncFeatureRequest) thisPayload;
-                //SyncLog.debug("ServerCommonNetworkHandler#syncmatica$onCustomPayload(): packet type: {}, size: {}", type.getId().toString(), payload.byteBuf().readableBytes());
                 //NetworkThreadUtils.forceMainThread(packet, impl, impl.player.getServerWorld());
                 IServerPlayerNetworkHandler impll = this;
                 impll.syncmatica$operateComms(sm -> sm.onPacket(impll.syncmatica$getExchangeTarget(), type, payload.byteBuf()));
@@ -164,7 +146,6 @@ public abstract class MixinServerPlayNetworkHandler implements IServerPlayerNetw
             else if (type.equals(PacketType.MODIFY))
             {
                 SyncModify payload = (SyncModify) thisPayload;
-                //SyncLog.debug("ServerCommonNetworkHandler#syncmatica$onCustomPayload(): packet type: {}, size: {}", type.getId().toString(), payload.byteBuf().readableBytes());
                 //NetworkThreadUtils.forceMainThread(packet, impl, impl.player.getServerWorld());
                 IServerPlayerNetworkHandler impll = this;
                 impll.syncmatica$operateComms(sm -> sm.onPacket(impll.syncmatica$getExchangeTarget(), type, payload.byteBuf()));
@@ -172,7 +153,6 @@ public abstract class MixinServerPlayNetworkHandler implements IServerPlayerNetw
             else if (type.equals(PacketType.MODIFY_REQUEST))
             {
                 SyncModifyRequest payload = (SyncModifyRequest) thisPayload;
-                //SyncLog.debug("ServerCommonNetworkHandler#syncmatica$onCustomPayload(): packet type: {}, size: {}", type.getId().toString(), payload.byteBuf().readableBytes());
                 //NetworkThreadUtils.forceMainThread(packet, impl, impl.player.getServerWorld());
                 IServerPlayerNetworkHandler impll = this;
                 impll.syncmatica$operateComms(sm -> sm.onPacket(impll.syncmatica$getExchangeTarget(), type, payload.byteBuf()));
@@ -180,7 +160,6 @@ public abstract class MixinServerPlayNetworkHandler implements IServerPlayerNetw
             else if (type.equals(PacketType.MODIFY_REQUEST_DENY))
             {
                 SyncModifyRequestDeny payload = (SyncModifyRequestDeny) thisPayload;
-                //SyncLog.debug("ServerCommonNetworkHandler#syncmatica$onCustomPayload(): packet type: {}, size: {}", type.getId().toString(), payload.byteBuf().readableBytes());
                 //NetworkThreadUtils.forceMainThread(packet, impl, impl.player.getServerWorld());
                 IServerPlayerNetworkHandler impll = this;
                 impll.syncmatica$operateComms(sm -> sm.onPacket(impll.syncmatica$getExchangeTarget(), type, payload.byteBuf()));
@@ -188,7 +167,6 @@ public abstract class MixinServerPlayNetworkHandler implements IServerPlayerNetw
             else if (type.equals(PacketType.MODIFY_REQUEST_ACCEPT))
             {
                 SyncModifyRequestAccept payload = (SyncModifyRequestAccept) thisPayload;
-                //SyncLog.debug("ServerCommonNetworkHandler#syncmatica$onCustomPayload(): packet type: {}, size: {}", type.getId().toString(), payload.byteBuf().readableBytes());
                 //NetworkThreadUtils.forceMainThread(packet, impl, impl.player.getServerWorld());
                 IServerPlayerNetworkHandler impll = this;
                 impll.syncmatica$operateComms(sm -> sm.onPacket(impll.syncmatica$getExchangeTarget(), type, payload.byteBuf()));
@@ -196,7 +174,6 @@ public abstract class MixinServerPlayNetworkHandler implements IServerPlayerNetw
             else if (type.equals(PacketType.MODIFY_FINISH))
             {
                 SyncModifyFinish payload = (SyncModifyFinish) thisPayload;
-                //SyncLog.debug("ServerCommonNetworkHandler#syncmatica$onCustomPayload(): packet type: {}, size: {}", type.getId().toString(), payload.byteBuf().readableBytes());
                 //NetworkThreadUtils.forceMainThread(packet, impl, impl.player.getServerWorld());
                 IServerPlayerNetworkHandler impll = this;
                 impll.syncmatica$operateComms(sm -> sm.onPacket(impll.syncmatica$getExchangeTarget(), type, payload.byteBuf()));
@@ -204,7 +181,6 @@ public abstract class MixinServerPlayNetworkHandler implements IServerPlayerNetw
             else if (type.equals(PacketType.MESSAGE))
             {
                 SyncMessage payload = (SyncMessage) thisPayload;
-                //SyncLog.debug("ServerCommonNetworkHandler#syncmatica$onCustomPayload(): packet type: {}, size: {}", type.getId().toString(), payload.byteBuf().readableBytes());
                 //NetworkThreadUtils.forceMainThread(packet, impl, impl.player.getServerWorld());
                 IServerPlayerNetworkHandler impll = this;
                 impll.syncmatica$operateComms(sm -> sm.onPacket(impll.syncmatica$getExchangeTarget(), type, payload.byteBuf()));
@@ -215,6 +191,7 @@ public abstract class MixinServerPlayNetworkHandler implements IServerPlayerNetw
         }
         // NO-OP
     }
+
     @Unique
     public void syncmatica$operateComms(final Consumer<ServerCommunicationManager> operation)
     {

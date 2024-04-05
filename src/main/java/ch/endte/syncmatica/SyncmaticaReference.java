@@ -4,24 +4,29 @@ import ch.endte.syncmatica.util.SyncLog;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
+import net.minecraft.MinecraftVersion;
 
 import java.util.Optional;
 
 /**
  * Main (Generic) Reference Calls --
  * Should use the "Context" versions of some of these for their respective context.
- * These are used to control what channels get registered, and various "preInit" items
- * Using the Syncmatica.startup() as a wrapper doesn't seem to work.
+ * These are used to control what channels get registered, and various "preInit" items.
  */
 public class SyncmaticaReference
 {
     public static final String MOD_ID = "syncmatica";
+    public static final String MOD_NAME = "Syncmatica";
     public static final String MOD_VERSION = getModVersion();       // Get this value from the fabric.mod.json :)
+    public static final String MC_VERSION = MinecraftVersion.CURRENT.getName();
+    public static final String MOD_TYPE = "fabric";
+    public static final String MOD_STRING = MOD_ID+"-"+MOD_TYPE+"-"+MC_VERSION+"-"+MOD_VERSION;
     private static final EnvType MOD_ENV = FabricLoader.getInstance().getEnvironmentType();
     public static final boolean MOD_DEBUG = true;
     private static boolean SINGLE_PLAYER = false;
     private static boolean DEDICATED_SERVER = false;
     private static boolean INTEGRATED_SERVER = false;
+    private static boolean OPEN_TO_LAN = false;
     public static boolean isClient()
     {
         return MOD_ENV == EnvType.CLIENT;
@@ -54,6 +59,15 @@ public class SyncmaticaReference
     {
         INTEGRATED_SERVER = toggle;
     }
+    public static boolean isOpenToLan()
+    {
+        return OPEN_TO_LAN;
+    }
+    public static void setOpenToLan(boolean toggle)
+    {
+        OPEN_TO_LAN = toggle;
+    }
+
     protected static String getModVersion()
     {
         final Optional<ModContainer> CONTAINER = FabricLoader.getInstance().getModContainer(MOD_ID);
@@ -63,6 +77,7 @@ public class SyncmaticaReference
         }
         else return "?";
     }
+
     protected static boolean checkForMaLiLib()
     {
         final Optional<ModContainer> CONTAINER = FabricLoader.getInstance().getModContainer("malilib");
@@ -78,6 +93,7 @@ public class SyncmaticaReference
             return false;
         }
     }
+
     protected static boolean checkForLitematica()
     {
         final Optional<ModContainer> CONTAINER = FabricLoader.getInstance().getModContainer("litematica");

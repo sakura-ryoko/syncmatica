@@ -3,7 +3,7 @@ package ch.endte.syncmatica.mixin;
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.SyncmaticaReference;
-import ch.endte.syncmatica.network.ServerNetworkPlayHandler;
+import ch.endte.syncmatica.network.server.ServerNetworkPlayHandler;
 import ch.endte.syncmatica.network.payload.SyncByteBuf;
 import ch.endte.syncmatica.network.payload.channels.SyncRegisterVersion;
 import ch.endte.syncmatica.util.SyncLog;
@@ -20,9 +20,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(PlayerManager.class)
 public class MixinPlayerManager
 {
-    /**
-     * Callbacks for IPlayerManager (maybe remove/Simplify)
-     */
     public MixinPlayerManager() { super(); }
 
     @Inject(method = "onPlayerConnect", at = @At("TAIL"))
@@ -55,18 +52,9 @@ public class MixinPlayerManager
             {
                 SyncLog.error("MixinPlayerManager#onPlayerJoin(): executed without a Client context!");
             }
-            //else
-            //{
-                // Yeet a REGISTER_VERSION packet
-                // #FIXME -This needs to happen & get squashed anyways during .sendSyncPacket() in order for things to work
-                // #TODO --->  But Why Fabric?  Remove this and you break Syncmatica from working...
-                //SyncByteBuf buf = new SyncByteBuf(Unpooled.buffer());
-                //buf.writeString(SyncmaticaReference.MOD_VERSION);
-                //SyncRegisterVersion payload = new SyncRegisterVersion(buf);
-                //ClientNetworkPlayHandler.sendSyncPacket(payload);
-            //}
         }
     }
+
     @Inject(method = "remove", at = @At("HEAD"))
     private void syncmatica$eventOnPlayerLeave(ServerPlayerEntity player, CallbackInfo ci)
     {

@@ -21,6 +21,7 @@ public class DebugService extends AbstractService {
             );
         }
     }
+
     @Override
     public void getDefaultConfiguration(final IServiceConfiguration configuration) {
         configuration.saveBoolean("doPackageLogging", false);

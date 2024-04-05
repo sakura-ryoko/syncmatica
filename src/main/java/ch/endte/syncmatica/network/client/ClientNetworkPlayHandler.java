@@ -1,4 +1,4 @@
-package ch.endte.syncmatica.network;
+package ch.endte.syncmatica.network.client;
 
 import ch.endte.syncmatica.network.packet.ActorClientPlayNetworkHandler;
 import ch.endte.syncmatica.network.payload.PacketType;
@@ -20,11 +20,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  */
 public class ClientNetworkPlayHandler
 {
-    // Simple unified "sendPacket()" method
-    // --> It doesn't care what payload/packet type it is, as long as it extends CustomPayload
     public static <T extends CustomPayload> void sendSyncPacket(T payload)
     {
-        // Server-bound packet sent from the Client
         if (ClientPlayNetworking.canSend(payload.getId()))
         {
             ClientPlayNetworking.send(payload);
@@ -34,10 +31,8 @@ public class ClientNetworkPlayHandler
             SyncLog.warn("ClientNetworkPlayHandler#sendSyncPacket(): [API] can't send packet (not accepted).");
     }
 
-    // Uses ClientPlayNetworkHandler method
     public static <T extends CustomPayload> void sendSyncPacket(T payload, ClientPlayNetworkHandler handler)
     {
-        // Server-bound packet sent from the Client
         Packet<?> packet = new CustomPayloadC2SPacket(payload);
         if (handler.accepts(packet))
         {
@@ -48,7 +43,6 @@ public class ClientNetworkPlayHandler
             SyncLog.warn("ClientNetworkPlayHandler#sendSyncPacket(): [Handler] can't send packet (not accepted).");
     }
 
-    // Client-bound packet sent from the Server
     public static void receiveSyncPacket(PacketType type, SyncByteBuf data, ClientPlayNetworkHandler handler)
     {
         CallbackInfo ci = new CallbackInfo("receiveSyncPacket", false);
@@ -64,6 +58,7 @@ public class ClientNetworkPlayHandler
             ActorClientPlayNetworkHandler.getInstance().packetEvent(type, out, handler, ci);
         }
     }
+
     public static void receiveSyncNbt(PacketType type, NbtCompound data, ClientPlayNetworkHandler handler)
     {
         CallbackInfo ci = new CallbackInfo("receiveSyncNbt", false);
@@ -79,6 +74,7 @@ public class ClientNetworkPlayHandler
             ActorClientPlayNetworkHandler.getInstance().packetNbtEvent(type, data, handler, ci);
         }
     }
+
     public static void receiveCancelShare(SyncCancelShare data, ClientPlayNetworking.Context context)
     {
         receiveSyncPacket(PacketType.CANCEL_SHARE, data.byteBuf(), context.client().getNetworkHandler());

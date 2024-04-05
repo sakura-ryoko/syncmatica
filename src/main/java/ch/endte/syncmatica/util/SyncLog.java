@@ -16,6 +16,7 @@ public class SyncLog
     private static final String SYNC_ID = SyncmaticaReference.MOD_ID;
     private static final boolean SYNC_DEBUG = SyncmaticaReference.MOD_DEBUG;
     private static final boolean WRAP_ID = false;
+
     public static void initLogger()
     {
         LOGGER = LogManager.getLogger(SYNC_ID);

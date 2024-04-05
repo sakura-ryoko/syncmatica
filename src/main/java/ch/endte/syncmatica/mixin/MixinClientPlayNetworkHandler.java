@@ -162,6 +162,7 @@ public abstract class MixinClientPlayNetworkHandler implements IClientPlayerNetw
         }
         // NO-OP
     }
+
     @Override
     public void syncmatica$operateComms(final Consumer<ClientCommunicationManager> operation)
     {
@@ -178,6 +179,7 @@ public abstract class MixinClientPlayNetworkHandler implements IClientPlayerNetw
             operation.accept(comManager);
         }
     }
+
     @Override
     public ExchangeTarget syncmatica$getExchangeTarget()
     {
@@ -187,40 +189,4 @@ public abstract class MixinClientPlayNetworkHandler implements IClientPlayerNetw
         }
         return exTarget;
     }
-    /*
-    @Inject(method = "onGameJoin", at = @At("HEAD"))
-    private void syncmatica$onPreJoinGameHead(GameJoinS2CPacket packet, CallbackInfo ci)
-    {
-        if (SyncmaticaReference.isClient())
-        {
-            ClientNetworkPlayInitHandler.registerPlayChannels();
-        }
-        SyncLog.debug("MixinClientPlayNetworkHandler#syncmatica$onPreJoinGameHead(): invoked");
-    }
-
-    @Inject(method = "onGameJoin", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/client/MinecraftClient;joinWorld(" +
-                    "Lnet/minecraft/client/world/ClientWorld;)V"))
-    private void syncmatica$onPreGameJoin(GameJoinS2CPacket packet, CallbackInfo ci)
-    {
-        SyncLog.debug("MixinClientPlayNetworkHandler#syncmatica$onPreGameJoin(): invoked");
-
-        if (SyncmaticaReference.isClient())
-        {
-            ClientNetworkPlayInitHandler.registerReceivers();
-        }
-    }
-
-    @Inject(method = "onGameJoin", at = @At("RETURN"))
-    private void syncmatica$onPostGameJoin(GameJoinS2CPacket packet, CallbackInfo ci)
-    {
-        SyncLog.debug("MixinClientPlayNetworkHandler#syncmatica$onPostGameJoin(): invoked");
-
-        if (SyncmaticaReference.isClient())
-        {
-            // This seems to work, but then doesn't.  Why?
-            ActorClientPlayNetworkHandler.getInstance().startEvent((ClientPlayNetworkHandler) (Object) this);
-        }
-    }
-     */
 }

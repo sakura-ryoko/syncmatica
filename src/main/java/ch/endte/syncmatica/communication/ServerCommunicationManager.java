@@ -74,8 +74,6 @@ public class ServerCommunicationManager extends CommunicationManager
     @Override
     protected void handle(final ExchangeTarget source, final PacketType type, final PacketByteBuf packetBuf)
     {
-        //SyncLog.debug("ServerCommunicationMnanager#handle(): type: {}, size: {} // from: {}", type.getId().toString(), packetBuf.readableBytes(), source.getPersistentName());
-
         if (type.equals(PacketType.REQUEST_LITEMATIC))
         {
             final UUID syncmaticaId = packetBuf.readUuid();

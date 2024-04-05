@@ -5,8 +5,8 @@ import ch.endte.syncmatica.communication.FeatureSet;
 import ch.endte.syncmatica.data.IFileStorage;
 import ch.endte.syncmatica.data.SyncmaticManager;
 import ch.endte.syncmatica.extended_core.PlayerIdentifierProvider;
-import ch.endte.syncmatica.network.ClientNetworkPlayInitHandler;
-import ch.endte.syncmatica.network.ServerNetworkPlayInitHandler;
+import ch.endte.syncmatica.network.client.ClientNetworkPlayInitHandler;
+import ch.endte.syncmatica.network.server.ServerNetworkPlayInitHandler;
 import ch.endte.syncmatica.service.DebugService;
 import ch.endte.syncmatica.service.IService;
 import ch.endte.syncmatica.service.JsonConfiguration;
@@ -21,9 +21,6 @@ import java.io.*;
 import java.util.Arrays;
 import java.util.Objects;
 
-/**
- * Remove "CommunicationsManager" / "ExchangeTarget" interface in favor of new network API ?
- */
 public class Context
 {
     private final IFileStorage files;

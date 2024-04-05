@@ -12,6 +12,7 @@
   "client": [
     "MixinClientCommonNetworkHandler",
     "MixinClientPlayNetworkHandler",
+    "MixinIntegratedServer",
     "MixinMinecraftClient"
   ],
   "server": [

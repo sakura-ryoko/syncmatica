@@ -3,8 +3,8 @@ package ch.endte.syncmatica;
 import ch.endte.syncmatica.communication.CommunicationManager;
 import ch.endte.syncmatica.data.IFileStorage;
 import ch.endte.syncmatica.data.SyncmaticManager;
-import ch.endte.syncmatica.network.ClientNetworkPlayInitHandler;
-import ch.endte.syncmatica.network.ServerNetworkPlayInitHandler;
+import ch.endte.syncmatica.network.client.ClientNetworkPlayInitHandler;
+import ch.endte.syncmatica.network.server.ServerNetworkPlayInitHandler;
 import ch.endte.syncmatica.network.packet.ActorClientPlayNetworkHandler;
 import ch.endte.syncmatica.util.SyncLog;
 import net.minecraft.util.Identifier;
@@ -26,6 +26,7 @@ public class Syncmatica {
     protected static boolean hasMaLiLib = false;
     protected static boolean hasLitematica = false;
     protected static boolean context_init = false;
+
     public static Context getContext(final Identifier id)
     {
         if (context_init)
@@ -52,6 +53,7 @@ public class Syncmatica {
             ClientNetworkPlayInitHandler.registerPlayChannels();
         }
     }
+
     public static void preInitServer()
     {
         SyncLog.initLogger();
@@ -120,6 +122,7 @@ public class Syncmatica {
 
         ActorClientPlayNetworkHandler.getInstance().startClient();
     }
+
     public static Context initServer(final CommunicationManager comms, final IFileStorage fileStorage, final SyncmaticManager schematics, final boolean isIntegratedServer, final File worldPath) {
         //SyncLog.initLogger();
         SyncLog.debug("Syncmatica#initServer(): invoked.");
@@ -141,5 +144,6 @@ public class Syncmatica {
         Syncmatica.init(serverContext, SERVER_CONTEXT);
         return serverContext;
     }
+
     protected Syncmatica() { }
 }

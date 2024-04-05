@@ -2,7 +2,8 @@ package ch.endte.syncmatica.network.payload;
 
 import net.minecraft.util.Identifier;
 
-public enum PacketType {
+public enum PacketType
+{
     REGISTER_METADATA("syncmatica","register_metadata"),
     // one packet will be responsible for sending the entire metadata of a syncmatic
     // it marks the creation of a syncmatic - for now it also is responsible
@@ -97,6 +98,7 @@ public enum PacketType {
         }
         return false;
     }
+
     public static boolean containsType(final PacketType type)
     {
         for (final PacketType p : PacketType.values())
@@ -108,6 +110,7 @@ public enum PacketType {
         }
         return false;
     }
+
     public static PacketType getType(final Identifier id)
     {
         for (final PacketType p : PacketType.values())
@@ -119,5 +122,6 @@ public enum PacketType {
         }
         return null;
     }
+
     public Identifier getId() { return this.identifier; }
 }
