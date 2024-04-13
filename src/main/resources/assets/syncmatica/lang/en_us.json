@@ -8,7 +8,7 @@
 	"syncmatica.gui.button.downloading": "Downloading...",
 	"syncmatica.gui.button.share": "Share",
 	"syncmatica.gui.button.material_gathering_placement": "Materials",
-	"syncmatica.gui.title.manage_server_placements": "Manage Server Placements",
+	"syncmatica.gui.title.manage_server_placements": "Manage Server Placements - %s",
 	"syncmatica.gui.label.placement_info.file_name": "File Name",
 	"syncmatica.gui.label.placement_info.position": "Origin (xyz)",
 	"syncmatica.gui.label.placement_info.dimension_id": "Dimension",

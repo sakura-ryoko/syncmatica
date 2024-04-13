@@ -8,7 +8,7 @@
 	"syncmatica.gui.button.downloading": "下载中...",
 	"syncmatica.gui.button.share": "上传",
 	"syncmatica.gui.button.material_gathering_placement": "Meterials",
-	"syncmatica.gui.title.manage_server_placements": "管理服务器配置",
+	"syncmatica.gui.title.manage_server_placements": "管理服务器配置 - %s",
 	"syncmatica.gui.label.placement_info.file_name": "文件名",
 	"syncmatica.gui.label.placement_info.position": "原点 (xyz)",
 	"syncmatica.gui.label.placement_info.dimension_id": "维度",

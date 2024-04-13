@@ -1,6 +1,6 @@
 package ch.endte.syncmatica.network.server;
 
-import ch.endte.syncmatica.network.payload.PacketTypeRegister;
+import ch.endte.syncmatica.network.payload.PayloadManager;
 import ch.endte.syncmatica.util.SyncLog;
 
 public class ServerNetworkPlayInitHandler
@@ -10,19 +10,16 @@ public class ServerNetworkPlayInitHandler
      */
     public static void registerPlayChannels()
     {
-        PacketTypeRegister.registerPlayChannels();
+        PayloadManager.registerPlayChannels();
         //PacketProvider.registerPayloads();
-        //ServerDebugSuite.checkGlobalChannels();
     }
     public static void registerReceivers()
     {
         ServerNetworkPlayRegister.registerReceivers();
-        //ServerDebugSuite.checkGlobalChannels();
         SyncLog.debug("ServerNetworkPlayInitHandler#ServerNetworkPlayInitHandler(): Ready to receive packets.");
     }
     public static void unregisterReceivers()
     {
         ServerNetworkPlayRegister.unregisterReceivers();
-        //ServerDebugSuite.checkGlobalChannels();
     }
 }

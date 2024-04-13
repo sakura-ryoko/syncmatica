@@ -45,7 +45,6 @@ public abstract class MixinClientPlayNetworkHandler implements IClientPlayerNetw
          * You probably can put this under each Payload Type,
          * But to what end if Fabric API can handle this safely & not risk breaking
          * CustomPayload for every mod that uses it?
-         * If you want a list of all the registered Global Play Channels, use the Client/ServerDebugSuite method.
          */
         //ChannelManager.onChannelRegisterHandle(syncmatica$getExchangeTarget(), packet.getId().id(), packet.getData());
         if (!MinecraftClient.getInstance().isOnThread())

@@ -11,7 +11,7 @@ import net.minecraft.network.packet.CustomPayload;
 /**
  * This is a Simplified version of my channel registration code that calls the Fabric API Networking to handle it.
  */
-public class PacketTypeRegister
+public class PayloadManager
 {
     /**
      * This is how it looks in the static context per a MOD,
@@ -41,7 +41,7 @@ public class PacketTypeRegister
         if (playRegistered)
             return;
 
-        SyncLog.debug("PacketTypeRegister#registerPlayChannels(): registering play channels.");
+        SyncLog.debug("PayloadManager#registerPlayChannels(): registering play channels.");
         registerPlayChannel(SyncCancelShare.TYPE, SyncCancelShare.CODEC);
         registerPlayChannel(SyncCancelLitematic.TYPE, SyncCancelLitematic.CODEC);
         registerPlayChannel(SyncConfirmUser.TYPE, SyncConfirmUser.CODEC);

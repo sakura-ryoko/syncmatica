@@ -1,6 +1,6 @@
 package ch.endte.syncmatica.network.client;
 
-import ch.endte.syncmatica.network.payload.PacketTypeRegister;
+import ch.endte.syncmatica.network.payload.PayloadManager;
 
 public class ClientNetworkPlayInitHandler
 {
@@ -10,8 +10,7 @@ public class ClientNetworkPlayInitHandler
     public static void registerPlayChannels()
     {
         //SyncLog.debug("ClientNetworkPlayInitHandler#registerPlayChannels(): called.");
-        PacketTypeRegister.registerPlayChannels();
-        //ClientDebugSuite.checkGlobalChannels();
+        PayloadManager.registerPlayChannels();
     }
     /**
      * Should be called when Client joins a server
@@ -20,7 +19,6 @@ public class ClientNetworkPlayInitHandler
     {
         //SyncLog.debug("ClientNetworkPlayInitHandler#registerReceivers(): called.");
         ClientNetworkPlayRegister.registerReceivers();
-        //ClientDebugSuite.checkGlobalChannels();
     }
 
     /**
@@ -30,6 +28,5 @@ public class ClientNetworkPlayInitHandler
     {
         //SyncLog.debug("ClientNetworkPlayInitHandler#unregisterReceivers(): called.");
         ClientNetworkPlayRegister.unregisterReceivers();
-        //ClientDebugSuite.checkGlobalChannels();
     }
 }
