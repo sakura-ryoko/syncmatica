@@ -26,8 +26,8 @@
 		"syncmatica.litematica_mixin.json"
 	],
 	"depends": {
-		"minecraft": ">=1.20.5-beta.1",
-		"fabric-networking-api-v1": ">=4.0.6"
+		"minecraft": ">=1.20.5-beta.2",
+		"fabric-networking-api-v1": ">=4.0.7"
 	},
 	"suggests": {
 		"litematica": "*",
