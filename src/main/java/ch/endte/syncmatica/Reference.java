@@ -22,7 +22,7 @@ public class Reference
     public static final String MOD_TYPE = "fabric";
     public static final String MOD_STRING = MOD_ID+"-"+MOD_TYPE+"-"+MC_VERSION+"-"+MOD_VERSION;
     private static final EnvType MOD_ENV = FabricLoader.getInstance().getEnvironmentType();
-    public static final boolean MOD_DEBUG = false;
+    public static final boolean MOD_DEBUG = true;
 
     private static boolean SINGLE_PLAYER = false;
     private static boolean DEDICATED_SERVER = false;
