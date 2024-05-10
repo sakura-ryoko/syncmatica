@@ -1,18 +1,18 @@
 package ch.endte.syncmatica;
 
-import ch.endte.syncmatica.communication.CommunicationManager;
-import ch.endte.syncmatica.data.IFileStorage;
-import ch.endte.syncmatica.data.SyncmaticManager;
-import ch.endte.syncmatica.network.client.ClientNetworkPlayInitHandler;
-import ch.endte.syncmatica.network.server.ServerNetworkPlayInitHandler;
-import ch.endte.syncmatica.network.packet.ActorClientPlayNetworkHandler;
-import ch.endte.syncmatica.util.SyncLog;
-import net.minecraft.util.Identifier;
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import ch.endte.syncmatica.communication.CommunicationManager;
+import ch.endte.syncmatica.data.IFileStorage;
+import ch.endte.syncmatica.data.SyncmaticManager;
+import ch.endte.syncmatica.network.client.ClientPlayRegister;
+import ch.endte.syncmatica.network.packet.ActorClientPlayHandler;
+import ch.endte.syncmatica.network.payload.PayloadManager;
+import ch.endte.syncmatica.network.server.ServerPlayRegister;
+import ch.endte.syncmatica.util.SyncLog;
+import net.minecraft.util.Identifier;
 
 // could probably turn this into a singleton
 public class Syncmatica {
@@ -50,7 +50,7 @@ public class Syncmatica {
         if (hasMaLiLib && hasLitematica)
         {
             SyncLog.debug("Syncmatica#preInitClient(): Register Client Play Channels.");
-            ClientNetworkPlayInitHandler.registerPlayChannels();
+            PayloadManager.registerPlayChannels();
         }
     }
 
@@ -58,7 +58,7 @@ public class Syncmatica {
     {
         SyncLog.initLogger();
         SyncLog.debug("Syncmatica#preInitServer(): Register Server Play Channels.");
-        ServerNetworkPlayInitHandler.registerPlayChannels();
+        PayloadManager.registerPlayChannels();
     }
 
     static void init(final Context con, final Identifier contextId) {
@@ -97,8 +97,8 @@ public class Syncmatica {
         // In my testing, this really isn't useful to put here, it's probably redundant
         hasMaLiLib = SyncmaticaReference.checkForMaLiLib();
         hasLitematica = SyncmaticaReference.checkForLitematica();
-        ClientNetworkPlayInitHandler.registerPlayChannels();
-        ClientNetworkPlayInitHandler.registerReceivers();
+        PayloadManager.registerPlayChannels();
+        ClientPlayRegister.registerReceivers();
 
         final Context clientContext = new Context(
                 fileStorage,
@@ -120,7 +120,7 @@ public class Syncmatica {
             contexts.remove(CLIENT_CONTEXT);
         }
 
-        ActorClientPlayNetworkHandler.getInstance().startClient();
+        ActorClientPlayHandler.getInstance().startClient();
     }
 
     public static Context initServer(final CommunicationManager comms, final IFileStorage fileStorage, final SyncmaticManager schematics, final boolean isIntegratedServer, final File worldPath) {
@@ -129,8 +129,8 @@ public class Syncmatica {
 
         // These just try to verify that the Fabric API Networking is initialized.
         // In my testing, this really isn't useful to put here, it's a redundant call
-        ServerNetworkPlayInitHandler.registerPlayChannels();
-        ServerNetworkPlayInitHandler.registerReceivers();
+        PayloadManager.registerPlayChannels();
+        ServerPlayRegister.registerReceivers();
 
         final Context serverContext = new Context(
                 fileStorage,

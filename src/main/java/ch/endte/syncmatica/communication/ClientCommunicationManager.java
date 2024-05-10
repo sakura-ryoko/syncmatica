@@ -10,9 +10,9 @@ import ch.endte.syncmatica.communication.exchange.VersionHandshakeClient;
 import ch.endte.syncmatica.extended_core.PlayerIdentifier;
 import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.litematica.ScreenHelper;
-import ch.endte.syncmatica.network.packet.ActorClientPlayNetworkHandler;
+import ch.endte.syncmatica.network.packet.ActorClientPlayHandler;
 import ch.endte.syncmatica.network.payload.PacketType;
-import ch.endte.syncmatica.network.payload.channels.SyncNbtData;
+import ch.endte.syncmatica.network.channels.SyncNbtData;
 import ch.endte.syncmatica.util.SyncLog;
 import fi.dy.masa.malilib.gui.Message;
 import net.minecraft.nbt.NbtCompound;
@@ -88,7 +88,7 @@ public class ClientCommunicationManager extends CommunicationManager
             LitematicManager.clear();
             Syncmatica.restartClient();
 
-            ActorClientPlayNetworkHandler.getInstance().packetEvent(type, packetBuf);
+            ActorClientPlayHandler.getInstance().packetEvent(type, packetBuf);
         }
     }
 

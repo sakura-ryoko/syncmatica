@@ -2,7 +2,7 @@ package ch.endte.syncmatica.util;
 
 import ch.endte.syncmatica.network.payload.PacketType;
 import ch.endte.syncmatica.network.payload.SyncByteBuf;
-import ch.endte.syncmatica.network.payload.channels.*;
+import ch.endte.syncmatica.network.channels.*;
 import io.netty.buffer.Unpooled;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;

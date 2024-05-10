@@ -6,7 +6,7 @@ import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.communication.exchange.*;
 import ch.endte.syncmatica.extended_core.PlayerIdentifier;
 import ch.endte.syncmatica.network.payload.PacketType;
-import ch.endte.syncmatica.network.payload.channels.SyncNbtData;
+import ch.endte.syncmatica.network.channels.SyncNbtData;
 import ch.endte.syncmatica.util.SyncLog;
 import com.mojang.authlib.GameProfile;
 import io.netty.buffer.Unpooled;

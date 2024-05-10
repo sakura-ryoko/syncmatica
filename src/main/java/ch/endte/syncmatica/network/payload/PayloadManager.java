@@ -1,12 +1,11 @@
 package ch.endte.syncmatica.network.payload;
 
-import ch.endte.syncmatica.network.payload.channels.*;
+import ch.endte.syncmatica.network.channels.*;
 import ch.endte.syncmatica.util.SyncLog;
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-import net.fabricmc.fabric.impl.networking.PayloadTypeRegistryImpl;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 
 /**
  * This is a Simplified version of my channel registration code that calls the Fabric API Networking to handle it.
@@ -22,18 +21,15 @@ public class PayloadManager
 
     public static <T extends CustomPayload> void registerPlayChannel(CustomPayload.Id<T> id, PacketCodec<PacketByteBuf, T> codec)
     {
-        // Checks with Fabric APIs IMPL layer (I don't think they are confident with their code yet)
-        if (PayloadTypeRegistryImpl.PLAY_S2C.get(id) != null || PayloadTypeRegistryImpl.PLAY_C2S.get(id) != null)
+        if (playRegistered)
         {
             // This just saved Minecraft from crashing, your welcome.
             SyncLog.error("registerPlayChannel(): blocked duplicate Play Channel registration attempt for: {}.", id.id().toString());
+            return;
         }
-        else
-        {
-            PayloadTypeRegistry.playC2S().register(id, codec);
-            PayloadTypeRegistry.playS2C().register(id, codec);
-            // Both directions S2C / C2S need to get registered.  The "configuration" channel might not be needed, though
-        }
+        PayloadTypeRegistry.playC2S().register(id, codec);
+        PayloadTypeRegistry.playS2C().register(id, codec);
+        // Both directions S2C / C2S need to get registered for this mod.
     }
     public static void registerPlayChannels()
     {

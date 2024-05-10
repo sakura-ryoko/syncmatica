@@ -1,14 +1,14 @@
 package ch.endte.syncmatica.network.server;
 
 import ch.endte.syncmatica.SyncmaticaReference;
-import ch.endte.syncmatica.network.payload.channels.*;
+import ch.endte.syncmatica.network.channels.*;
 import ch.endte.syncmatica.util.SyncLog;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
 /**
  * Registers Fabric API Networking payload handlers -- They have to be mapped per a Payload Type / Context
  */
-public class ServerNetworkPlayRegister
+public class ServerPlayRegister
 {
     static ServerPlayNetworking.PlayPayloadHandler<SyncCancelShare> C2SSyncHandler_CancelShare;
     static ServerPlayNetworking.PlayPayloadHandler<SyncCancelLitematic> C2SSyncHandler_CancelLitematic;
@@ -39,9 +39,7 @@ public class ServerNetworkPlayRegister
         // Do when the server starts, not before
         if (SyncmaticaReference.isServer() || SyncmaticaReference.isIntegratedServer())
         {
-            if (SyncmaticaReference.isDedicatedServer())
-                SyncLog.debug("ServerHandlerManager#registerReceivers(): Game is running in Dedicated Server Mode.");
-            SyncLog.debug("ServerHandlerManager#registerReceivers(): isServer() true -> registerSyncmaticaHandlers ...");
+            SyncLog.debug("ServerPlayRegister#registerReceivers(): isServer() true -> registerSyncmaticaHandlers ...");
             ServerPlayNetworking.registerGlobalReceiver(SyncCancelShare.TYPE, C2SSyncHandler_CancelShare);
             ServerPlayNetworking.registerGlobalReceiver(SyncCancelLitematic.TYPE, C2SSyncHandler_CancelLitematic);
             ServerPlayNetworking.registerGlobalReceiver(SyncConfirmUser.TYPE, C2SSyncHandler_ConfirmUser);
@@ -70,7 +68,7 @@ public class ServerNetworkPlayRegister
         // Do when server stops
         if (SyncmaticaReference.isServer() || SyncmaticaReference.isIntegratedServer())
         {
-            SyncLog.debug("ServerHandlerManager#unregisterReceivers(): isServer() true -> unregisterSyncmaticaHandlers ...");
+            SyncLog.debug("ServerPlayRegister#unregisterReceivers(): isServer() true -> unregisterSyncmaticaHandlers ...");
             ServerPlayNetworking.unregisterGlobalReceiver(SyncCancelShare.TYPE.id());
             ServerPlayNetworking.unregisterGlobalReceiver(SyncCancelLitematic.TYPE.id());
             ServerPlayNetworking.unregisterGlobalReceiver(SyncConfirmUser.TYPE.id());
@@ -96,24 +94,24 @@ public class ServerNetworkPlayRegister
 
     static
     {
-        C2SSyncHandler_CancelShare = ServerNetworkPlayHandler::receiveCancelShare;
-        C2SSyncHandler_CancelLitematic = ServerNetworkPlayHandler::receiveCancelLitematic;
-        C2SSyncHandler_ConfirmUser = ServerNetworkPlayHandler::receiveConfirmUser;
-        C2SSyncHandler_Feature = ServerNetworkPlayHandler::receiveFeature;
-        C2SSyncHandler_FeatureRequest = ServerNetworkPlayHandler::receiveFeatureRequest;
-        C2SSyncHandler_FinishedLitematic = ServerNetworkPlayHandler::receiveFinishedLitematic;
-        C2SSyncHandler_Message = ServerNetworkPlayHandler::receiveMessage;
-        C2SSyncHandler_Modify = ServerNetworkPlayHandler::receiveModify;
-        C2SSyncHandler_ModifyFinish = ServerNetworkPlayHandler::receiveModifyFinish;
-        C2SSyncHandler_ModifyRequest = ServerNetworkPlayHandler::receiveModifyRequest;
-        C2SSyncHandler_ModifyRequestAccept = ServerNetworkPlayHandler::receiveModifyRequestAccept;
-        C2SSyncHandler_ModifyRequestDeny = ServerNetworkPlayHandler::receiveModifyRequestDeny;
-        C2SSyncHandler_ReceivedLitematic = ServerNetworkPlayHandler::receiveReceivedLitematic;
-        C2SSyncHandler_RegisterMetadata = ServerNetworkPlayHandler::receiveRegisterMetadata;
-        C2SSyncHandler_RegisterVersion = ServerNetworkPlayHandler::receiveRegisterVersion;
-        C2SSyncHandler_RemoveSyncmatic = ServerNetworkPlayHandler::receiveRemoveSyncmatic;
-        C2SSyncHandler_RequestDownload = ServerNetworkPlayHandler::receiveRequestDownload;
-        C2SSyncHandler_SendLitematic = ServerNetworkPlayHandler::receiveSendLitematic;
-        C2SSyncHandler_NbtData = ServerNetworkPlayHandler::receiveSyncNbtData;
+        C2SSyncHandler_CancelShare = ServerPlayHandler::receiveCancelShare;
+        C2SSyncHandler_CancelLitematic = ServerPlayHandler::receiveCancelLitematic;
+        C2SSyncHandler_ConfirmUser = ServerPlayHandler::receiveConfirmUser;
+        C2SSyncHandler_Feature = ServerPlayHandler::receiveFeature;
+        C2SSyncHandler_FeatureRequest = ServerPlayHandler::receiveFeatureRequest;
+        C2SSyncHandler_FinishedLitematic = ServerPlayHandler::receiveFinishedLitematic;
+        C2SSyncHandler_Message = ServerPlayHandler::receiveMessage;
+        C2SSyncHandler_Modify = ServerPlayHandler::receiveModify;
+        C2SSyncHandler_ModifyFinish = ServerPlayHandler::receiveModifyFinish;
+        C2SSyncHandler_ModifyRequest = ServerPlayHandler::receiveModifyRequest;
+        C2SSyncHandler_ModifyRequestAccept = ServerPlayHandler::receiveModifyRequestAccept;
+        C2SSyncHandler_ModifyRequestDeny = ServerPlayHandler::receiveModifyRequestDeny;
+        C2SSyncHandler_ReceivedLitematic = ServerPlayHandler::receiveReceivedLitematic;
+        C2SSyncHandler_RegisterMetadata = ServerPlayHandler::receiveRegisterMetadata;
+        C2SSyncHandler_RegisterVersion = ServerPlayHandler::receiveRegisterVersion;
+        C2SSyncHandler_RemoveSyncmatic = ServerPlayHandler::receiveRemoveSyncmatic;
+        C2SSyncHandler_RequestDownload = ServerPlayHandler::receiveRequestDownload;
+        C2SSyncHandler_SendLitematic = ServerPlayHandler::receiveSendLitematic;
+        C2SSyncHandler_NbtData = ServerPlayHandler::receiveSyncNbtData;
     }
 }

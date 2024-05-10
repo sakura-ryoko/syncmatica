@@ -5,15 +5,16 @@ import ch.endte.syncmatica.SyncmaticaReference;
 import ch.endte.syncmatica.communication.ServerCommunicationManager;
 import ch.endte.syncmatica.data.FileStorage;
 import ch.endte.syncmatica.data.SyncmaticManager;
-import ch.endte.syncmatica.network.client.ClientNetworkPlayInitHandler;
-import ch.endte.syncmatica.network.server.ServerNetworkPlayInitHandler;
+import ch.endte.syncmatica.network.client.ClientPlayRegister;
+import ch.endte.syncmatica.network.payload.PayloadManager;
+import ch.endte.syncmatica.network.server.ServerPlayRegister;
 import ch.endte.syncmatica.util.SyncLog;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.WorldSavePath;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.WorldSavePath;
 
 @Mixin(MinecraftServer.class)
 public class MixinMinecraftServer
@@ -36,14 +37,7 @@ public class MixinMinecraftServer
         }
 
         // Register in case for whatever reason they aren't already
-        if (SyncmaticaReference.isServer() || SyncmaticaReference.isDedicatedServer() || SyncmaticaReference.isIntegratedServer() || SyncmaticaReference.isOpenToLan())
-        {
-            ServerNetworkPlayInitHandler.registerPlayChannels();
-        }
-        if (SyncmaticaReference.isClient() || SyncmaticaReference.isSinglePlayer())
-        {
-            ClientNetworkPlayInitHandler.registerPlayChannels();
-        }
+        PayloadManager.registerPlayChannels();
     }
 
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;createMetadata()Lnet/minecraft/server/ServerMetadata;", ordinal = 0), method = "runServer")
@@ -64,11 +58,11 @@ public class MixinMinecraftServer
         }
         if (SyncmaticaReference.isServer() || SyncmaticaReference.isDedicatedServer() || SyncmaticaReference.isIntegratedServer() || SyncmaticaReference.isOpenToLan())
         {
-            ServerNetworkPlayInitHandler.registerReceivers();
+            ServerPlayRegister.registerReceivers();
         }
         if (SyncmaticaReference.isClient() || SyncmaticaReference.isSinglePlayer())
         {
-            ClientNetworkPlayInitHandler.registerReceivers();
+            ClientPlayRegister.registerReceivers();
         }
 
         SyncLog.debug("MixinMinecraftServer#onServerStarted(): processing Syncmatica.initServer().");
@@ -97,11 +91,11 @@ public class MixinMinecraftServer
 
         if (SyncmaticaReference.isServer() || SyncmaticaReference.isDedicatedServer() || SyncmaticaReference.isIntegratedServer() || SyncmaticaReference.isOpenToLan())
         {
-            ServerNetworkPlayInitHandler.unregisterReceivers();
+            ServerPlayRegister.unregisterReceivers();
         }
         if (SyncmaticaReference.isClient() || SyncmaticaReference.isSinglePlayer())
         {
-            ClientNetworkPlayInitHandler.unregisterReceivers();
+            ClientPlayRegister.unregisterReceivers();
         }
         SyncmaticaReference.setIntegratedServer(false);
         SyncmaticaReference.setSinglePlayer(false);

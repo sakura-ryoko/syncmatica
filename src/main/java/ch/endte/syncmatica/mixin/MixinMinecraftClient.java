@@ -4,17 +4,17 @@ import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.SyncmaticaReference;
 import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.litematica.ScreenHelper;
-import ch.endte.syncmatica.network.packet.ActorClientPlayNetworkHandler;
+import ch.endte.syncmatica.network.packet.ActorClientPlayHandler;
 import ch.endte.syncmatica.util.SyncLog;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.resource.ResourcePackManager;
-import net.minecraft.server.SaveLoader;
-import net.minecraft.world.level.storage.LevelStorage;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.resource.ResourcePackManager;
+import net.minecraft.server.SaveLoader;
+import net.minecraft.world.level.storage.LevelStorage;
 
 @Mixin(MinecraftClient.class)
 public class MixinMinecraftClient
@@ -36,8 +36,8 @@ public class MixinMinecraftClient
         Syncmatica.shutdown();
         LitematicManager.clear();
 
-        SyncLog.debug("MixinMinecraftClient#shutdownSyncmatica(): calling ActorClientPlayNetworkHandler.getInstance().reset()");
-        ActorClientPlayNetworkHandler.getInstance().reset();
+        SyncLog.debug("MixinMinecraftClient#shutdownSyncmatica(): calling ActorClientPlayHandler.getInstance().reset()");
+        ActorClientPlayHandler.getInstance().reset();
         SyncmaticaReference.setIntegratedServer(false);
     }
 }

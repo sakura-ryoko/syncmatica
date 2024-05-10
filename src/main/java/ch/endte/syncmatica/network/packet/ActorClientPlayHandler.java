@@ -23,18 +23,18 @@ import static ch.endte.syncmatica.Syncmatica.*;
 /**
  * If I can get this to work, so be it.
  */
-public class ActorClientPlayNetworkHandler
+public class ActorClientPlayHandler
 {
-    private static ActorClientPlayNetworkHandler instance;
+    private static ActorClientPlayHandler instance;
     private static ClientPlayNetworkHandler clientPlayNetworkHandler;
     private CommunicationManager clientCommunication;
     private ExchangeTarget exTarget;
 
-    public static ActorClientPlayNetworkHandler getInstance()
+    public static ActorClientPlayHandler getInstance()
     {
         if (instance == null)
         {
-            instance = new ActorClientPlayNetworkHandler();
+            instance = new ActorClientPlayHandler();
         }
 
         return instance;
@@ -69,7 +69,7 @@ public class ActorClientPlayNetworkHandler
     {
         if (clientCommunication == null)
         {
-            ActorClientPlayNetworkHandler.getInstance().startEvent(clientContext);
+            ActorClientPlayHandler.getInstance().startEvent(clientContext);
         }
         if (packetEvent(type, data))
             if (ci.isCancellable())
@@ -79,7 +79,7 @@ public class ActorClientPlayNetworkHandler
     {
         if (clientCommunication == null)
         {
-            ActorClientPlayNetworkHandler.getInstance().startEvent(clientContext);
+            ActorClientPlayHandler.getInstance().startEvent(clientContext);
         }
         if (packetNbtEvent(type, data))
             if (ci.isCancellable())
@@ -113,5 +113,5 @@ public class ActorClientPlayNetworkHandler
         clientPlayNetworkHandler = null;
     }
 
-    private static void setClientContext(final ClientPlayNetworkHandler clientHandler) { ActorClientPlayNetworkHandler.clientPlayNetworkHandler = clientHandler; }
+    private static void setClientContext(final ClientPlayNetworkHandler clientHandler) { ActorClientPlayHandler.clientPlayNetworkHandler = clientHandler; }
 }

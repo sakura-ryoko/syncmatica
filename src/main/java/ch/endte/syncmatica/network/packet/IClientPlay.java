@@ -9,7 +9,7 @@ import java.util.function.Consumer;
  * I set up a Client version of this interface in case we need to move the "onCustomPayload" call to "ClientCommonNetworkHandler"
  * ... You know, like in case Mojang removes the current method
  */
-public interface IClientPlayerNetworkHandler
+public interface IClientPlay
 {
     void syncmatica$operateComms(final Consumer<ClientCommunicationManager> operation);
 

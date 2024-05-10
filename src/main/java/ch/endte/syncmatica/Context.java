@@ -1,12 +1,17 @@
 package ch.endte.syncmatica;
 
+import javax.annotation.Nullable;
+import java.io.*;
+import java.util.Arrays;
+import java.util.Objects;
 import ch.endte.syncmatica.communication.CommunicationManager;
 import ch.endte.syncmatica.communication.FeatureSet;
 import ch.endte.syncmatica.data.IFileStorage;
 import ch.endte.syncmatica.data.SyncmaticManager;
 import ch.endte.syncmatica.extended_core.PlayerIdentifierProvider;
-import ch.endte.syncmatica.network.client.ClientNetworkPlayInitHandler;
-import ch.endte.syncmatica.network.server.ServerNetworkPlayInitHandler;
+import ch.endte.syncmatica.network.client.ClientPlayRegister;
+import ch.endte.syncmatica.network.payload.PayloadManager;
+import ch.endte.syncmatica.network.server.ServerPlayRegister;
 import ch.endte.syncmatica.service.DebugService;
 import ch.endte.syncmatica.service.IService;
 import ch.endte.syncmatica.service.JsonConfiguration;
@@ -15,11 +20,6 @@ import ch.endte.syncmatica.util.SyncLog;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import org.jetbrains.annotations.Nullable;
-
-import java.io.*;
-import java.util.Arrays;
-import java.util.Objects;
 
 public class Context
 {
@@ -140,35 +140,28 @@ public class Context
 
     public void registerChannels()
     {
-        if (this.isServer())
-        {
-            ServerNetworkPlayInitHandler.registerPlayChannels();
-        }
-        else
-        {
-            ClientNetworkPlayInitHandler.registerPlayChannels();
-        }
+        PayloadManager.registerPlayChannels();
     }
     public void registerReceivers()
     {
         if (this.isServer())
         {
-            ServerNetworkPlayInitHandler.registerReceivers();
+            ServerPlayRegister.registerReceivers();
         }
         else
         {
-            ClientNetworkPlayInitHandler.registerReceivers();
+            ClientPlayRegister.registerReceivers();
         }
     }
     public void unregisterReceivers()
     {
         if (this.isServer())
         {
-            ServerNetworkPlayInitHandler.unregisterReceivers();
+            ServerPlayRegister.unregisterReceivers();
         }
         else
         {
-            ClientNetworkPlayInitHandler.unregisterReceivers();
+            ClientPlayRegister.unregisterReceivers();
         }
     }
     public void startup() {

@@ -1,4 +1,4 @@
-package ch.endte.syncmatica.network.payload.channels;
+package ch.endte.syncmatica.network.channels;
 
 import ch.endte.syncmatica.network.payload.SyncByteBuf;
 import net.minecraft.network.PacketByteBuf;
@@ -6,12 +6,12 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 
-public record SyncMessage(SyncByteBuf byteBuf) implements CustomPayload
+public record SyncRequestDownload(SyncByteBuf byteBuf) implements CustomPayload
 {
-    public static final Id<SyncMessage> TYPE = new Id<>(new Identifier("syncmatica", "message"));
-    public static final PacketCodec<PacketByteBuf, SyncMessage> CODEC = CustomPayload.codecOf(SyncMessage::write, SyncMessage::new);
+    public static final Id<SyncRequestDownload> TYPE = new Id<>(new Identifier("syncmatica", "request_download"));
+    public static final PacketCodec<PacketByteBuf, SyncRequestDownload> CODEC = CustomPayload.codecOf(SyncRequestDownload::write, SyncRequestDownload::new);
 
-    public SyncMessage(PacketByteBuf input)
+    public SyncRequestDownload(PacketByteBuf input)
     {
         this(new SyncByteBuf(input.readBytes(input.readableBytes())));
     }

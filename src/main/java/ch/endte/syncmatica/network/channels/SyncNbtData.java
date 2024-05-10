@@ -1,4 +1,4 @@
-package ch.endte.syncmatica.network.payload.channels;
+package ch.endte.syncmatica.network.channels;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;

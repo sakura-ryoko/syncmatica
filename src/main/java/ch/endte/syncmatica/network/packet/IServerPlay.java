@@ -5,7 +5,8 @@ import ch.endte.syncmatica.communication.ServerCommunicationManager;
 
 import java.util.function.Consumer;
 
-public interface IServerPlayerNetworkHandler {
+public interface IServerPlay
+{
     void syncmatica$operateComms(final Consumer<ServerCommunicationManager> operation);
 
     ExchangeTarget syncmatica$getExchangeTarget();

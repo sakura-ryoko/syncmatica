@@ -1,14 +1,14 @@
 package ch.endte.syncmatica.network.client;
 
 import ch.endte.syncmatica.SyncmaticaReference;
-import ch.endte.syncmatica.network.payload.channels.*;
+import ch.endte.syncmatica.network.channels.*;
 import ch.endte.syncmatica.util.SyncLog;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
 /**
  * Registers Fabric API Networking payload handlers -- They have to be mapped per a Payload Type / Context
  */
-public class ClientNetworkPlayRegister
+public class ClientPlayRegister
 {
     static ClientPlayNetworking.PlayPayloadHandler<SyncCancelShare> S2CSyncHandler_CancelShare;
     static ClientPlayNetworking.PlayPayloadHandler<SyncCancelLitematic> S2CSyncHandler_CancelLitematic;
@@ -97,24 +97,24 @@ public class ClientNetworkPlayRegister
 
     static
     {
-        S2CSyncHandler_CancelShare = ClientNetworkPlayHandler::receiveCancelShare;
-        S2CSyncHandler_CancelLitematic = ClientNetworkPlayHandler::receiveCancelLitematic;
-        S2CSyncHandler_ConfirmUser = ClientNetworkPlayHandler::receiveConfirmUser;
-        S2CSyncHandler_Feature = ClientNetworkPlayHandler::receiveFeature;
-        S2CSyncHandler_FeatureRequest = ClientNetworkPlayHandler::receiveFeatureRequest;
-        S2CSyncHandler_FinishedLitematic = ClientNetworkPlayHandler::receiveFinishedLitematic;
-        S2CSyncHandler_Message = ClientNetworkPlayHandler::receiveMessage;
-        S2CSyncHandler_Modify = ClientNetworkPlayHandler::receiveModify;
-        S2CSyncHandler_ModifyFinish = ClientNetworkPlayHandler::receiveModifyFinish;
-        S2CSyncHandler_ModifyRequest = ClientNetworkPlayHandler::receiveModifyRequest;
-        S2CSyncHandler_ModifyRequestAccept = ClientNetworkPlayHandler::receiveModifyRequestAccept;
-        S2CSyncHandler_ModifyRequestDeny = ClientNetworkPlayHandler::receiveModifyRequestDeny;
-        S2CSyncHandler_ReceivedLitematic = ClientNetworkPlayHandler::receiveReceivedLitematic;
-        S2CSyncHandler_RegisterMetadata = ClientNetworkPlayHandler::receiveRegisterMetadata;
-        S2CSyncHandler_RegisterVersion = ClientNetworkPlayHandler::receiveRegisterVersion;
-        S2CSyncHandler_RemoveSyncmatic = ClientNetworkPlayHandler::receiveRemoveSyncmatic;
-        S2CSyncHandler_RequestDownload = ClientNetworkPlayHandler::receiveRequestDownload;
-        S2CSyncHandler_SendLitematic = ClientNetworkPlayHandler::receiveSendLitematic;
-        S2CSyncHandler_NbtData = ClientNetworkPlayHandler::receiveSyncNbtData;
+        S2CSyncHandler_CancelShare = ClientPlayHandler::receiveCancelShare;
+        S2CSyncHandler_CancelLitematic = ClientPlayHandler::receiveCancelLitematic;
+        S2CSyncHandler_ConfirmUser = ClientPlayHandler::receiveConfirmUser;
+        S2CSyncHandler_Feature = ClientPlayHandler::receiveFeature;
+        S2CSyncHandler_FeatureRequest = ClientPlayHandler::receiveFeatureRequest;
+        S2CSyncHandler_FinishedLitematic = ClientPlayHandler::receiveFinishedLitematic;
+        S2CSyncHandler_Message = ClientPlayHandler::receiveMessage;
+        S2CSyncHandler_Modify = ClientPlayHandler::receiveModify;
+        S2CSyncHandler_ModifyFinish = ClientPlayHandler::receiveModifyFinish;
+        S2CSyncHandler_ModifyRequest = ClientPlayHandler::receiveModifyRequest;
+        S2CSyncHandler_ModifyRequestAccept = ClientPlayHandler::receiveModifyRequestAccept;
+        S2CSyncHandler_ModifyRequestDeny = ClientPlayHandler::receiveModifyRequestDeny;
+        S2CSyncHandler_ReceivedLitematic = ClientPlayHandler::receiveReceivedLitematic;
+        S2CSyncHandler_RegisterMetadata = ClientPlayHandler::receiveRegisterMetadata;
+        S2CSyncHandler_RegisterVersion = ClientPlayHandler::receiveRegisterVersion;
+        S2CSyncHandler_RemoveSyncmatic = ClientPlayHandler::receiveRemoveSyncmatic;
+        S2CSyncHandler_RequestDownload = ClientPlayHandler::receiveRequestDownload;
+        S2CSyncHandler_SendLitematic = ClientPlayHandler::receiveSendLitematic;
+        S2CSyncHandler_NbtData = ClientPlayHandler::receiveSyncNbtData;
     }
 }

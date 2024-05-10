@@ -1,16 +1,16 @@
 package ch.endte.syncmatica.mixin;
 
 import ch.endte.syncmatica.SyncmaticaReference;
-import ch.endte.syncmatica.network.server.ServerNetworkPlayInitHandler;
+import ch.endte.syncmatica.network.server.ServerPlayRegister;
 import ch.endte.syncmatica.util.SyncLog;
-import net.minecraft.server.integrated.IntegratedServer;
-import net.minecraft.world.GameMode;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import net.minecraft.server.integrated.IntegratedServer;
+import net.minecraft.world.GameMode;
 
-@Mixin(value = IntegratedServer.class, priority = 998)
+@Mixin(value = IntegratedServer.class)
 public class MixinIntegratedServer
 {
     @Inject(method = "setupServer", at = @At("RETURN"))
@@ -35,7 +35,7 @@ public class MixinIntegratedServer
             SyncmaticaReference.setOpenToLan(true);
             SyncmaticaReference.setDedicatedServer(false);
 
-            ServerNetworkPlayInitHandler.registerReceivers();
+            ServerPlayRegister.registerReceivers();
         }
     }
 }

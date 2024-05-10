@@ -1,4 +1,4 @@
-package ch.endte.syncmatica.network.payload.channels;
+package ch.endte.syncmatica.network.channels;
 
 import ch.endte.syncmatica.network.payload.SyncByteBuf;
 import net.minecraft.network.PacketByteBuf;
@@ -6,12 +6,12 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 
-public record SyncRemoveSyncmatic(SyncByteBuf byteBuf) implements CustomPayload
+public record SyncCancelShare(SyncByteBuf byteBuf) implements CustomPayload
 {
-    public static final Id<SyncRemoveSyncmatic> TYPE = new Id<>(new Identifier("syncmatica", "remove_syncmatic"));
-    public static final PacketCodec<PacketByteBuf, SyncRemoveSyncmatic> CODEC = CustomPayload.codecOf(SyncRemoveSyncmatic::write, SyncRemoveSyncmatic::new);
+    public static final Id<SyncCancelShare> TYPE = new Id<>(new Identifier("syncmatica", "cancel_share"));
+    public static final PacketCodec<PacketByteBuf, SyncCancelShare> CODEC = CustomPayload.codecOf(SyncCancelShare::write, SyncCancelShare::new);
 
-    public SyncRemoveSyncmatic(PacketByteBuf input)
+    public SyncCancelShare(PacketByteBuf input)
     {
         this(new SyncByteBuf(input.readBytes(input.readableBytes())));
     }
