@@ -4,9 +4,7 @@ import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.communication.FeatureSet;
 import ch.endte.syncmatica.network.payload.PacketType;
-import ch.endte.syncmatica.util.SyncLog;
 import io.netty.buffer.Unpooled;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 
 public abstract class FeatureExchange extends AbstractExchange
@@ -19,12 +17,6 @@ public abstract class FeatureExchange extends AbstractExchange
         //SyncLog.debug("FeatureExchange#checkPacket(): received byteBuf packet.");
         return type.equals(PacketType.FEATURE_REQUEST)
                 || type.equals(PacketType.FEATURE);
-    }
-    @Override
-    public boolean checkPacket(final PacketType type, final NbtCompound nbt)
-    {
-        //SyncLog.debug("FeatureExchange#checkPacket(): received nbtData packet.");
-        return type.equals(PacketType.NBT_DATA);
     }
 
     @Override
@@ -44,11 +36,6 @@ public abstract class FeatureExchange extends AbstractExchange
         }
     }
 
-    @Override
-    public void handle(final PacketType type, final NbtCompound nbt)
-    {
-        SyncLog.debug("FeatureExchange#handle(): received nbtData packet.");
-    }
     protected void onFeatureSetReceive() { succeed(); }
 
     public void requestFeatureSet()

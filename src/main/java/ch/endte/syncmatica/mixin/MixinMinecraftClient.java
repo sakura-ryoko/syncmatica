@@ -1,7 +1,7 @@
 package ch.endte.syncmatica.mixin;
 
 import ch.endte.syncmatica.Syncmatica;
-import ch.endte.syncmatica.SyncmaticaReference;
+import ch.endte.syncmatica.Reference;
 import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.litematica.ScreenHelper;
 import ch.endte.syncmatica.network.packet.ActorClientPlayHandler;
@@ -25,7 +25,7 @@ public class MixinMinecraftClient
     private void syncmatica$startIntegratedServer(LevelStorage.Session session, ResourcePackManager dataPackManager, SaveLoader saveLoader, boolean newWorld, CallbackInfo ci)
     {
         if (this.integratedServerRunning)
-            SyncmaticaReference.setIntegratedServer(true);
+            Reference.setIntegratedServer(true);
     }
 
     @Inject(method = "disconnect()V", at = @At("HEAD"))
@@ -38,6 +38,6 @@ public class MixinMinecraftClient
 
         SyncLog.debug("MixinMinecraftClient#shutdownSyncmatica(): calling ActorClientPlayHandler.getInstance().reset()");
         ActorClientPlayHandler.getInstance().reset();
-        SyncmaticaReference.setIntegratedServer(false);
+        Reference.setIntegratedServer(false);
     }
 }

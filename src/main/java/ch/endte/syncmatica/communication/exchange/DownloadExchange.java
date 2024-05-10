@@ -1,16 +1,5 @@
 package ch.endte.syncmatica.communication.exchange;
 
-import ch.endte.syncmatica.Context;
-import ch.endte.syncmatica.data.ServerPlacement;
-import ch.endte.syncmatica.communication.ExchangeTarget;
-import ch.endte.syncmatica.communication.MessageType;
-import ch.endte.syncmatica.communication.ServerCommunicationManager;
-import ch.endte.syncmatica.network.payload.PacketType;
-import ch.endte.syncmatica.util.SyncLog;
-import io.netty.buffer.Unpooled;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.PacketByteBuf;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -19,6 +8,15 @@ import java.security.DigestOutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
+import ch.endte.syncmatica.Context;
+import ch.endte.syncmatica.communication.ExchangeTarget;
+import ch.endte.syncmatica.communication.MessageType;
+import ch.endte.syncmatica.communication.ServerCommunicationManager;
+import ch.endte.syncmatica.data.ServerPlacement;
+import ch.endte.syncmatica.network.payload.PacketType;
+import ch.endte.syncmatica.util.SyncLog;
+import io.netty.buffer.Unpooled;
+import net.minecraft.network.PacketByteBuf;
 
 public class DownloadExchange extends AbstractExchange
 {
@@ -48,12 +46,6 @@ public class DownloadExchange extends AbstractExchange
             return checkUUID(packetBuf, toDownload.getId());
         }
         return false;
-    }
-
-    @Override
-    public boolean checkPacket(PacketType type, NbtCompound nbt)
-    {
-        return type.equals(PacketType.NBT_DATA);
     }
 
     @Override
@@ -117,12 +109,6 @@ public class DownloadExchange extends AbstractExchange
         {
             close(false);
         }
-    }
-
-    @Override
-    public void handle(PacketType type, NbtCompound nbt)
-    {
-        SyncLog.debug("DownloadExchange#handle(): received nbtData packet");
     }
 
     @Override

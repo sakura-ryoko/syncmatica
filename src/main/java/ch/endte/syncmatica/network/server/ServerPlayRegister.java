@@ -1,6 +1,6 @@
 package ch.endte.syncmatica.network.server;
 
-import ch.endte.syncmatica.SyncmaticaReference;
+import ch.endte.syncmatica.Reference;
 import ch.endte.syncmatica.network.channels.*;
 import ch.endte.syncmatica.util.SyncLog;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -28,7 +28,6 @@ public class ServerPlayRegister
     static ServerPlayNetworking.PlayPayloadHandler<SyncRemoveSyncmatic> C2SSyncHandler_RemoveSyncmatic;
     static ServerPlayNetworking.PlayPayloadHandler<SyncRequestDownload> C2SSyncHandler_RequestDownload;
     static ServerPlayNetworking.PlayPayloadHandler<SyncSendLitematic> C2SSyncHandler_SendLitematic;
-    static ServerPlayNetworking.PlayPayloadHandler<SyncNbtData> C2SSyncHandler_NbtData;
     private static boolean receiversInit = false;
 
     public static void registerReceivers()
@@ -37,7 +36,7 @@ public class ServerPlayRegister
         if (receiversInit)
             return;
         // Do when the server starts, not before
-        if (SyncmaticaReference.isServer() || SyncmaticaReference.isIntegratedServer())
+        if (Reference.isServer() || Reference.isIntegratedServer())
         {
             SyncLog.debug("ServerPlayRegister#registerReceivers(): isServer() true -> registerSyncmaticaHandlers ...");
             ServerPlayNetworking.registerGlobalReceiver(SyncCancelShare.TYPE, C2SSyncHandler_CancelShare);
@@ -58,7 +57,6 @@ public class ServerPlayRegister
             ServerPlayNetworking.registerGlobalReceiver(SyncRemoveSyncmatic.TYPE, C2SSyncHandler_RemoveSyncmatic);
             ServerPlayNetworking.registerGlobalReceiver(SyncRequestDownload.TYPE, C2SSyncHandler_RequestDownload);
             ServerPlayNetworking.registerGlobalReceiver(SyncSendLitematic.TYPE, C2SSyncHandler_SendLitematic);
-            ServerPlayNetworking.registerGlobalReceiver(SyncNbtData.TYPE, C2SSyncHandler_NbtData);
             receiversInit = true;
         }
     }
@@ -66,7 +64,7 @@ public class ServerPlayRegister
     public static void unregisterReceivers()
     {
         // Do when server stops
-        if (SyncmaticaReference.isServer() || SyncmaticaReference.isIntegratedServer())
+        if (Reference.isServer() || Reference.isIntegratedServer())
         {
             SyncLog.debug("ServerPlayRegister#unregisterReceivers(): isServer() true -> unregisterSyncmaticaHandlers ...");
             ServerPlayNetworking.unregisterGlobalReceiver(SyncCancelShare.TYPE.id());
@@ -87,7 +85,6 @@ public class ServerPlayRegister
             ServerPlayNetworking.unregisterGlobalReceiver(SyncRemoveSyncmatic.TYPE.id());
             ServerPlayNetworking.unregisterGlobalReceiver(SyncRequestDownload.TYPE.id());
             ServerPlayNetworking.unregisterGlobalReceiver(SyncSendLitematic.TYPE.id());
-            ServerPlayNetworking.unregisterGlobalReceiver(SyncNbtData.TYPE.id());
             receiversInit = false;
         }
     }
@@ -112,6 +109,5 @@ public class ServerPlayRegister
         C2SSyncHandler_RemoveSyncmatic = ServerPlayHandler::receiveRemoveSyncmatic;
         C2SSyncHandler_RequestDownload = ServerPlayHandler::receiveRequestDownload;
         C2SSyncHandler_SendLitematic = ServerPlayHandler::receiveSendLitematic;
-        C2SSyncHandler_NbtData = ServerPlayHandler::receiveSyncNbtData;
     }
 }

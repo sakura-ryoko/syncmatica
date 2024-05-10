@@ -16,11 +16,6 @@ public class ClientPlayListener
         // Switch logic so we can separate the Payload data types properly.
         switch (type)
         {
-            case NBT_DATA ->
-            {
-                SyncNbtData payload = (SyncNbtData) packet;
-                ActorClientPlayHandler.getInstance().packetNbtEvent(type, payload.data(), handler, ci);
-            }
             case REGISTER_METADATA ->
             {
                 SyncRegisterMetadata payload = (SyncRegisterMetadata) packet;

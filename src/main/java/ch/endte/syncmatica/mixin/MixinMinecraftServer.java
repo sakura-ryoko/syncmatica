@@ -1,7 +1,7 @@
 package ch.endte.syncmatica.mixin;
 
 import ch.endte.syncmatica.Syncmatica;
-import ch.endte.syncmatica.SyncmaticaReference;
+import ch.endte.syncmatica.Reference;
 import ch.endte.syncmatica.communication.ServerCommunicationManager;
 import ch.endte.syncmatica.data.FileStorage;
 import ch.endte.syncmatica.data.SyncmaticManager;
@@ -27,13 +27,13 @@ public class MixinMinecraftServer
 
         if (server.isDedicated())
         {
-            SyncmaticaReference.setDedicatedServer(true);
-            SyncmaticaReference.setOpenToLan(false);
+            Reference.setDedicatedServer(true);
+            Reference.setOpenToLan(false);
         }
         if (server.isSingleplayer())
         {
-            SyncmaticaReference.setSinglePlayer(true);
-            SyncmaticaReference.setOpenToLan(false);
+            Reference.setSinglePlayer(true);
+            Reference.setOpenToLan(false);
         }
 
         // Register in case for whatever reason they aren't already
@@ -48,19 +48,19 @@ public class MixinMinecraftServer
 
         if (server.isDedicated())
         {
-            SyncmaticaReference.setDedicatedServer(true);
-            SyncmaticaReference.setOpenToLan(false);
+            Reference.setDedicatedServer(true);
+            Reference.setOpenToLan(false);
         }
         if (server.isSingleplayer())
         {
-            SyncmaticaReference.setSinglePlayer(true);
-            SyncmaticaReference.setOpenToLan(false);
+            Reference.setSinglePlayer(true);
+            Reference.setOpenToLan(false);
         }
-        if (SyncmaticaReference.isServer() || SyncmaticaReference.isDedicatedServer() || SyncmaticaReference.isIntegratedServer() || SyncmaticaReference.isOpenToLan())
+        if (Reference.isServer() || Reference.isDedicatedServer() || Reference.isIntegratedServer() || Reference.isOpenToLan())
         {
             ServerPlayRegister.registerReceivers();
         }
-        if (SyncmaticaReference.isClient() || SyncmaticaReference.isSinglePlayer())
+        if (Reference.isClient() || Reference.isSinglePlayer())
         {
             ClientPlayRegister.registerReceivers();
         }
@@ -71,7 +71,7 @@ public class MixinMinecraftServer
                 new ServerCommunicationManager(),
                 new FileStorage(),
                 new SyncmaticManager(),
-                SyncmaticaReference.isIntegratedServer(),
+                Reference.isIntegratedServer(),
                 server.getSavePath(WorldSavePath.ROOT).toFile()
         ).startup();
     }
@@ -89,16 +89,16 @@ public class MixinMinecraftServer
         //final MinecraftServer server = (MinecraftServer) (Object) this;
         SyncLog.debug("MixinMinecraftServer#onServerStopped(): invoked.");
 
-        if (SyncmaticaReference.isServer() || SyncmaticaReference.isDedicatedServer() || SyncmaticaReference.isIntegratedServer() || SyncmaticaReference.isOpenToLan())
+        if (Reference.isServer() || Reference.isDedicatedServer() || Reference.isIntegratedServer() || Reference.isOpenToLan())
         {
             ServerPlayRegister.unregisterReceivers();
         }
-        if (SyncmaticaReference.isClient() || SyncmaticaReference.isSinglePlayer())
+        if (Reference.isClient() || Reference.isSinglePlayer())
         {
             ClientPlayRegister.unregisterReceivers();
         }
-        SyncmaticaReference.setIntegratedServer(false);
-        SyncmaticaReference.setSinglePlayer(false);
+        Reference.setIntegratedServer(false);
+        Reference.setSinglePlayer(false);
 
         // Process Syncmatica Shutdown
         SyncLog.debug("MixinMinecraftServer#onServerStopped(): processing Syncmatica.shutdown().");

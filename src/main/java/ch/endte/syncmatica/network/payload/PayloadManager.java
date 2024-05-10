@@ -56,7 +56,6 @@ public class PayloadManager
         registerPlayChannel(SyncRemoveSyncmatic.TYPE, SyncRemoveSyncmatic.CODEC);
         registerPlayChannel(SyncRequestDownload.TYPE, SyncRequestDownload.CODEC);
         registerPlayChannel(SyncSendLitematic.TYPE, SyncSendLitematic.CODEC);
-        registerPlayChannel(SyncNbtData.TYPE, SyncNbtData.CODEC);
 
         playRegistered = true;
     }

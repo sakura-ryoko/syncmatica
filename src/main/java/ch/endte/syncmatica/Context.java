@@ -187,9 +187,9 @@ public class Context
     public File getConfigFolder() {
         if (isServer() && isIntegratedServer()) {
 
-            return new File(worldFolder, SyncmaticaReference.MOD_ID);
+            return new File(worldFolder, Reference.MOD_ID);
         }
-        return new File(new File("."), "config" + File.separator + SyncmaticaReference.MOD_ID);
+        return new File(new File("."), "config" + File.separator + Reference.MOD_ID);
     }
 
     public File getConfigFile() {

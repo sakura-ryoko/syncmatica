@@ -1,10 +1,14 @@
 package ch.endte.syncmatica.communication;
 
+import java.io.File;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.util.*;
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.Feature;
-import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.communication.exchange.DownloadExchange;
 import ch.endte.syncmatica.communication.exchange.Exchange;
+import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.extended_core.PlayerIdentifier;
 import ch.endte.syncmatica.extended_core.PlayerIdentifierProvider;
 import ch.endte.syncmatica.extended_core.SubRegionData;
@@ -12,16 +16,10 @@ import ch.endte.syncmatica.extended_core.SubRegionPlacementModification;
 import ch.endte.syncmatica.network.payload.PacketType;
 import ch.endte.syncmatica.util.SyncmaticaUtil;
 import io.netty.buffer.Unpooled;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
-
-import java.io.File;
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.util.*;
 
 public abstract class CommunicationManager
 {
@@ -70,36 +68,9 @@ public abstract class CommunicationManager
         }
     }
 
-    public void onNbtPacket(final ExchangeTarget source, final PacketType type, final NbtCompound nbt)
-    {
-        context.getDebugService().logReceivePacket(type);
-        Exchange handler = null;
-        final Collection<Exchange> potentialMessageTarget = source.getExchanges();
-        if (potentialMessageTarget != null)
-        {
-            for (final Exchange target : potentialMessageTarget)
-            {
-                if (target.checkPacket(type, nbt))
-                {
-                    target.handle(type, nbt);
-                    handler = target;
-                    break;
-                }
-            }
-        }
-        if (handler == null)
-        {
-            handle(source, type, nbt);
-        }
-        else if (handler.isFinished())
-        {
-            notifyClose(handler);
-        }
-    }
-
     // will get called for every packet not handled by an exchange
     protected abstract void handle(ExchangeTarget source, PacketType type, PacketByteBuf packetBuf);
-    protected abstract void handle(ExchangeTarget source, PacketType type, NbtCompound nbt);
+
     // will get called for every finished exchange (successful or not)
     protected abstract void handleExchange(Exchange exchange);
 

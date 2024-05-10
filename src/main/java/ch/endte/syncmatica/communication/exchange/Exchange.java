@@ -3,7 +3,6 @@ package ch.endte.syncmatica.communication.exchange;
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.network.payload.PacketType;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 
 // an exchange represents a portion of a communication with a specific goal 
@@ -30,13 +29,9 @@ public interface Exchange
     // this test should have no side effects.
     // doesn't handle packets directly
     boolean checkPacket(PacketType type, PacketByteBuf packetBuf);
-    // For NbtCompound Packets
-    boolean checkPacket(PacketType type, NbtCompound nbt);
 
     // handles the data of this specific packet
     void handle(PacketType type, PacketByteBuf packetBuf);
-    // For NbtCompound Packets
-    void handle(PacketType type, NbtCompound nbt);
 
     // marks an exchange that has terminated
     boolean isFinished();

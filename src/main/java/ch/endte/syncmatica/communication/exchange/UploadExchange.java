@@ -1,15 +1,12 @@
 package ch.endte.syncmatica.communication.exchange;
 
-import ch.endte.syncmatica.Context;
-import ch.endte.syncmatica.data.ServerPlacement;
-import ch.endte.syncmatica.communication.ExchangeTarget;
-import ch.endte.syncmatica.network.payload.PacketType;
-import ch.endte.syncmatica.util.SyncLog;
-import io.netty.buffer.Unpooled;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.PacketByteBuf;
-
 import java.io.*;
+import ch.endte.syncmatica.Context;
+import ch.endte.syncmatica.communication.ExchangeTarget;
+import ch.endte.syncmatica.data.ServerPlacement;
+import ch.endte.syncmatica.network.payload.PacketType;
+import io.netty.buffer.Unpooled;
+import net.minecraft.network.PacketByteBuf;
 
 // uploading part of transmit data exchange
 // pairs with Download Exchange
@@ -42,12 +39,6 @@ public class UploadExchange extends AbstractExchange
     }
 
     @Override
-    public boolean checkPacket(PacketType type, NbtCompound nbt)
-    {
-        return type.equals(PacketType.NBT_DATA);
-    }
-
-    @Override
     public void handle(final PacketType type, final PacketByteBuf packetBuf)
     {
 
@@ -60,12 +51,6 @@ public class UploadExchange extends AbstractExchange
         {
             close(false);
         }
-    }
-
-    @Override
-    public void handle(PacketType type, NbtCompound nbt)
-    {
-        SyncLog.debug("UploadExchange#handle(): received nbtData packet.");
     }
 
     private void send()
@@ -94,7 +79,6 @@ public class UploadExchange extends AbstractExchange
 
     private void sendData(final int bytesRead)
     {
-        // #FIXME
         final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
         packetByteBuf.writeUuid(toUpload.getId());
         packetByteBuf.writeInt(bytesRead);
@@ -104,7 +88,6 @@ public class UploadExchange extends AbstractExchange
 
     private void sendFinish()
     {
-        // #FIXME
         final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
         packetByteBuf.writeUuid(toUpload.getId());
         getPartner().sendPacket(PacketType.FINISHED_LITEMATIC, packetByteBuf, getContext());
@@ -130,7 +113,6 @@ public class UploadExchange extends AbstractExchange
     @Override
     protected void sendCancelPacket()
     {
-        // #FIXME
         final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
         packetByteBuf.writeUuid(toUpload.getId());
         getPartner().sendPacket(PacketType.CANCEL_LITEMATIC, packetByteBuf, getContext());

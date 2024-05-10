@@ -14,11 +14,8 @@
 	"license": "CC0-1.0",
 	"environment": "*",
 	"entrypoints": {
-		"client": [
-			"ch.endte.syncmatica.SyncmaticaClient"
-		],
-		"server": [
-			"ch.endte.syncmatica.SyncmaticaServer"
+		"main": [
+			"ch.endte.syncmatica.EntryPoint"
 		]
 	},
 	"mixins": [

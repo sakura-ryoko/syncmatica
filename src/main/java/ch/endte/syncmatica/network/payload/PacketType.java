@@ -74,15 +74,7 @@ public enum PacketType
     // send from client to server to mark that the editing of placement values has concluded
     // sends along the final data of the placement
 
-    MESSAGE("syncmatica","mesage"),
-    // sends a message from client to server - allows for future compatibility
-    // can't fix the typo here lol
-
-    //MINECRAFT_REGISTER("minecraft","register"),
-    //MINECRAFT_UNREGISTER("minecraft","unregister"),
-    // Needed for Bunni's ChannelManager code to function
-
-    NBT_DATA("syncmatica","nbt_data");
+    MESSAGE("syncmatica","mesage");
     // sends a message from client to server - allows for future compatibility
     // can't fix the typo here lol
 

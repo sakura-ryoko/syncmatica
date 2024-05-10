@@ -1,6 +1,6 @@
 package ch.endte.syncmatica.network.client;
 
-import ch.endte.syncmatica.SyncmaticaReference;
+import ch.endte.syncmatica.Reference;
 import ch.endte.syncmatica.network.channels.*;
 import ch.endte.syncmatica.util.SyncLog;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -28,7 +28,6 @@ public class ClientPlayRegister
     static ClientPlayNetworking.PlayPayloadHandler<SyncRemoveSyncmatic> S2CSyncHandler_RemoveSyncmatic;
     static ClientPlayNetworking.PlayPayloadHandler<SyncRequestDownload> S2CSyncHandler_RequestDownload;
     static ClientPlayNetworking.PlayPayloadHandler<SyncSendLitematic> S2CSyncHandler_SendLitematic;
-    static ClientPlayNetworking.PlayPayloadHandler<SyncNbtData> S2CSyncHandler_NbtData;
     private static boolean receiversInit = false;
 
     public static void registerReceivers()
@@ -37,10 +36,8 @@ public class ClientPlayRegister
         if (receiversInit)
             return;
         // Wait until world/server joined
-        if (SyncmaticaReference.isClient())
+        if (Reference.isClient())
         {
-            if (SyncmaticaReference.isSinglePlayer())
-                SyncLog.debug("ClientHandlerManager#registerReceivers(): Game is running in Single Player Mode.");
             SyncLog.debug("ClientHandlerManager#registerReceivers(): isClient() true -> registerSyncmaticaHandlers ...");
             ClientPlayNetworking.registerGlobalReceiver(SyncCancelShare.TYPE, S2CSyncHandler_CancelShare);
             ClientPlayNetworking.registerGlobalReceiver(SyncCancelLitematic.TYPE, S2CSyncHandler_CancelLitematic);
@@ -60,7 +57,6 @@ public class ClientPlayRegister
             ClientPlayNetworking.registerGlobalReceiver(SyncRemoveSyncmatic.TYPE, S2CSyncHandler_RemoveSyncmatic);
             ClientPlayNetworking.registerGlobalReceiver(SyncRequestDownload.TYPE, S2CSyncHandler_RequestDownload);
             ClientPlayNetworking.registerGlobalReceiver(SyncSendLitematic.TYPE, S2CSyncHandler_SendLitematic);
-            ClientPlayNetworking.registerGlobalReceiver(SyncNbtData.TYPE, S2CSyncHandler_NbtData);
             receiversInit = true;
         }
     }
@@ -68,7 +64,7 @@ public class ClientPlayRegister
     public static void unregisterReceivers()
     {
         // Do when disconnecting from server/world
-        if (SyncmaticaReference.isClient())
+        if (Reference.isClient())
         {
             SyncLog.debug("ClientHandlerManager#unregisterDefaultReceivers(): isClient() true -> unregisterSyncmaticaHandlers ...");
             ClientPlayNetworking.unregisterGlobalReceiver(SyncCancelShare.TYPE.id());
@@ -89,8 +85,6 @@ public class ClientPlayRegister
             ClientPlayNetworking.unregisterGlobalReceiver(SyncRemoveSyncmatic.TYPE.id());
             ClientPlayNetworking.unregisterGlobalReceiver(SyncRequestDownload.TYPE.id());
             ClientPlayNetworking.unregisterGlobalReceiver(SyncSendLitematic.TYPE.id());
-            ClientPlayNetworking.unregisterGlobalReceiver(SyncNbtData.TYPE.id());
-            ClientPlayNetworking.unregisterGlobalReceiver(SyncNbtData.TYPE.id());
             receiversInit = false;
         }
     }
@@ -115,6 +109,5 @@ public class ClientPlayRegister
         S2CSyncHandler_RemoveSyncmatic = ClientPlayHandler::receiveRemoveSyncmatic;
         S2CSyncHandler_RequestDownload = ClientPlayHandler::receiveRequestDownload;
         S2CSyncHandler_SendLitematic = ClientPlayHandler::receiveSendLitematic;
-        S2CSyncHandler_NbtData = ClientPlayHandler::receiveSyncNbtData;
     }
 }

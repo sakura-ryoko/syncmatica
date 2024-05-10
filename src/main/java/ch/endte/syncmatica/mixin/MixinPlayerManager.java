@@ -2,7 +2,7 @@ package ch.endte.syncmatica.mixin;
 
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.Syncmatica;
-import ch.endte.syncmatica.SyncmaticaReference;
+import ch.endte.syncmatica.Reference;
 import ch.endte.syncmatica.network.channels.SyncRegisterVersion;
 import ch.endte.syncmatica.network.payload.SyncByteBuf;
 import ch.endte.syncmatica.network.server.ServerPlayHandler;
@@ -27,7 +27,7 @@ public class MixinPlayerManager
     {
         SyncLog.debug("MixinPlayerManager#onPlayerJoin(): invoked.");
 
-        if (SyncmaticaReference.isServer() || SyncmaticaReference.isDedicatedServer() || SyncmaticaReference.isIntegratedServer())
+        if (Reference.isServer() || Reference.isDedicatedServer() || Reference.isIntegratedServer())
         {
             Context server = Syncmatica.getContext(Syncmatica.SERVER_CONTEXT);
             if (server == null || !server.isStarted())
@@ -38,12 +38,12 @@ public class MixinPlayerManager
             {
                 // This needs to happen & get squashed anyway during .sendSyncPacket() in order for things to work
                 SyncByteBuf buf = new SyncByteBuf(Unpooled.buffer());
-                buf.writeString(SyncmaticaReference.MOD_VERSION);
+                buf.writeString(Reference.MOD_VERSION);
                 SyncRegisterVersion payload = new SyncRegisterVersion(buf);
                 ServerPlayHandler.sendSyncPacket(payload, player);
             }
         }
-        if (SyncmaticaReference.isClient() || SyncmaticaReference.isSinglePlayer())
+        if (Reference.isClient() || Reference.isSinglePlayer())
         {
             Context client = Syncmatica.getContext(Syncmatica.CLIENT_CONTEXT);
             if (client == null || !client.isStarted())

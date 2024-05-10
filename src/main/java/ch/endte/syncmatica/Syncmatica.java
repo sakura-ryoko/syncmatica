@@ -15,50 +15,47 @@ import ch.endte.syncmatica.util.SyncLog;
 import net.minecraft.util.Identifier;
 
 // could probably turn this into a singleton
-public class Syncmatica {
+public class Syncmatica
+{
     protected static final String SERVER_PATH = "." + File.separator + "syncmatics";
     protected static final String CLIENT_PATH = "." + File.separator + "schematics" + File.separator + "sync";
     public static final Identifier CLIENT_CONTEXT = new Identifier("syncmatica", "client_context");
     public static final Identifier SERVER_CONTEXT = new Identifier("syncmatica", "server_context");
     public static final UUID syncmaticaId = UUID.fromString("4c1b738f-56fa-4011-8273-498c972424ea");
     protected static Map<Identifier, Context> contexts = null;
-    protected static boolean MOD_INIT = false;
     protected static boolean hasMaLiLib = false;
     protected static boolean hasLitematica = false;
     protected static boolean context_init = false;
+
+    /**
+     * Tasks to be run at Mod Init, such as register Play Channels
+     */
+    public static void preInit()
+    {
+        SyncLog.initLogger();
+
+        if (Reference.isClient())
+        {
+            // Client preInit()
+            hasMaLiLib = Reference.checkForMaLiLib();
+            hasLitematica = Reference.checkForLitematica();
+            if (hasMaLiLib && hasLitematica)
+            {
+                PayloadManager.registerPlayChannels();
+            }
+        }
+        else
+        {
+            // Server preInit()
+            PayloadManager.registerPlayChannels();
+        }
+    }
 
     public static Context getContext(final Identifier id)
     {
         if (context_init)
             return contexts.get(id);
         else return null;
-    }
-
-    /**
-     * This preInit() calls are for early network API initialization / Play Channel registration;
-     * and is used to set up the handling incoming packets correctly.
-     * Using the Mixin's to do this doesn't seem to work correctly, as it must be breaking setting
-     * the EnvType isClient() or isServer(), and some edge cases fail to work, such as OpenToLan for
-     * Clients.
-     * Perhaps with enough testing, using the Context method may be a functional replacement
-     */
-    public static void preInitClient()
-    {
-        SyncLog.initLogger();
-        hasMaLiLib = SyncmaticaReference.checkForMaLiLib();
-        hasLitematica = SyncmaticaReference.checkForLitematica();
-        if (hasMaLiLib && hasLitematica)
-        {
-            SyncLog.debug("Syncmatica#preInitClient(): Register Client Play Channels.");
-            PayloadManager.registerPlayChannels();
-        }
-    }
-
-    public static void preInitServer()
-    {
-        SyncLog.initLogger();
-        SyncLog.debug("Syncmatica#preInitServer(): Register Server Play Channels.");
-        PayloadManager.registerPlayChannels();
     }
 
     static void init(final Context con, final Identifier contextId) {
@@ -95,8 +92,8 @@ public class Syncmatica {
 
         // These just try to verify that the Fabric API Networking is initialized.
         // In my testing, this really isn't useful to put here, it's probably redundant
-        hasMaLiLib = SyncmaticaReference.checkForMaLiLib();
-        hasLitematica = SyncmaticaReference.checkForLitematica();
+        hasMaLiLib = Reference.checkForMaLiLib();
+        hasLitematica = Reference.checkForLitematica();
         PayloadManager.registerPlayChannels();
         ClientPlayRegister.registerReceivers();
 

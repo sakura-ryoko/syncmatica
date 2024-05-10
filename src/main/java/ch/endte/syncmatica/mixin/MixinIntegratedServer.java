@@ -1,6 +1,6 @@
 package ch.endte.syncmatica.mixin;
 
-import ch.endte.syncmatica.SyncmaticaReference;
+import ch.endte.syncmatica.Reference;
 import ch.endte.syncmatica.network.server.ServerPlayRegister;
 import ch.endte.syncmatica.util.SyncLog;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,9 +19,9 @@ public class MixinIntegratedServer
         if (cir.getReturnValue())
         {
             SyncLog.debug("syncmatica$setupServer(): Integrated Server detected");
-            SyncmaticaReference.setIntegratedServer(true);
-            SyncmaticaReference.setOpenToLan(false);
-            SyncmaticaReference.setDedicatedServer(false);
+            Reference.setIntegratedServer(true);
+            Reference.setOpenToLan(false);
+            Reference.setDedicatedServer(false);
         }
     }
 
@@ -31,9 +31,9 @@ public class MixinIntegratedServer
         if (cir.getReturnValue())
         {
             SyncLog.debug("syncmatica$setupServer(): OpenToLan detected");
-            SyncmaticaReference.setIntegratedServer(true);
-            SyncmaticaReference.setOpenToLan(true);
-            SyncmaticaReference.setDedicatedServer(false);
+            Reference.setIntegratedServer(true);
+            Reference.setOpenToLan(true);
+            Reference.setDedicatedServer(false);
 
             ServerPlayRegister.registerReceivers();
         }

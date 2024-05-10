@@ -1,26 +1,22 @@
 package ch.endte.syncmatica.communication;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.UUID;
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.Feature;
-import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.communication.exchange.DownloadExchange;
 import ch.endte.syncmatica.communication.exchange.Exchange;
 import ch.endte.syncmatica.communication.exchange.VersionHandshakeClient;
+import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.extended_core.PlayerIdentifier;
 import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.litematica.ScreenHelper;
 import ch.endte.syncmatica.network.packet.ActorClientPlayHandler;
 import ch.endte.syncmatica.network.payload.PacketType;
-import ch.endte.syncmatica.network.channels.SyncNbtData;
-import ch.endte.syncmatica.util.SyncLog;
-import fi.dy.masa.malilib.gui.Message;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
-
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.UUID;
+import fi.dy.masa.malilib.gui.Message;
 
 public class ClientCommunicationManager extends CommunicationManager
 {
@@ -90,12 +86,6 @@ public class ClientCommunicationManager extends CommunicationManager
 
             ActorClientPlayHandler.getInstance().packetEvent(type, packetBuf);
         }
-    }
-
-    @Override
-    protected void handle(ExchangeTarget source, PacketType type, NbtCompound nbt)
-    {
-        SyncLog.debug("ClientCommunicationManager#handle(): received Nbt Packet type: {}, size : {}, from: {}, key data: {}", type.toString(), nbt.getSizeInBytes(), source.getPersistentName(), nbt.getString(SyncNbtData.KEY));
     }
 
     @Override

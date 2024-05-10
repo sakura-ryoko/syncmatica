@@ -13,11 +13,6 @@ public class ServerPlayListener
     {
         switch (type)
         {
-            case NBT_DATA ->
-            {
-                SyncNbtData payload = (SyncNbtData) thisPayload;
-                impl.syncmatica$operateComms(sm -> sm.onNbtPacket(impl.syncmatica$getExchangeTarget(), type, payload.data()));
-            }
             case REGISTER_METADATA ->
             {
                 SyncRegisterMetadata payload = (SyncRegisterMetadata) thisPayload;

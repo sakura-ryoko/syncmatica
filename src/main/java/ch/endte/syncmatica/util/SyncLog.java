@@ -1,6 +1,6 @@
 package ch.endte.syncmatica.util;
 
-import ch.endte.syncmatica.SyncmaticaReference;
+import ch.endte.syncmatica.Reference;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -13,8 +13,8 @@ public class SyncLog
 {
     private static Logger LOGGER;
     private static boolean enabled;
-    private static final String SYNC_ID = SyncmaticaReference.MOD_ID;
-    private static final boolean SYNC_DEBUG = SyncmaticaReference.MOD_DEBUG;
+    private static final String SYNC_ID = Reference.MOD_ID;
+    private static final boolean SYNC_DEBUG = Reference.MOD_DEBUG;
     private static final boolean WRAP_ID = false;
 
     public static void initLogger()

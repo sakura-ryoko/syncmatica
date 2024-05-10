@@ -1,24 +1,23 @@
 package ch.endte.syncmatica.network.packet;
 
+import java.util.Objects;
 import ch.endte.syncmatica.Context;
-import ch.endte.syncmatica.data.IFileStorage;
-import ch.endte.syncmatica.data.RedirectFileStorage;
-import ch.endte.syncmatica.data.SyncmaticManager;
 import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.communication.ClientCommunicationManager;
 import ch.endte.syncmatica.communication.CommunicationManager;
 import ch.endte.syncmatica.communication.ExchangeTarget;
+import ch.endte.syncmatica.data.IFileStorage;
+import ch.endte.syncmatica.data.RedirectFileStorage;
+import ch.endte.syncmatica.data.SyncmaticManager;
 import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.litematica.ScreenHelper;
 import ch.endte.syncmatica.network.payload.PacketType;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.PacketByteBuf;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.network.PacketByteBuf;
 
-import java.util.Objects;
-
-import static ch.endte.syncmatica.Syncmatica.*;
+import static ch.endte.syncmatica.Syncmatica.CLIENT_CONTEXT;
+import static ch.endte.syncmatica.Syncmatica.getContext;
 
 /**
  * If I can get this to work, so be it.
@@ -75,32 +74,12 @@ public class ActorClientPlayHandler
             if (ci.isCancellable())
                 ci.cancel();
     }
-    public void packetNbtEvent(final PacketType type, final NbtCompound data, final ClientPlayNetworkHandler clientContext, CallbackInfo ci)
-    {
-        if (clientCommunication == null)
-        {
-            ActorClientPlayHandler.getInstance().startEvent(clientContext);
-        }
-        if (packetNbtEvent(type, data))
-            if (ci.isCancellable())
-                ci.cancel();
-    }
 
     public boolean packetEvent(final PacketType type, final PacketByteBuf bufSupplier)
     {
         if (clientCommunication.handlePacket(type))
         {
             clientCommunication.onPacket(exTarget, type, bufSupplier);
-            return true;
-        }
-        return false;
-    }
-
-    public boolean packetNbtEvent(final PacketType type, final NbtCompound data)
-    {
-        if (clientCommunication.handlePacket(type))
-        {
-            clientCommunication.onNbtPacket(exTarget, type, data);
             return true;
         }
         return false;

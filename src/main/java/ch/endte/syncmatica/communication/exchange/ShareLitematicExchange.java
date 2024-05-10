@@ -1,19 +1,16 @@
 package ch.endte.syncmatica.communication.exchange;
 
-import ch.endte.syncmatica.Context;
-import ch.endte.syncmatica.data.RedirectFileStorage;
-import ch.endte.syncmatica.data.ServerPlacement;
-import ch.endte.syncmatica.communication.ClientCommunicationManager;
-import ch.endte.syncmatica.communication.ExchangeTarget;
-import ch.endte.syncmatica.litematica.LitematicManager;
-import ch.endte.syncmatica.network.payload.PacketType;
-import ch.endte.syncmatica.util.SyncLog;
-import fi.dy.masa.litematica.schematic.placement.SchematicPlacement;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.PacketByteBuf;
-
 import java.io.File;
 import java.io.FileNotFoundException;
+import ch.endte.syncmatica.Context;
+import ch.endte.syncmatica.communication.ClientCommunicationManager;
+import ch.endte.syncmatica.communication.ExchangeTarget;
+import ch.endte.syncmatica.data.RedirectFileStorage;
+import ch.endte.syncmatica.data.ServerPlacement;
+import ch.endte.syncmatica.litematica.LitematicManager;
+import ch.endte.syncmatica.network.payload.PacketType;
+import net.minecraft.network.PacketByteBuf;
+import fi.dy.masa.litematica.schematic.placement.SchematicPlacement;
 
 public class ShareLitematicExchange extends AbstractExchange
 {
@@ -41,12 +38,6 @@ public class ShareLitematicExchange extends AbstractExchange
             return AbstractExchange.checkUUID(packetBuf, toShare.getId());
         }
         return false;
-    }
-
-    @Override
-    public boolean checkPacket(PacketType type, NbtCompound nbt)
-    {
-        return type.equals(PacketType.NBT_DATA);
     }
 
     @Override
@@ -81,12 +72,6 @@ public class ShareLitematicExchange extends AbstractExchange
         {
             close(false);
         }
-    }
-
-    @Override
-    public void handle(PacketType type, NbtCompound nbt)
-    {
-        SyncLog.debug("ShareLitematicExchange#handle(): received nbtData packet.");
     }
 
     @Override

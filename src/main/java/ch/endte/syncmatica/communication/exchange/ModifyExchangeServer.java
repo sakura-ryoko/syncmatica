@@ -1,16 +1,13 @@
 package ch.endte.syncmatica.communication.exchange;
 
+import java.util.UUID;
 import ch.endte.syncmatica.Context;
-import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.communication.ExchangeTarget;
+import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.extended_core.PlayerIdentifier;
 import ch.endte.syncmatica.network.payload.PacketType;
-import ch.endte.syncmatica.util.SyncLog;
 import io.netty.buffer.Unpooled;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
-
-import java.util.UUID;
 
 public class ModifyExchangeServer extends AbstractExchange
 {
@@ -32,13 +29,6 @@ public class ModifyExchangeServer extends AbstractExchange
     }
 
     @Override
-    public boolean checkPacket(PacketType type, NbtCompound nbt)
-    {
-        //SyncLog.debug("ModifyExchangeServer#handle(): received nbtData packet.");
-        return type.equals(PacketType.NBT_DATA);
-    }
-
-    @Override
     public void handle(final PacketType type, final PacketByteBuf packetBuf)
     {
         //SyncLog.debug("ModifyExchangeServer#handle(): received byteBuf packet.");
@@ -54,12 +44,6 @@ public class ModifyExchangeServer extends AbstractExchange
             getContext().getSyncmaticManager().updateServerPlacement(placement);
             succeed();
         }
-    }
-
-    @Override
-    public void handle(PacketType type, NbtCompound nbt)
-    {
-        SyncLog.debug("ModifyExchangeServer#handle(): received nbtData packet.");
     }
 
     @Override

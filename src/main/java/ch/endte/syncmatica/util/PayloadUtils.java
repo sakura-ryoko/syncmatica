@@ -130,14 +130,4 @@ public class PayloadUtils
         }
         return payload;
     }
-
-    @Nullable
-    public static CustomPayload getPayload(PacketType type, NbtCompound data)
-    {
-        if (type.equals(PacketType.NBT_DATA))
-        {
-            return new SyncNbtData(data);
-        }
-        else return null;
-    }
 }

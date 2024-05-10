@@ -1,17 +1,15 @@
 package ch.endte.syncmatica.communication.exchange;
 
+import java.util.Collection;
 import ch.endte.syncmatica.Context;
-import ch.endte.syncmatica.SyncmaticaReference;
+import ch.endte.syncmatica.Reference;
 import ch.endte.syncmatica.communication.ExchangeTarget;
-import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.communication.FeatureSet;
+import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.network.payload.PacketType;
 import ch.endte.syncmatica.util.SyncLog;
 import io.netty.buffer.Unpooled;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
-
-import java.util.Collection;
 
 public class VersionHandshakeServer extends FeatureExchange
 {
@@ -27,12 +25,6 @@ public class VersionHandshakeServer extends FeatureExchange
     }
 
     @Override
-    public boolean checkPacket(final PacketType type, final NbtCompound nbt)
-    {
-        return type.equals(PacketType.NBT_DATA);
-    }
-
-    @Override
     public void handle(final PacketType type, final PacketByteBuf packetBuf)
     {
         //SyncLog.debug("VersionHandshakeServer#handle(): received type: {}, size: {}", type.getId().toString(), packetBuf.readableBytes());
@@ -42,7 +34,7 @@ public class VersionHandshakeServer extends FeatureExchange
             partnerVersion = packetBuf.readString(PACKET_MAX_STRING_SIZE);
             if (!getContext().checkPartnerVersion(partnerVersion))
             {
-                SyncLog.info("Denying syncmatica join due to outdated client with local version {} and client version {} from partner {}", SyncmaticaReference.MOD_VERSION, partnerVersion, getPartner().getPersistentName());
+                SyncLog.info("Denying syncmatica join due to outdated client with local version {} and client version {} from partner {}", Reference.MOD_VERSION, partnerVersion, getPartner().getPersistentName());
                 // same as client - avoid further packets
                 close(false);
                 return;
@@ -65,15 +57,9 @@ public class VersionHandshakeServer extends FeatureExchange
     }
 
     @Override
-    public void handle(PacketType type, NbtCompound nbt)
-    {
-        SyncLog.debug("VersionHandshakeServer#handle(): received nbtData packet.");
-    }
-
-    @Override
     public void onFeatureSetReceive()
     {
-        SyncLog.info("Syncmatica client joining with local version {} and client version {}", SyncmaticaReference.MOD_VERSION, partnerVersion);
+        SyncLog.info("Syncmatica client joining with local version {} and client version {}", Reference.MOD_VERSION, partnerVersion);
         final PacketByteBuf newBuf = new PacketByteBuf(Unpooled.buffer());
         final Collection<ServerPlacement> l = getContext().getSyncmaticManager().getAll();
         newBuf.writeInt(l.size());
@@ -89,7 +75,7 @@ public class VersionHandshakeServer extends FeatureExchange
     public void init()
     {
         final PacketByteBuf newBuf = new PacketByteBuf(Unpooled.buffer());
-        newBuf.writeString(SyncmaticaReference.MOD_VERSION);
+        newBuf.writeString(Reference.MOD_VERSION);
         getPartner().sendPacket(PacketType.REGISTER_VERSION, newBuf, getContext());
     }
 }

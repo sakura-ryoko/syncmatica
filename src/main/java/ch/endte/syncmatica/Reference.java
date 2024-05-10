@@ -13,7 +13,7 @@ import java.util.Optional;
  * Should use the "Context" versions of some of these for their respective context.
  * These are used to control what channels get registered, and various "preInit" items.
  */
-public class SyncmaticaReference
+public class Reference
 {
     public static final String MOD_ID = "syncmatica";
     public static final String MOD_NAME = "Syncmatica";
@@ -22,7 +22,7 @@ public class SyncmaticaReference
     public static final String MOD_TYPE = "fabric";
     public static final String MOD_STRING = MOD_ID+"-"+MOD_TYPE+"-"+MC_VERSION+"-"+MOD_VERSION;
     private static final EnvType MOD_ENV = FabricLoader.getInstance().getEnvironmentType();
-    public static final boolean MOD_DEBUG = true;
+    public static final boolean MOD_DEBUG = false;
 
     private static boolean SINGLE_PLAYER = false;
     private static boolean DEDICATED_SERVER = false;
