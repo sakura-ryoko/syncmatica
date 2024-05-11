@@ -55,29 +55,19 @@ public class MixinMinecraftServer
                 new ServerCommunicationManager(),
                 new FileStorage(),
                 new SyncmaticManager(),
-                Reference.isIntegratedServer(),
+                !server.isDedicated(),
                 server.getSavePath(WorldSavePath.ROOT).toFile()
         ).startup();
-    }
-
-    @Inject(at = @At("HEAD"), method = "shutdown")
-    private void syncmatica$onServerStopping(CallbackInfo info)
-    {
-        //final MinecraftServer server = (MinecraftServer) (Object) this;
-        Syncmatica.debug("MixinMinecraftServer#onServerStopping(): invoked.");
     }
 
     @Inject(at = @At("TAIL"), method = "shutdown")
     private void syncmatica$onServerStopped(CallbackInfo info)
     {
         //final MinecraftServer server = (MinecraftServer) (Object) this;
-        Syncmatica.debug("MixinMinecraftServer#onServerStopped(): invoked.");
+        Syncmatica.debug("MixinMinecraftServer#onServerStopped()");
 
         Reference.setIntegratedServer(false);
         Reference.setSinglePlayer(false);
-
-        // Process Syncmatica Shutdown
-        Syncmatica.debug("MixinMinecraftServer#onServerStopped(): processing Syncmatica.shutdown().");
         Syncmatica.shutdown();
     }
 }

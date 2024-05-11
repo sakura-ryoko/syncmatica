@@ -1,5 +1,6 @@
 package ch.endte.syncmatica.network.server;
 
+import javax.annotation.Nonnull;
 import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.network.channels.*;
 import ch.endte.syncmatica.network.packet.IServerPlay;
@@ -9,7 +10,7 @@ import net.minecraft.network.packet.CustomPayload;
 
 public class ServerPlayListener
 {
-    public static void handlePacket(IServerPlay impl, CustomPayload thisPayload, PacketType type, CallbackInfo ci)
+    public static void handlePacket(@Nonnull IServerPlay impl, @Nonnull CustomPayload thisPayload, @Nonnull PacketType type, CallbackInfo ci)
     {
         switch (type)
         {

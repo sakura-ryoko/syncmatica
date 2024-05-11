@@ -6,13 +6,13 @@ import ch.endte.syncmatica.network.packet.IServerPlay;
 import ch.endte.syncmatica.network.payload.PacketType;
 import ch.endte.syncmatica.network.payload.SyncByteBuf;
 import ch.endte.syncmatica.util.PayloadUtils;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
 /**
  * Main Fabric API Networking-based packet senders / receivers (Server Context)
@@ -39,9 +39,8 @@ public abstract class ServerPlayHandler
     public static void receiveSyncPacket(PacketType type, SyncByteBuf data, @Nonnull ServerPlayNetworkHandler handler, ServerPlayerEntity player)
     {
         PacketByteBuf out = PayloadUtils.fromSyncBuf(data);
-        //SyncLog.debug("ServerPlayHandler#receiveSyncPacket(): received payload id: {}, size in bytes {}", type.getId().toString(), out.readableBytes());
-
         IServerPlay iDo = ((IServerPlay) handler);
+
         iDo.syncmatica$operateComms(sm -> sm.onPacket(iDo.syncmatica$getExchangeTarget(), type, out));
     }
 

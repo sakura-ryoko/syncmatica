@@ -7,7 +7,6 @@ import java.util.UUID;
 import ch.endte.syncmatica.communication.CommunicationManager;
 import ch.endte.syncmatica.data.IFileStorage;
 import ch.endte.syncmatica.data.SyncmaticManager;
-import ch.endte.syncmatica.network.client.ClientPlayRegister;
 import ch.endte.syncmatica.network.packet.ActorClientPlayHandler;
 import ch.endte.syncmatica.network.payload.PayloadManager;
 import org.apache.logging.log4j.LogManager;
@@ -88,7 +87,8 @@ public class Syncmatica
 
         // These just try to verify that the Fabric API Networking is initialized.
         // In my testing, this really isn't useful to put here, it's probably redundant
-        ClientPlayRegister.registerReceivers();
+        //PayloadManager.registerPlayChannels();
+        //ClientPlayRegister.registerReceivers();
 
         final Context clientContext = new Context(
                 fileStorage,
@@ -118,6 +118,8 @@ public class Syncmatica
                                      final boolean isIntegratedServer, final File worldPath)
     {
         Syncmatica.debug("Syncmatica#initServer()");
+        //PayloadManager.registerPlayChannels();
+        //ServerPlayRegister.registerReceivers();
         final Context serverContext = new Context(
                 fileStorage,
                 comms,

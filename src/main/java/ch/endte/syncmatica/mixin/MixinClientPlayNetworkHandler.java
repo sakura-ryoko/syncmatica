@@ -6,7 +6,6 @@ import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.communication.ClientCommunicationManager;
 import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.network.client.ClientPlayListener;
-import ch.endte.syncmatica.network.packet.ActorClientPlayHandler;
 import ch.endte.syncmatica.network.packet.IClientPlay;
 import ch.endte.syncmatica.network.payload.PacketType;
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,7 +16,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 
 @Mixin(value = ClientPlayNetworkHandler.class, priority = 998)
 public abstract class MixinClientPlayNetworkHandler implements IClientPlay
@@ -72,12 +70,5 @@ public abstract class MixinClientPlayNetworkHandler implements IClientPlay
             exTarget = new ExchangeTarget((ClientPlayNetworkHandler) (Object) this);
         }
         return exTarget;
-    }
-
-    @Inject(method = "onGameJoin", at = @At("HEAD"))
-    private void syncmatica$onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci)
-    {
-        Syncmatica.debug("syncmatica$onGameJoin()");
-        ActorClientPlayHandler.getInstance().startEvent((ClientPlayNetworkHandler) (Object) this);
     }
 }

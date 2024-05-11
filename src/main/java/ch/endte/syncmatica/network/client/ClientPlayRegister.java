@@ -32,13 +32,12 @@ public class ClientPlayRegister
 
     public static void registerReceivers()
     {
-        Syncmatica.debug("ClientPlayRegister#registerReceivers()");
         // Don't register more than once
         if (receiversInit)
             return;
         if (Reference.isClient())
         {
-            Syncmatica.debug("ClientHandlerManager#registerReceivers(): isClient() true -> registerSyncmaticaHandlers ...");
+            Syncmatica.debug("ClientPlayRegister#registerReceivers(): [CLIENT] -> registerSyncmaticaHandlers");
             ClientPlayNetworking.registerGlobalReceiver(SyncCancelShare.TYPE, S2CSyncHandler_CancelShare);
             ClientPlayNetworking.registerGlobalReceiver(SyncCancelLitematic.TYPE, S2CSyncHandler_CancelLitematic);
             ClientPlayNetworking.registerGlobalReceiver(SyncConfirmUser.TYPE, S2CSyncHandler_ConfirmUser);
@@ -63,10 +62,9 @@ public class ClientPlayRegister
 
     public static void unregisterReceivers()
     {
-        Syncmatica.debug("ClientPlayRegister#unregisterReceivers()");
         if (Reference.isClient())
         {
-            Syncmatica.debug("ClientHandlerManager#unregisterDefaultReceivers(): isClient() true -> unregisterSyncmaticaHandlers ...");
+            Syncmatica.debug("ClientPlayRegister#unregisterReceivers(): [CLIENT] -> unregisterSyncmaticaHandlers");
             ClientPlayNetworking.unregisterGlobalReceiver(SyncCancelShare.TYPE.id());
             ClientPlayNetworking.unregisterGlobalReceiver(SyncCancelLitematic.TYPE.id());
             ClientPlayNetworking.unregisterGlobalReceiver(SyncConfirmUser.TYPE.id());

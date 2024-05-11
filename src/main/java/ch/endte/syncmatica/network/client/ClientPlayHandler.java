@@ -7,13 +7,13 @@ import ch.endte.syncmatica.network.packet.ActorClientPlayHandler;
 import ch.endte.syncmatica.network.payload.PacketType;
 import ch.endte.syncmatica.network.payload.SyncByteBuf;
 import ch.endte.syncmatica.util.PayloadUtils;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
 /**
  * Main Fabric API Networking-based packet senders / receivers (Client Context)
@@ -41,7 +41,6 @@ public class ClientPlayHandler
     {
         CallbackInfo ci = new CallbackInfo("receiveSyncPacket", false);
         PacketByteBuf out = PayloadUtils.fromSyncBuf(data);
-        //SyncLog.debug("ClientPlayHandler#receiveSyncPacket(): received payload id: {}, size in bytes {}", type.getId().toString(), out.readableBytes());
 
         ActorClientPlayHandler.getInstance().packetEvent(type, out, handler, ci);
     }

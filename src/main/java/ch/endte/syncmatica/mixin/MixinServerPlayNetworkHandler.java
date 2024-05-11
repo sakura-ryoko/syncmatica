@@ -9,6 +9,7 @@ import ch.endte.syncmatica.network.packet.IServerPlay;
 import ch.endte.syncmatica.network.payload.PacketType;
 import ch.endte.syncmatica.network.server.ServerPlayListener;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -25,6 +26,8 @@ import net.minecraft.text.Text;
 @Mixin(value = ServerPlayNetworkHandler.class, priority = 998)
 public abstract class MixinServerPlayNetworkHandler implements IServerPlay
 {
+    @Shadow public abstract ServerPlayerEntity getPlayer();
+
     @Unique
     private ExchangeTarget exTarget = null;
     @Unique
@@ -51,7 +54,7 @@ public abstract class MixinServerPlayNetworkHandler implements IServerPlay
         // I don't know, it just works...
         if (type != null)
         {
-            //NetworkThreadUtils.forceMainThread(packet, this, this.player.getServerWorld());
+            //NetworkThreadUtils.forceMainThread(packet, this, this.getPlayer().getServerWorld());
             ServerPlayListener.handlePacket(this, thisPayload, type, ci);
         }
     }

@@ -190,13 +190,10 @@ public class Context
 
     @Nullable
     public File getAndCreateConfigFile() throws IOException {
-        if (getConfigFolder().mkdirs()) {
-            final File configFile = getConfigFile();
-            if (configFile.createNewFile())
-                return configFile;
-            else return null;
-        }
-        else return null;
+        getConfigFolder().mkdirs();
+        final File configFile = getConfigFile();
+        configFile.createNewFile();
+        return configFile;
     }
 
     public void loadConfiguration() {
@@ -220,7 +217,10 @@ public class Context
                 final Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 final String jsonString = gson.toJson(configuration);
                 writer.write(jsonString);
-            } catch (final Exception ignored) {}
+            } catch (final Exception e)
+            {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -243,7 +243,6 @@ public class Context
                 }
             } catch (final Exception e)
             {
-                Syncmatica.LOGGER.warn("loadConfigurationForService(): error loading config: [{}]", e.toString());
                 e.printStackTrace();
             }
         }

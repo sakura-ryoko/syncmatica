@@ -1,7 +1,7 @@
 package ch.endte.syncmatica.mixin;
 
-import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.Reference;
+import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.litematica.ScreenHelper;
 import ch.endte.syncmatica.network.packet.ActorClientPlayHandler;

@@ -1,8 +1,8 @@
 package ch.endte.syncmatica.mixin;
 
 import ch.endte.syncmatica.Context;
-import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.Reference;
+import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.network.channels.SyncRegisterVersion;
 import ch.endte.syncmatica.network.payload.SyncByteBuf;
 import ch.endte.syncmatica.network.server.ServerPlayHandler;
@@ -24,16 +24,12 @@ public class MixinPlayerManager
     @Inject(method = "onPlayerConnect", at = @At("TAIL"))
     private void syncmatica$eventOnPlayerJoin(ClientConnection connection, ServerPlayerEntity player, ConnectedClientData clientData, CallbackInfo ci)
     {
-        Syncmatica.debug("MixinPlayerManager#onPlayerJoin(): invoked.");
+        Syncmatica.debug("MixinPlayerManager#onPlayerJoin(): player {}", player.getName().getLiteralString());
 
-        if (Reference.isServer() || Reference.isDedicatedServer() || Reference.isIntegratedServer())
+        if (Reference.isServer() || Reference.isDedicatedServer() || Reference.isIntegratedServer() || Reference.isOpenToLan())
         {
             Context server = Syncmatica.getContext(Syncmatica.SERVER_CONTEXT);
-            if (server == null || !server.isStarted())
-            {
-                Syncmatica.LOGGER.warn("MixinPlayerManager#onPlayerJoin(): executed without a Server context!");
-            }
-            else
+            if (server != null && server.isStarted())
             {
                 // This needs to happen & get squashed anyway during .sendSyncPacket() in order for things to work
                 SyncByteBuf buf = new SyncByteBuf(Unpooled.buffer());
@@ -42,20 +38,11 @@ public class MixinPlayerManager
                 ServerPlayHandler.sendSyncPacket(payload, player);
             }
         }
-        if (Reference.isClient() || Reference.isSinglePlayer())
-        {
-            Context client = Syncmatica.getContext(Syncmatica.CLIENT_CONTEXT);
-            if (client == null || !client.isStarted())
-            {
-                Syncmatica.LOGGER.warn("MixinPlayerManager#onPlayerJoin(): executed without a Client context!");
-            }
-        }
     }
 
     @Inject(method = "remove", at = @At("HEAD"))
     private void syncmatica$eventOnPlayerLeave(ServerPlayerEntity player, CallbackInfo ci)
     {
-        Syncmatica.debug("MixinPlayerManager#onPlayerLeave(): invoked.");
         // Something we need to do here?
     }
 }
