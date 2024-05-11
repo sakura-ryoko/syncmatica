@@ -10,21 +10,20 @@ import ch.endte.syncmatica.data.SyncmaticManager;
 import ch.endte.syncmatica.network.client.ClientPlayRegister;
 import ch.endte.syncmatica.network.packet.ActorClientPlayHandler;
 import ch.endte.syncmatica.network.payload.PayloadManager;
-import ch.endte.syncmatica.network.server.ServerPlayRegister;
-import ch.endte.syncmatica.util.SyncLog;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import net.minecraft.util.Identifier;
 
 // could probably turn this into a singleton
 public class Syncmatica
 {
+    public static Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
     protected static final String SERVER_PATH = "." + File.separator + "syncmatics";
     protected static final String CLIENT_PATH = "." + File.separator + "schematics" + File.separator + "sync";
     public static final Identifier CLIENT_CONTEXT = new Identifier("syncmatica", "client_context");
     public static final Identifier SERVER_CONTEXT = new Identifier("syncmatica", "server_context");
     public static final UUID syncmaticaId = UUID.fromString("4c1b738f-56fa-4011-8273-498c972424ea");
     protected static Map<Identifier, Context> contexts = null;
-    protected static boolean hasMaLiLib = false;
-    protected static boolean hasLitematica = false;
     protected static boolean context_init = false;
 
     /**
@@ -32,22 +31,15 @@ public class Syncmatica
      */
     public static void preInit()
     {
-        SyncLog.initLogger();
+        Syncmatica.debug("Syncmatica#preInit()");
+        PayloadManager.registerPlayChannels();
+    }
 
-        if (Reference.isClient())
+    public static void debug(String msg, Object... args)
+    {
+        if (Reference.MOD_DEBUG)
         {
-            // Client preInit()
-            hasMaLiLib = Reference.checkForMaLiLib();
-            hasLitematica = Reference.checkForLitematica();
-            if (hasMaLiLib && hasLitematica)
-            {
-                PayloadManager.registerPlayChannels();
-            }
-        }
-        else
-        {
-            // Server preInit()
-            PayloadManager.registerPlayChannels();
+            LOGGER.info(msg, args);
         }
     }
 
@@ -59,7 +51,8 @@ public class Syncmatica
     }
 
     static void init(final Context con, final Identifier contextId) {
-        SyncLog.debug("Syncmatica#init(): invoked.");
+        Syncmatica.debug("Syncmatica#init()");
+
         if (contexts == null) {
             contexts = new HashMap<>();
         }
@@ -70,7 +63,8 @@ public class Syncmatica
     }
 
     public static void shutdown() {
-        SyncLog.debug("Syncmatica#shutdown(): invoked.");
+        Syncmatica.debug("Syncmatica#shutdown()");
+
         if (contexts != null) {
             for (final Context con : contexts.values()) {
                 if (con.isStarted()) {
@@ -82,19 +76,18 @@ public class Syncmatica
     }
 
     private static void deinit() {
+        Syncmatica.debug("Syncmatica#deinit()");
+
         contexts = null;
         context_init = false;
     }
 
-    public static Context initClient(final CommunicationManager comms, final IFileStorage fileStorage, final SyncmaticManager schematics) {
-        //SyncLog.initLogger();
-        SyncLog.debug("Syncmatica#initClient(): invoked.");
+    public static Context initClient(final CommunicationManager comms, final IFileStorage fileStorage, final SyncmaticManager schematics)
+    {
+        Syncmatica.debug("Syncmatica#initClient()");
 
         // These just try to verify that the Fabric API Networking is initialized.
         // In my testing, this really isn't useful to put here, it's probably redundant
-        hasMaLiLib = Reference.checkForMaLiLib();
-        hasLitematica = Reference.checkForLitematica();
-        PayloadManager.registerPlayChannels();
         ClientPlayRegister.registerReceivers();
 
         final Context clientContext = new Context(
@@ -107,7 +100,8 @@ public class Syncmatica
         return clientContext;
     }
     public static void restartClient() {
-        SyncLog.debug("Syncmatica#restartClient(): invoked.");
+        Syncmatica.debug("Syncmatica#restartClient()");
+
         final Context oldClient = getContext(CLIENT_CONTEXT);
         if (oldClient != null) {
             if (oldClient.isStarted()) {
@@ -120,15 +114,10 @@ public class Syncmatica
         ActorClientPlayHandler.getInstance().startClient();
     }
 
-    public static Context initServer(final CommunicationManager comms, final IFileStorage fileStorage, final SyncmaticManager schematics, final boolean isIntegratedServer, final File worldPath) {
-        //SyncLog.initLogger();
-        SyncLog.debug("Syncmatica#initServer(): invoked.");
-
-        // These just try to verify that the Fabric API Networking is initialized.
-        // In my testing, this really isn't useful to put here, it's a redundant call
-        PayloadManager.registerPlayChannels();
-        ServerPlayRegister.registerReceivers();
-
+    public static Context initServer(final CommunicationManager comms, final IFileStorage fileStorage, final SyncmaticManager schematics,
+                                     final boolean isIntegratedServer, final File worldPath)
+    {
+        Syncmatica.debug("Syncmatica#initServer()");
         final Context serverContext = new Context(
                 fileStorage,
                 comms,
@@ -142,5 +131,5 @@ public class Syncmatica
         return serverContext;
     }
 
-    protected Syncmatica() { }
+    protected Syncmatica() {}
 }

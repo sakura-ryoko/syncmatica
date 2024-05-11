@@ -1,20 +1,20 @@
 package ch.endte.syncmatica.service;
 
+import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.network.payload.PacketType;
-import ch.endte.syncmatica.util.SyncLog;
 
 public class DebugService extends AbstractService {
 
     private boolean doPacketLogging = true;
     public void logReceivePacket(final PacketType packetType) {
         if (doPacketLogging) {
-            SyncLog.info("Syncmatica - received packet:[type={}]", packetType.toString());
+            Syncmatica.LOGGER.info("Syncmatica - received packet:[type={}]", packetType.toString());
         }
     }
 
     public void logSendPacket(final PacketType packetType, final String targetIdentifier) {
         if (doPacketLogging) {
-            SyncLog.info(
+            Syncmatica.LOGGER.info(
                     "Sending packet[type={}] to ExchangeTarget[id={}]",
                     packetType.toString(),
                     targetIdentifier

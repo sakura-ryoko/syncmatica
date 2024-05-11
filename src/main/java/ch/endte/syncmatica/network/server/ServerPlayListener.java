@@ -1,9 +1,9 @@
 package ch.endte.syncmatica.network.server;
 
+import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.network.channels.*;
 import ch.endte.syncmatica.network.packet.IServerPlay;
 import ch.endte.syncmatica.network.payload.PacketType;
-import ch.endte.syncmatica.util.SyncLog;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.network.packet.CustomPayload;
 
@@ -103,7 +103,7 @@ public class ServerPlayListener
                 SyncMessage payload = (SyncMessage) thisPayload;
                 impl.syncmatica$operateComms(sm -> sm.onPacket(impl.syncmatica$getExchangeTarget(), type, payload.byteBuf()));
             }
-            default -> SyncLog.warn("ServerPlayListener#handlePacket(): Invalid packet type {} received", type.toString());
+            default -> Syncmatica.LOGGER.warn("ServerPlayListener#handlePacket(): Invalid packet type {} received", type.toString());
         }
         // Cancel unnecessary processing if a PacketType we own is caught
         if (ci.isCancellable())

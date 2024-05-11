@@ -15,7 +15,7 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"ch.endte.syncmatica.EntryPoint"
+			"ch.endte.syncmatica.ModInit"
 		]
 	},
 	"mixins": [
@@ -27,8 +27,8 @@
 		"fabric-networking-api-v1": ">=4.0.8"
 	},
 	"suggests": {
-		"litematica": ">=0.17.999-sakura.3",
-		"malilib": ">=0.18.999-sakura.2"
+		"litematica": ">=0.17.999-sakura.4",
+		"malilib": ">=0.18.999-sakura.3"
 	},
 	
 	"icon": "assets/syncmatica/icon/logo.png",

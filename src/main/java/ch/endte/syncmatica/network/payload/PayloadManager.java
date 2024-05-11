@@ -1,7 +1,7 @@
 package ch.endte.syncmatica.network.payload;
 
+import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.network.channels.*;
-import ch.endte.syncmatica.util.SyncLog;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
@@ -19,12 +19,12 @@ public class PayloadManager
      */
     private static boolean playRegistered = false;
 
-    public static <T extends CustomPayload> void registerPlayChannel(CustomPayload.Id<T> id, PacketCodec<PacketByteBuf, T> codec)
+    private static <T extends CustomPayload> void registerPlayChannel(CustomPayload.Id<T> id, PacketCodec<PacketByteBuf, T> codec)
     {
         if (playRegistered)
         {
             // This just saved Minecraft from crashing, your welcome.
-            SyncLog.error("registerPlayChannel(): blocked duplicate Play Channel registration attempt for: {}.", id.id().toString());
+            Syncmatica.LOGGER.error("registerPlayChannel(): blocked duplicate Play Channel registration attempt for: {}.", id.id().toString());
             return;
         }
         PayloadTypeRegistry.playC2S().register(id, codec);
@@ -37,7 +37,7 @@ public class PayloadManager
         if (playRegistered)
             return;
 
-        SyncLog.debug("PayloadManager#registerPlayChannels(): registering play channels.");
+        Syncmatica.debug("PayloadManager#registerPlayChannels(): registering play channels.");
         registerPlayChannel(SyncCancelShare.TYPE, SyncCancelShare.CODEC);
         registerPlayChannel(SyncCancelLitematic.TYPE, SyncCancelLitematic.CODEC);
         registerPlayChannel(SyncConfirmUser.TYPE, SyncConfirmUser.CODEC);

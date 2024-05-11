@@ -6,7 +6,6 @@ import ch.endte.syncmatica.Reference;
 import ch.endte.syncmatica.network.channels.SyncRegisterVersion;
 import ch.endte.syncmatica.network.payload.SyncByteBuf;
 import ch.endte.syncmatica.network.server.ServerPlayHandler;
-import ch.endte.syncmatica.util.SyncLog;
 import io.netty.buffer.Unpooled;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -25,14 +24,14 @@ public class MixinPlayerManager
     @Inject(method = "onPlayerConnect", at = @At("TAIL"))
     private void syncmatica$eventOnPlayerJoin(ClientConnection connection, ServerPlayerEntity player, ConnectedClientData clientData, CallbackInfo ci)
     {
-        SyncLog.debug("MixinPlayerManager#onPlayerJoin(): invoked.");
+        Syncmatica.debug("MixinPlayerManager#onPlayerJoin(): invoked.");
 
         if (Reference.isServer() || Reference.isDedicatedServer() || Reference.isIntegratedServer())
         {
             Context server = Syncmatica.getContext(Syncmatica.SERVER_CONTEXT);
             if (server == null || !server.isStarted())
             {
-                SyncLog.warn("MixinPlayerManager#onPlayerJoin(): executed without a Server context!");
+                Syncmatica.LOGGER.warn("MixinPlayerManager#onPlayerJoin(): executed without a Server context!");
             }
             else
             {
@@ -48,7 +47,7 @@ public class MixinPlayerManager
             Context client = Syncmatica.getContext(Syncmatica.CLIENT_CONTEXT);
             if (client == null || !client.isStarted())
             {
-                SyncLog.warn("MixinPlayerManager#onPlayerJoin(): executed without a Client context!");
+                Syncmatica.LOGGER.warn("MixinPlayerManager#onPlayerJoin(): executed without a Client context!");
             }
         }
     }
@@ -56,7 +55,7 @@ public class MixinPlayerManager
     @Inject(method = "remove", at = @At("HEAD"))
     private void syncmatica$eventOnPlayerLeave(ServerPlayerEntity player, CallbackInfo ci)
     {
-        SyncLog.debug("MixinPlayerManager#onPlayerLeave(): invoked.");
+        Syncmatica.debug("MixinPlayerManager#onPlayerLeave(): invoked.");
         // Something we need to do here?
     }
 }

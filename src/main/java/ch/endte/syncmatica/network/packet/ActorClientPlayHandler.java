@@ -41,6 +41,7 @@ public class ActorClientPlayHandler
 
     public void startEvent(final ClientPlayNetworkHandler handler)
     {
+        Syncmatica.debug("ActorClientPlayHandler#startEvent()");
         if (clientPlayNetworkHandler == null)
         {
             setClientContext(handler);
@@ -50,6 +51,7 @@ public class ActorClientPlayHandler
 
     public void startClient()
     {
+        Syncmatica.debug("ActorClientPlayHandler#startClient()");
         if (clientPlayNetworkHandler == null)
         {
             throw new RuntimeException("Tried to start client before receiving a connection");
@@ -87,6 +89,7 @@ public class ActorClientPlayHandler
 
     public void reset()
     {
+        Syncmatica.debug("ActorClientPlayHandler#reset()");
         clientCommunication = null;
         exTarget = null;
         clientPlayNetworkHandler = null;

@@ -2,12 +2,12 @@ package ch.endte.syncmatica.communication.exchange;
 
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.Reference;
+import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.communication.FeatureSet;
 import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.network.payload.PacketType;
-import ch.endte.syncmatica.util.SyncLog;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketByteBuf;
 
@@ -35,12 +35,12 @@ public class VersionHandshakeClient extends FeatureExchange
             if (!getContext().checkPartnerVersion(version))
             {
                 // any further packets are risky so no further packets should get send
-                SyncLog.warn("Denying syncmatica join due to outdated server with local version {} and server version {}", Reference.MOD_VERSION, version);
+                Syncmatica.LOGGER.warn("Denying syncmatica join due to outdated server with local version {} and server version {}", Reference.MOD_VERSION, version);
                 close(false);
             }
             else
             {
-                SyncLog.info("Accepting version {} from partner {}", version, getPartner().getPersistentName());
+                Syncmatica.LOGGER.info("Accepting version {} from partner {}", version, getPartner().getPersistentName());
                 partnerVersion = version;
                 final FeatureSet fs = FeatureSet.fromVersionString(version);
                 if (fs == null)
@@ -62,7 +62,7 @@ public class VersionHandshakeClient extends FeatureExchange
                 final ServerPlacement p = getManager().receiveMetaData(packetBuf, getPartner());
                 getContext().getSyncmaticManager().addPlacement(p);
             }
-            SyncLog.info("Joining syncmatica server with local version {}", Reference.MOD_VERSION);
+            Syncmatica.LOGGER.info("Joining syncmatica server with local version {}", Reference.MOD_VERSION);
             LitematicManager.getInstance().commitLoad();
             getContext().startup();
             succeed();

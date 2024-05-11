@@ -3,11 +3,11 @@ package ch.endte.syncmatica.communication.exchange;
 import java.util.Collection;
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.Reference;
+import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.communication.FeatureSet;
 import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.network.payload.PacketType;
-import ch.endte.syncmatica.util.SyncLog;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketByteBuf;
 
@@ -34,7 +34,7 @@ public class VersionHandshakeServer extends FeatureExchange
             partnerVersion = packetBuf.readString(PACKET_MAX_STRING_SIZE);
             if (!getContext().checkPartnerVersion(partnerVersion))
             {
-                SyncLog.info("Denying syncmatica join due to outdated client with local version {} and client version {} from partner {}", Reference.MOD_VERSION, partnerVersion, getPartner().getPersistentName());
+                Syncmatica.LOGGER.info("Denying syncmatica join due to outdated client with local version {} and client version {} from partner {}", Reference.MOD_VERSION, partnerVersion, getPartner().getPersistentName());
                 // same as client - avoid further packets
                 close(false);
                 return;
@@ -59,7 +59,7 @@ public class VersionHandshakeServer extends FeatureExchange
     @Override
     public void onFeatureSetReceive()
     {
-        SyncLog.info("Syncmatica client joining with local version {} and client version {}", Reference.MOD_VERSION, partnerVersion);
+        Syncmatica.LOGGER.info("Syncmatica client joining with local version {} and client version {}", Reference.MOD_VERSION, partnerVersion);
         final PacketByteBuf newBuf = new PacketByteBuf(Unpooled.buffer());
         final Collection<ServerPlacement> l = getContext().getSyncmaticManager().getAll();
         newBuf.writeInt(l.size());

@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import ch.endte.syncmatica.Context;
+import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.communication.exchange.Exchange;
 import ch.endte.syncmatica.network.client.ClientPlayHandler;
 import ch.endte.syncmatica.network.payload.PacketType;
 import ch.endte.syncmatica.network.payload.SyncByteBuf;
 import ch.endte.syncmatica.network.server.ServerPlayHandler;
 import ch.endte.syncmatica.util.PayloadUtils;
-import ch.endte.syncmatica.util.SyncLog;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.CustomPayload;
@@ -57,7 +57,7 @@ public class ExchangeTarget
 
         if (payload == null)
         {
-            SyncLog.error("ExchangeTarget#sendPacket(): error, PacketType {} resulted in a null Payload", type.toString());
+            Syncmatica.LOGGER.error("ExchangeTarget#sendPacket(): error, PacketType {} resulted in a null Payload", type.toString());
             return;
         }
         if (clientPlayNetworkHandler != null)

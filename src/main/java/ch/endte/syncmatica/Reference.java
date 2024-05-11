@@ -1,12 +1,9 @@
 package ch.endte.syncmatica;
 
-import ch.endte.syncmatica.util.SyncLog;
+import java.util.Optional;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
-import net.minecraft.MinecraftVersion;
-
-import java.util.Optional;
 
 /**
  * Main (Generic) Reference Calls --
@@ -18,9 +15,6 @@ public class Reference
     public static final String MOD_ID = "syncmatica";
     public static final String MOD_NAME = "Syncmatica";
     public static final String MOD_VERSION = getModVersion();       // Get this value from the fabric.mod.json :)
-    public static final String MC_VERSION = MinecraftVersion.CURRENT.getName();
-    public static final String MOD_TYPE = "fabric";
-    public static final String MOD_STRING = MOD_ID+"-"+MOD_TYPE+"-"+MC_VERSION+"-"+MOD_VERSION;
     private static final EnvType MOD_ENV = FabricLoader.getInstance().getEnvironmentType();
     public static final boolean MOD_DEBUG = true;
 
@@ -77,37 +71,5 @@ public class Reference
             return CONTAINER.get().getMetadata().getVersion().getFriendlyString();
         }
         else return "?";
-    }
-
-    protected static boolean checkForMaLiLib()
-    {
-        final Optional<ModContainer> CONTAINER = FabricLoader.getInstance().getModContainer("malilib");
-        if (CONTAINER.isPresent())
-        {
-            String ver =  CONTAINER.get().getMetadata().getVersion().getFriendlyString();
-            SyncLog.info("MaLiLib {} has been found.", ver);
-            return true;
-        }
-        else
-        {
-            SyncLog.error("checkForMaLiLib(): MaLiLib has NOT been found.");
-            return false;
-        }
-    }
-
-    protected static boolean checkForLitematica()
-    {
-        final Optional<ModContainer> CONTAINER = FabricLoader.getInstance().getModContainer("litematica");
-        if (CONTAINER.isPresent())
-        {
-            String ver =  CONTAINER.get().getMetadata().getVersion().getFriendlyString();
-            SyncLog.info("Litematica {} has been found.", ver);
-            return true;
-        }
-        else
-        {
-            SyncLog.error("checkForLitematica(): Litematica has NOT been found.");
-            return false;
-        }
     }
 }

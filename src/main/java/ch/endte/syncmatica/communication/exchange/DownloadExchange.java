@@ -9,12 +9,12 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 import ch.endte.syncmatica.Context;
+import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.communication.MessageType;
 import ch.endte.syncmatica.communication.ServerCommunicationManager;
 import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.network.payload.PacketType;
-import ch.endte.syncmatica.util.SyncLog;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketByteBuf;
 
@@ -141,7 +141,7 @@ public class DownloadExchange extends AbstractExchange
             try
             {
                 if (!downloadFile.delete())
-                    SyncLog.error("DownloadExchange#onClose(): failed to delete file: {}", downloadFile.toString());
+                    Syncmatica.LOGGER.error("DownloadExchange#onClose(): failed to delete file: {}", downloadFile.toString());
             }
             catch (Exception ignored) {}
             // NO-OP

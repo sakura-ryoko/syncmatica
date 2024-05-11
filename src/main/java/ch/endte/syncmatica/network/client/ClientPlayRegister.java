@@ -1,8 +1,8 @@
 package ch.endte.syncmatica.network.client;
 
 import ch.endte.syncmatica.Reference;
+import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.network.channels.*;
-import ch.endte.syncmatica.util.SyncLog;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
 /**
@@ -32,13 +32,13 @@ public class ClientPlayRegister
 
     public static void registerReceivers()
     {
+        Syncmatica.debug("ClientPlayRegister#registerReceivers()");
         // Don't register more than once
         if (receiversInit)
             return;
-        // Wait until world/server joined
         if (Reference.isClient())
         {
-            SyncLog.debug("ClientHandlerManager#registerReceivers(): isClient() true -> registerSyncmaticaHandlers ...");
+            Syncmatica.debug("ClientHandlerManager#registerReceivers(): isClient() true -> registerSyncmaticaHandlers ...");
             ClientPlayNetworking.registerGlobalReceiver(SyncCancelShare.TYPE, S2CSyncHandler_CancelShare);
             ClientPlayNetworking.registerGlobalReceiver(SyncCancelLitematic.TYPE, S2CSyncHandler_CancelLitematic);
             ClientPlayNetworking.registerGlobalReceiver(SyncConfirmUser.TYPE, S2CSyncHandler_ConfirmUser);
@@ -63,10 +63,10 @@ public class ClientPlayRegister
 
     public static void unregisterReceivers()
     {
-        // Do when disconnecting from server/world
+        Syncmatica.debug("ClientPlayRegister#unregisterReceivers()");
         if (Reference.isClient())
         {
-            SyncLog.debug("ClientHandlerManager#unregisterDefaultReceivers(): isClient() true -> unregisterSyncmaticaHandlers ...");
+            Syncmatica.debug("ClientHandlerManager#unregisterDefaultReceivers(): isClient() true -> unregisterSyncmaticaHandlers ...");
             ClientPlayNetworking.unregisterGlobalReceiver(SyncCancelShare.TYPE.id());
             ClientPlayNetworking.unregisterGlobalReceiver(SyncCancelLitematic.TYPE.id());
             ClientPlayNetworking.unregisterGlobalReceiver(SyncConfirmUser.TYPE.id());

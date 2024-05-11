@@ -1,8 +1,8 @@
 package ch.endte.syncmatica.network.server;
 
 import ch.endte.syncmatica.Reference;
+import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.network.channels.*;
-import ch.endte.syncmatica.util.SyncLog;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
 /**
@@ -32,13 +32,13 @@ public class ServerPlayRegister
 
     public static void registerReceivers()
     {
+        Syncmatica.debug("ServerPlayRegister#registerReceivers()");
         // Don't register more than once
         if (receiversInit)
             return;
-        // Do when the server starts, not before
-        if (Reference.isServer() || Reference.isIntegratedServer())
+        if (Reference.isServer() || Reference.isIntegratedServer() || Reference.isOpenToLan())
         {
-            SyncLog.debug("ServerPlayRegister#registerReceivers(): isServer() true -> registerSyncmaticaHandlers ...");
+            Syncmatica.debug("ServerPlayRegister#registerReceivers(): isServer() true -> registerSyncmaticaHandlers ...");
             ServerPlayNetworking.registerGlobalReceiver(SyncCancelShare.TYPE, C2SSyncHandler_CancelShare);
             ServerPlayNetworking.registerGlobalReceiver(SyncCancelLitematic.TYPE, C2SSyncHandler_CancelLitematic);
             ServerPlayNetworking.registerGlobalReceiver(SyncConfirmUser.TYPE, C2SSyncHandler_ConfirmUser);
@@ -63,10 +63,10 @@ public class ServerPlayRegister
 
     public static void unregisterReceivers()
     {
-        // Do when server stops
-        if (Reference.isServer() || Reference.isIntegratedServer())
+        Syncmatica.debug("ServerPlayRegister#unregisterReceivers()");
+        if (Reference.isServer() || Reference.isIntegratedServer() || Reference.isOpenToLan())
         {
-            SyncLog.debug("ServerPlayRegister#unregisterReceivers(): isServer() true -> unregisterSyncmaticaHandlers ...");
+            Syncmatica.debug("ServerPlayRegister#unregisterReceivers(): isServer() true -> unregisterSyncmaticaHandlers ...");
             ServerPlayNetworking.unregisterGlobalReceiver(SyncCancelShare.TYPE.id());
             ServerPlayNetworking.unregisterGlobalReceiver(SyncCancelLitematic.TYPE.id());
             ServerPlayNetworking.unregisterGlobalReceiver(SyncConfirmUser.TYPE.id());

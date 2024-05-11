@@ -10,6 +10,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.UUID;
+import ch.endte.syncmatica.Syncmatica;
 
 public class SyncmaticaUtil {
 
@@ -81,7 +82,7 @@ public class SyncmaticaUtil {
             Files.move(current, backup);
         } catch (final IOException exception) {
             if (tries <= 0) {
-                SyncLog.error("Excessive retries when trying to write Syncmatica placement", exception);
+                Syncmatica.LOGGER.error("Excessive retries when trying to write Syncmatica placement", exception);
 
                 return false;
             }

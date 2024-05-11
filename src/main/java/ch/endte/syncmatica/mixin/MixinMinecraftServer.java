@@ -1,14 +1,10 @@
 package ch.endte.syncmatica.mixin;
 
-import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.Reference;
+import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.communication.ServerCommunicationManager;
 import ch.endte.syncmatica.data.FileStorage;
 import ch.endte.syncmatica.data.SyncmaticManager;
-import ch.endte.syncmatica.network.client.ClientPlayRegister;
-import ch.endte.syncmatica.network.payload.PayloadManager;
-import ch.endte.syncmatica.network.server.ServerPlayRegister;
-import ch.endte.syncmatica.util.SyncLog;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -23,7 +19,7 @@ public class MixinMinecraftServer
     private void syncmatica$onServerStarting(CallbackInfo ci)
     {
         final MinecraftServer server = (MinecraftServer) (Object) this;
-        SyncLog.debug("MixinMinecraftServer#onServerStarting(): invoked.");
+        Syncmatica.debug("MixinMinecraftServer#onServerStarting()");
 
         if (server.isDedicated())
         {
@@ -35,16 +31,13 @@ public class MixinMinecraftServer
             Reference.setSinglePlayer(true);
             Reference.setOpenToLan(false);
         }
-
-        // Register in case for whatever reason they aren't already
-        PayloadManager.registerPlayChannels();
     }
 
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;createMetadata()Lnet/minecraft/server/ServerMetadata;", ordinal = 0), method = "runServer")
     private void syncmatica$onServerStarted(CallbackInfo ci)
     {
         final MinecraftServer server = (MinecraftServer) (Object) this;
-        SyncLog.debug("MixinMinecraftServer#onServerStarted(): invoked.");
+        Syncmatica.debug("MixinMinecraftServer#onServerStarted()");
 
         if (server.isDedicated())
         {
@@ -56,16 +49,7 @@ public class MixinMinecraftServer
             Reference.setSinglePlayer(true);
             Reference.setOpenToLan(false);
         }
-        if (Reference.isServer() || Reference.isDedicatedServer() || Reference.isIntegratedServer() || Reference.isOpenToLan())
-        {
-            ServerPlayRegister.registerReceivers();
-        }
-        if (Reference.isClient() || Reference.isSinglePlayer())
-        {
-            ClientPlayRegister.registerReceivers();
-        }
 
-        SyncLog.debug("MixinMinecraftServer#onServerStarted(): processing Syncmatica.initServer().");
         // Process Syncmatica Server Context
         Syncmatica.initServer(
                 new ServerCommunicationManager(),
@@ -80,28 +64,20 @@ public class MixinMinecraftServer
     private void syncmatica$onServerStopping(CallbackInfo info)
     {
         //final MinecraftServer server = (MinecraftServer) (Object) this;
-        SyncLog.debug("MixinMinecraftServer#onServerStopping(): invoked.");
+        Syncmatica.debug("MixinMinecraftServer#onServerStopping(): invoked.");
     }
 
     @Inject(at = @At("TAIL"), method = "shutdown")
     private void syncmatica$onServerStopped(CallbackInfo info)
     {
         //final MinecraftServer server = (MinecraftServer) (Object) this;
-        SyncLog.debug("MixinMinecraftServer#onServerStopped(): invoked.");
+        Syncmatica.debug("MixinMinecraftServer#onServerStopped(): invoked.");
 
-        if (Reference.isServer() || Reference.isDedicatedServer() || Reference.isIntegratedServer() || Reference.isOpenToLan())
-        {
-            ServerPlayRegister.unregisterReceivers();
-        }
-        if (Reference.isClient() || Reference.isSinglePlayer())
-        {
-            ClientPlayRegister.unregisterReceivers();
-        }
         Reference.setIntegratedServer(false);
         Reference.setSinglePlayer(false);
 
         // Process Syncmatica Shutdown
-        SyncLog.debug("MixinMinecraftServer#onServerStopped(): processing Syncmatica.shutdown().");
+        Syncmatica.debug("MixinMinecraftServer#onServerStopped(): processing Syncmatica.shutdown().");
         Syncmatica.shutdown();
     }
 }

@@ -3,23 +3,20 @@ package ch.endte.syncmatica;
 import javax.annotation.Nullable;
 import java.io.*;
 import java.util.Arrays;
-import java.util.Objects;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import ch.endte.syncmatica.communication.CommunicationManager;
 import ch.endte.syncmatica.communication.FeatureSet;
 import ch.endte.syncmatica.data.IFileStorage;
 import ch.endte.syncmatica.data.SyncmaticManager;
 import ch.endte.syncmatica.extended_core.PlayerIdentifierProvider;
 import ch.endte.syncmatica.network.client.ClientPlayRegister;
-import ch.endte.syncmatica.network.payload.PayloadManager;
 import ch.endte.syncmatica.network.server.ServerPlayRegister;
 import ch.endte.syncmatica.service.DebugService;
 import ch.endte.syncmatica.service.IService;
 import ch.endte.syncmatica.service.JsonConfiguration;
 import ch.endte.syncmatica.service.QuotaService;
-import ch.endte.syncmatica.util.SyncLog;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 
 public class Context
 {
@@ -77,14 +74,13 @@ public class Context
             try
             {
                 if (!litematicFolder.mkdirs())
-                    SyncLog.fatal("Context(): Fatal error creating litematic Folder.  Check that Syncmatica has the permissions to do so.");
+                    Syncmatica.LOGGER.fatal("Context(): Fatal error creating litematic Folder.  Check that Syncmatica has the permissions to do so.");
             }
             catch (Exception ignored) {}
         }
         integratedServer = integrated;
         this.worldFolder = worldFolder;
         loadConfiguration();
-        registerChannels();
     }
 
     public PlayerIdentifierProvider getPlayerIdentifierProvider() {
@@ -138,10 +134,6 @@ public class Context
         fs = new FeatureSet(Arrays.asList(Feature.values()));
     }
 
-    public void registerChannels()
-    {
-        PayloadManager.registerPlayChannels();
-    }
     public void registerReceivers()
     {
         if (this.isServer())
@@ -165,7 +157,7 @@ public class Context
         }
     }
     public void startup() {
-        SyncLog.debug("Context#startup(): invoked");
+        Syncmatica.debug("Context#startup()");
         startupServices();
         registerReceivers();
         isStarted = true;
@@ -173,7 +165,7 @@ public class Context
     }
 
     public void shutdown() {
-        SyncLog.debug("Context#shutdown(): invoked");
+        Syncmatica.debug("Context#shutdown()");
         shutdownServices();
         unregisterReceivers();
         isStarted = false;
@@ -223,14 +215,12 @@ public class Context
         needsRewrite |= loadConfigurationForService(debugService, configuration, attemptToLoad);
         if (needsRewrite) {
             try (
-                    final Writer writer = new BufferedWriter(new FileWriter(Objects.requireNonNull(getAndCreateConfigFile())))
+                    final Writer writer = new BufferedWriter(new FileWriter(getAndCreateConfigFile()))
             ) {
                 final Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 final String jsonString = gson.toJson(configuration);
                 writer.write(jsonString);
-            } catch (final Exception e) {
-                e.printStackTrace();
-            }
+            } catch (final Exception ignored) {}
         }
     }
 
@@ -251,7 +241,9 @@ public class Context
                         return false;
                     }
                 }
-            } catch (final Exception e) {
+            } catch (final Exception e)
+            {
+                Syncmatica.LOGGER.warn("loadConfigurationForService(): error loading config: [{}]", e.toString());
                 e.printStackTrace();
             }
         }
@@ -270,6 +262,7 @@ public class Context
     }
 
     private void startupServices() {
+        Syncmatica.debug("Context#startupServices()");
         if (quota != null) {
             quota.startup();
         }
@@ -277,6 +270,7 @@ public class Context
     }
 
     private void shutdownServices() {
+        Syncmatica.debug("Context#shutdownServices()");
         if (quota != null) {
             quota.shutdown();
         }
