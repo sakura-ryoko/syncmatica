@@ -19,7 +19,6 @@ public class VersionHandshakeServer extends FeatureExchange
     @Override
     public boolean checkPacket(final PacketType type, final PacketByteBuf packetBuf)
     {
-        //SyncLog.debug("VersionHandshaleServer#checkPacket(): received byteBuf packet of type: {}", type.getId().toString());
         return type.equals(PacketType.REGISTER_VERSION)
                 || super.checkPacket(type, packetBuf);
     }
@@ -27,8 +26,6 @@ public class VersionHandshakeServer extends FeatureExchange
     @Override
     public void handle(final PacketType type, final PacketByteBuf packetBuf)
     {
-        //SyncLog.debug("VersionHandshakeServer#handle(): received type: {}, size: {}", type.getId().toString(), packetBuf.readableBytes());
-
         if (type.equals(PacketType.REGISTER_VERSION))
         {
             partnerVersion = packetBuf.readString(PACKET_MAX_STRING_SIZE);

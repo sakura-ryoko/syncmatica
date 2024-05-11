@@ -17,8 +17,10 @@ import net.minecraft.util.Identifier;
 public class Syncmatica
 {
     public static Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
+
     protected static final String SERVER_PATH = "." + File.separator + "syncmatics";
     protected static final String CLIENT_PATH = "." + File.separator + "schematics" + File.separator + "sync";
+
     public static final Identifier CLIENT_CONTEXT = new Identifier("syncmatica", "client_context");
     public static final Identifier SERVER_CONTEXT = new Identifier("syncmatica", "server_context");
     public static final UUID syncmaticaId = UUID.fromString("4c1b738f-56fa-4011-8273-498c972424ea");
@@ -85,11 +87,6 @@ public class Syncmatica
     {
         Syncmatica.debug("Syncmatica#initClient()");
 
-        // These just try to verify that the Fabric API Networking is initialized.
-        // In my testing, this really isn't useful to put here, it's probably redundant
-        //PayloadManager.registerPlayChannels();
-        //ClientPlayRegister.registerReceivers();
-
         final Context clientContext = new Context(
                 fileStorage,
                 comms,
@@ -118,8 +115,7 @@ public class Syncmatica
                                      final boolean isIntegratedServer, final File worldPath)
     {
         Syncmatica.debug("Syncmatica#initServer()");
-        //PayloadManager.registerPlayChannels();
-        //ServerPlayRegister.registerReceivers();
+
         final Context serverContext = new Context(
                 fileStorage,
                 comms,

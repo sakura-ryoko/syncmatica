@@ -8,7 +8,7 @@ import net.fabricmc.loader.api.ModContainer;
 /**
  * Main (Generic) Reference Calls --
  * Should use the "Context" versions of some of these for their respective context.
- * These are used to control what channels get registered, and various "preInit" items.
+ * These are used to control what channels get registered and when.
  */
 public class Reference
 {
@@ -16,9 +16,8 @@ public class Reference
     public static final String MOD_NAME = "Syncmatica";
     public static final String MOD_VERSION = getModVersion();       // Get this value from the fabric.mod.json :)
     private static final EnvType MOD_ENV = FabricLoader.getInstance().getEnvironmentType();
-    public static final boolean MOD_DEBUG = true;
+    public static final boolean MOD_DEBUG = false;
 
-    private static boolean SINGLE_PLAYER = false;
     private static boolean DEDICATED_SERVER = false;
     private static boolean INTEGRATED_SERVER = false;
     private static boolean OPEN_TO_LAN = false;
@@ -29,14 +28,6 @@ public class Reference
     public static boolean isServer()
     {
         return MOD_ENV == EnvType.SERVER;
-    }
-    public static boolean isSinglePlayer()
-    {
-        return SINGLE_PLAYER;
-    }
-    public static void setSinglePlayer(boolean toggle)
-    {
-        SINGLE_PLAYER = toggle;
     }
     public static boolean isDedicatedServer()
     {

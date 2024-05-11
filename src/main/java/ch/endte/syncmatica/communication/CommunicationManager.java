@@ -25,10 +25,13 @@ public abstract class CommunicationManager
 {
     protected int PACKET_MAX_STRING_SIZE = PacketByteBuf.DEFAULT_MAX_STRING_LENGTH;
     protected final Collection<ExchangeTarget> broadcastTargets;
+
     // TODO: Refactor this bs
     protected final Map<UUID, Boolean> downloadState;
     protected final Map<UUID, Exchange> modifyState;
+
     protected Context context;
+
     protected static final BlockRotation[] rotOrdinals = BlockRotation.values();
     protected static final BlockMirror[] mirOrdinals = BlockMirror.values();
 

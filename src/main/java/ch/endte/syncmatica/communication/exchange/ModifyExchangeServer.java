@@ -24,14 +24,12 @@ public class ModifyExchangeServer extends AbstractExchange
     @Override
     public boolean checkPacket(final PacketType type, final PacketByteBuf packetBuf)
     {
-        //SyncLog.debug("ModifyExchangeServer#checkPacket(): received byteBuf packet.");
         return type.equals(PacketType.MODIFY_FINISH) && checkUUID(packetBuf, placement.getId());
     }
 
     @Override
     public void handle(final PacketType type, final PacketByteBuf packetBuf)
     {
-        //SyncLog.debug("ModifyExchangeServer#handle(): received byteBuf packet.");
         packetBuf.readUuid(); // consume uuid
         if (type.equals(PacketType.MODIFY_FINISH))
         {

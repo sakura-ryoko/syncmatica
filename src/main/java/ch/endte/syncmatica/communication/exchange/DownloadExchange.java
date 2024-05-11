@@ -75,7 +75,6 @@ public class DownloadExchange extends AbstractExchange
                 e.printStackTrace();
                 return;
             }
-            // #FIXME
             final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
             packetByteBuf.writeUuid(toDownload.getId());
             getPartner().sendPacket(PacketType.RECEIVED_LITEMATIC, packetByteBuf, getContext());
@@ -114,7 +113,6 @@ public class DownloadExchange extends AbstractExchange
     @Override
     public void init()
     {
-        // #FIXME
         final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
         packetByteBuf.writeUuid(toDownload.getId());
         getPartner().sendPacket(PacketType.REQUEST_LITEMATIC, packetByteBuf, getContext());
@@ -151,7 +149,6 @@ public class DownloadExchange extends AbstractExchange
     @Override
     protected void sendCancelPacket()
     {
-        // #FIXME
         final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
         packetByteBuf.writeUuid(toDownload.getId());
         getPartner().sendPacket(PacketType.CANCEL_LITEMATIC, packetByteBuf, getContext());

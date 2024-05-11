@@ -22,14 +22,17 @@ public abstract class AbstractExchange implements Exchange
     public ExchangeTarget getPartner() {
         return partner;
     }
+
     @Override
     public Context getContext() {
         return context;
     }
+
     @Override
     public boolean isFinished() {
         return finished;
     }
+
     @Override
     public boolean isSuccessful() {
         return success;

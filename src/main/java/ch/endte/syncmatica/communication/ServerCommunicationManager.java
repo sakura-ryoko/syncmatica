@@ -40,9 +40,6 @@ public class ServerCommunicationManager extends CommunicationManager
         }
     }
 
-    /**
-     * Registers a new player
-     */
     public void onPlayerJoin(final ExchangeTarget newPlayer, final ServerPlayerEntity player)
     {
         final VersionHandshakeServer hi = new VersionHandshakeServer(newPlayer, context);

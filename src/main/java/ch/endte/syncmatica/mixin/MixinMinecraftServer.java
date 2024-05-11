@@ -28,7 +28,6 @@ public class MixinMinecraftServer
         }
         if (server.isSingleplayer())
         {
-            Reference.setSinglePlayer(true);
             Reference.setOpenToLan(false);
         }
     }
@@ -46,7 +45,6 @@ public class MixinMinecraftServer
         }
         if (server.isSingleplayer())
         {
-            Reference.setSinglePlayer(true);
             Reference.setOpenToLan(false);
         }
 
@@ -67,7 +65,6 @@ public class MixinMinecraftServer
         Syncmatica.debug("MixinMinecraftServer#onServerStopped()");
 
         Reference.setIntegratedServer(false);
-        Reference.setSinglePlayer(false);
         Syncmatica.shutdown();
     }
 }

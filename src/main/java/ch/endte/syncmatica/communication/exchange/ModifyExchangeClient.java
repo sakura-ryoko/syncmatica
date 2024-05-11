@@ -29,8 +29,6 @@ public class ModifyExchangeClient extends AbstractExchange
     @Override
     public boolean checkPacket(final PacketType type, final PacketByteBuf packetBuf)
     {
-        //SyncLog.debug("ModifyExchangeClient#checkPacket(): received byteBuf packet.");
-
         if (type.equals(PacketType.MODIFY_REQUEST_DENY)
                 || type.equals(PacketType.MODIFY_REQUEST_ACCEPT)
                 || (expectRemove && type.equals(PacketType.REMOVE_SYNCMATIC)))
@@ -43,8 +41,6 @@ public class ModifyExchangeClient extends AbstractExchange
     @Override
     public void handle(final PacketType type, final PacketByteBuf packetBuf)
     {
-        //SyncLog.debug("ModifyExchangeClient#handle(): received byteBuf packet.");
-
         if (type.equals(PacketType.MODIFY_REQUEST_DENY))
         {
             packetBuf.readUuid();
