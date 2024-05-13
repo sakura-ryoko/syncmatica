@@ -11,12 +11,15 @@ import ch.endte.syncmatica.communication.FeatureSet;
 import ch.endte.syncmatica.data.IFileStorage;
 import ch.endte.syncmatica.data.SyncmaticManager;
 import ch.endte.syncmatica.extended_core.PlayerIdentifierProvider;
-import ch.endte.syncmatica.network.client.ClientPlayRegister;
-import ch.endte.syncmatica.network.server.ServerPlayRegister;
+import ch.endte.syncmatica.network.handler.ClientPlayHandler;
+import ch.endte.syncmatica.network.payload.SyncmaticaPayload;
+import ch.endte.syncmatica.network.handler.ServerPlayHandler;
 import ch.endte.syncmatica.service.DebugService;
 import ch.endte.syncmatica.service.IService;
 import ch.endte.syncmatica.service.JsonConfiguration;
 import ch.endte.syncmatica.service.QuotaService;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
 public class Context
 {
@@ -32,6 +35,8 @@ public class Context
     private final QuotaService quota;
     private final DebugService debugService;
     private final PlayerIdentifierProvider playerIdentifierProvider;
+    private static boolean registerS2C = false;
+    private static boolean registerC2S = false;
 
     public Context(
             final IFileStorage fs,
@@ -134,32 +139,10 @@ public class Context
         fs = new FeatureSet(Arrays.asList(Feature.values()));
     }
 
-    public void registerReceivers()
-    {
-        if (this.isServer())
-        {
-            ServerPlayRegister.registerReceivers();
-        }
-        else
-        {
-            ClientPlayRegister.registerReceivers();
-        }
-    }
-    public void unregisterReceivers()
-    {
-        if (this.isServer())
-        {
-            ServerPlayRegister.unregisterReceivers();
-        }
-        else
-        {
-            ClientPlayRegister.unregisterReceivers();
-        }
-    }
     public void startup() {
         Syncmatica.debug("Context#startup()");
-        startupServices();
         registerReceivers();
+        startupServices();
         isStarted = true;
         synMan.startup();
     }
@@ -170,6 +153,50 @@ public class Context
         unregisterReceivers();
         isStarted = false;
         synMan.shutdown();
+    }
+
+    public void registerReceivers()
+    {
+        if (this.isServer() && !registerC2S)
+        {
+            if (Reference.isServer() || Reference.isIntegratedServer() || Reference.isOpenToLan())
+            {
+                Syncmatica.debug("Context#registerReceivers(): [SERVER] -> registerSyncmaticaHandler");
+                ServerPlayNetworking.registerGlobalReceiver(SyncmaticaPayload.TYPE, ServerPlayHandler::receiveSyncPayload);
+                registerC2S = true;
+            }
+        }
+        else
+        {
+            if (Reference.isClient() && !registerS2C)
+            {
+                Syncmatica.debug("Context#registerReceivers(): [CLIENT] -> registerSyncmaticaHandler");
+                ClientPlayNetworking.registerGlobalReceiver(SyncmaticaPayload.TYPE, ClientPlayHandler::receiveSyncPayload);
+                registerS2C = true;
+            }
+        }
+    }
+
+    public void unregisterReceivers()
+    {
+        if (this.isServer())
+        {
+            if (Reference.isServer() || Reference.isIntegratedServer() || Reference.isOpenToLan())
+            {
+                Syncmatica.debug("Context#unregisterReceivers(): [SERVER] -> unregisterSyncmaticaHandlers");
+                ServerPlayNetworking.unregisterGlobalReceiver(SyncmaticaPayload.TYPE.id());
+                registerC2S = false;
+            }
+        }
+        else
+        {
+            if (Reference.isClient())
+            {
+                Syncmatica.debug("Context#unregisterReceivers(): [CLIENT] -> unregisterSyncmaticaHandlers");
+                ClientPlayNetworking.unregisterGlobalReceiver(SyncmaticaPayload.TYPE.id());
+                registerS2C = false;
+            }
+        }
     }
 
     public boolean checkPartnerVersion(final String version) {

@@ -4,7 +4,7 @@ import ch.endte.syncmatica.Reference;
 import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.litematica.ScreenHelper;
-import ch.endte.syncmatica.network.packet.ActorClientPlayHandler;
+import ch.endte.syncmatica.network.actor.ActorClientPlayHandler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;

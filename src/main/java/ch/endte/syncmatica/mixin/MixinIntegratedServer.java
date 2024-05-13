@@ -1,8 +1,8 @@
 package ch.endte.syncmatica.mixin;
 
+import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.Reference;
 import ch.endte.syncmatica.Syncmatica;
-import ch.endte.syncmatica.network.server.ServerPlayRegister;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -35,7 +35,11 @@ public class MixinIntegratedServer
             Reference.setOpenToLan(true);
             Reference.setDedicatedServer(false);
 
-            ServerPlayRegister.registerReceivers();
+            Context ctx = Syncmatica.getContext(Syncmatica.SERVER_CONTEXT);
+            if (ctx != null)
+            {
+                ctx.registerReceivers();
+            }
         }
     }
 }

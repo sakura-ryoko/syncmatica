@@ -2,12 +2,13 @@ package ch.endte.syncmatica.mixin;
 
 import java.util.function.Consumer;
 import ch.endte.syncmatica.Context;
+import ch.endte.syncmatica.Reference;
 import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.communication.ServerCommunicationManager;
-import ch.endte.syncmatica.network.packet.IServerPlay;
-import ch.endte.syncmatica.network.payload.PacketType;
-import ch.endte.syncmatica.network.server.ServerPlayListener;
+import ch.endte.syncmatica.network.actor.IServerPlay;
+import ch.endte.syncmatica.network.payload.SyncmaticaPayload;
+import ch.endte.syncmatica.network.handler.ServerPlayHandler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -23,7 +24,7 @@ import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
-@Mixin(value = ServerPlayNetworkHandler.class, priority = 998)
+@Mixin(value = ServerPlayNetworkHandler.class, priority = 1001)
 public abstract class MixinServerPlayNetworkHandler implements IServerPlay
 {
     @Shadow public abstract ServerPlayerEntity getPlayer();
@@ -49,13 +50,16 @@ public abstract class MixinServerPlayNetworkHandler implements IServerPlay
     private void syncmatica$onCustomPayload(CustomPayloadC2SPacket packet, CallbackInfo ci)
     {
         CustomPayload thisPayload = packet.payload();
-        PacketType type = PacketType.getType(thisPayload.getId().id());
 
-        // I don't know, it just works...
-        if (type != null)
+        if (thisPayload.getId().id().getNamespace().equals(Reference.MOD_ID))
         {
-            //NetworkThreadUtils.forceMainThread(packet, this, this.getPlayer().getServerWorld());
-            ServerPlayListener.handlePacket(this, thisPayload, type, ci);
+            SyncmaticaPayload payload = (SyncmaticaPayload) thisPayload;
+            ServerPlayHandler.decodeSyncData(payload.data(), this);
+
+            // Cancel unnecessary processing if a PacketType we own is caught
+            if (ci.isCancellable())
+                ci.cancel();
+
         }
     }
 

@@ -6,14 +6,12 @@ import java.util.List;
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.communication.exchange.Exchange;
-import ch.endte.syncmatica.network.client.ClientPlayHandler;
+import ch.endte.syncmatica.network.handler.ClientPlayHandler;
+import ch.endte.syncmatica.network.handler.ServerPlayHandler;
 import ch.endte.syncmatica.network.payload.PacketType;
-import ch.endte.syncmatica.network.payload.SyncByteBuf;
-import ch.endte.syncmatica.network.server.ServerPlayHandler;
-import ch.endte.syncmatica.util.PayloadUtils;
+import ch.endte.syncmatica.network.payload.SyncData;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import fi.dy.masa.malilib.util.StringUtils;
 
@@ -47,16 +45,15 @@ public class ExchangeTarget
     /**
      * The Fabric API call mode sometimes fails here, because the channels might not be registered in PLAY mode, especially for Single Player.
      */
-    public void sendPacket(final PacketType type, final PacketByteBuf packet, final Context context)
+    public void sendPacket(final PacketType type, final PacketByteBuf byteBuf, final Context context)
     {
         //SyncLog.debug("ExchangeTarget#sendPacket(): invoked.");
         if (context != null) {
             context.getDebugService().logSendPacket(type, persistentName);
         }
-        final SyncByteBuf buf = PayloadUtils.fromByteBuf(packet);
-        CustomPayload payload = PayloadUtils.getPayload(type, buf);
+        final SyncData newPacket = new SyncData(type.getId(), byteBuf);
 
-        if (payload == null)
+        if (newPacket.getType() == null)
         {
             Syncmatica.LOGGER.error("ExchangeTarget#sendPacket(): error, PacketType {} resulted in a null Payload", type.toString());
             return;
@@ -64,13 +61,13 @@ public class ExchangeTarget
         if (clientPlayNetworkHandler != null)
         {
             //SyncLog.debug("ExchangeTarget#sendPacket(): in Client Context, packet type: {}, size in bytes: {}", type.getId().toString(), buf.readableBytes());
-            ClientPlayHandler.sendSyncPacket(payload, clientPlayNetworkHandler);
+            ClientPlayHandler.encodeSyncData(newPacket, clientPlayNetworkHandler);
         }
         if (serverPlayNetworkHandler != null)
         {
             //ServerPlayerEntity player = serverPlayNetworkHandler.getPlayer();
             //SyncLog.debug("ExchangeTarget#sendPacket(): in Server Context, packet type: {}, size in bytes: {} to player: {}", type.getId().toString(), buf.readableBytes(), player.getName().getLiteralString());
-            ServerPlayHandler.sendSyncPacket(payload, serverPlayNetworkHandler);
+            ServerPlayHandler.encodeSyncData(newPacket, serverPlayNetworkHandler);
         }
     }
 

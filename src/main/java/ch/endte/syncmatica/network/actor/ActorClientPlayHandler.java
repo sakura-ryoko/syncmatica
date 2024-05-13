@@ -1,4 +1,4 @@
-package ch.endte.syncmatica.network.packet;
+package ch.endte.syncmatica.network.actor;
 
 import java.util.Objects;
 import ch.endte.syncmatica.Context;

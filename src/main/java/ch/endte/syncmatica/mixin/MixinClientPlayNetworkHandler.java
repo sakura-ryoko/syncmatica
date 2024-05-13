@@ -2,12 +2,13 @@ package ch.endte.syncmatica.mixin;
 
 import java.util.function.Consumer;
 import ch.endte.syncmatica.Context;
+import ch.endte.syncmatica.Reference;
 import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.communication.ClientCommunicationManager;
 import ch.endte.syncmatica.communication.ExchangeTarget;
-import ch.endte.syncmatica.network.client.ClientPlayListener;
-import ch.endte.syncmatica.network.packet.IClientPlay;
-import ch.endte.syncmatica.network.payload.PacketType;
+import ch.endte.syncmatica.network.actor.IClientPlay;
+import ch.endte.syncmatica.network.handler.ClientPlayHandler;
+import ch.endte.syncmatica.network.payload.SyncmaticaPayload;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,7 +18,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.packet.CustomPayload;
 
-@Mixin(value = ClientPlayNetworkHandler.class, priority = 998)
+@Mixin(value = ClientPlayNetworkHandler.class, priority = 1001)
 public abstract class MixinClientPlayNetworkHandler implements IClientPlay
 {
     @Unique
@@ -37,11 +38,16 @@ public abstract class MixinClientPlayNetworkHandler implements IClientPlay
         {
             return; //only execute packet on main thread
         }
-        PacketType type =  PacketType.getType(packet.getId().id());
-        if (type != null)
+
+        if (packet.getId().id().getNamespace().equals(Reference.MOD_ID))
         {
-            // We could use IClient and syncmatica$getExchangeTarget() here also
-            ClientPlayListener.handlePacket((ClientPlayNetworkHandler) (Object) this, packet, ci, type);
+            SyncmaticaPayload payload = (SyncmaticaPayload) packet;
+            ClientPlayHandler.decodeSyncData(payload.data(), (ClientPlayNetworkHandler) (Object) this);
+
+            // Cancel unnecessary processing if a PacketType we own is caught
+            if  (ci.isCancellable())
+                ci.cancel();
+
         }
     }
 

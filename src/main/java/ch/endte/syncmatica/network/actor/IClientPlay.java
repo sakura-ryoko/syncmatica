@@ -1,4 +1,4 @@
-package ch.endte.syncmatica.network.packet;
+package ch.endte.syncmatica.network.actor;
 
 import ch.endte.syncmatica.communication.ClientCommunicationManager;
 import ch.endte.syncmatica.communication.ExchangeTarget;

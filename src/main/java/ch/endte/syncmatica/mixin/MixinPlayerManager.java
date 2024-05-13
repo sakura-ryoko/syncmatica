@@ -3,15 +3,16 @@ package ch.endte.syncmatica.mixin;
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.Reference;
 import ch.endte.syncmatica.Syncmatica;
-import ch.endte.syncmatica.network.channels.SyncRegisterVersion;
-import ch.endte.syncmatica.network.payload.SyncByteBuf;
-import ch.endte.syncmatica.network.server.ServerPlayHandler;
+import ch.endte.syncmatica.network.handler.ServerPlayHandler;
+import ch.endte.syncmatica.network.payload.PacketType;
+import ch.endte.syncmatica.network.payload.SyncData;
 import io.netty.buffer.Unpooled;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.network.ClientConnection;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ConnectedClientData;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -31,11 +32,11 @@ public class MixinPlayerManager
             Context server = Syncmatica.getContext(Syncmatica.SERVER_CONTEXT);
             if (server != null && server.isStarted())
             {
-                // This needs to happen & get squashed anyway during .sendSyncPacket() in order for things to work
-                SyncByteBuf buf = new SyncByteBuf(Unpooled.buffer());
+                Syncmatica.debug("syncmatica$eventOnPlayerJoin: yeet");
+                PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
                 buf.writeString(Reference.MOD_VERSION);
-                SyncRegisterVersion payload = new SyncRegisterVersion(buf);
-                ServerPlayHandler.sendSyncPacket(payload, player);
+
+                ServerPlayHandler.encodeSyncData(new SyncData(PacketType.REGISTER_VERSION.getId(), buf), player);
             }
         }
     }

@@ -7,8 +7,9 @@ import java.util.UUID;
 import ch.endte.syncmatica.communication.CommunicationManager;
 import ch.endte.syncmatica.data.IFileStorage;
 import ch.endte.syncmatica.data.SyncmaticManager;
-import ch.endte.syncmatica.network.packet.ActorClientPlayHandler;
-import ch.endte.syncmatica.network.payload.PayloadManager;
+import ch.endte.syncmatica.network.actor.ActorClientPlayHandler;
+import ch.endte.syncmatica.network.payload.SyncmaticaPayload;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import net.minecraft.util.Identifier;
@@ -20,9 +21,9 @@ public class Syncmatica
 
     protected static final String SERVER_PATH = "." + File.separator + "syncmatics";
     protected static final String CLIENT_PATH = "." + File.separator + "schematics" + File.separator + "sync";
-
-    public static final Identifier CLIENT_CONTEXT = new Identifier("syncmatica", "client_context");
-    public static final Identifier SERVER_CONTEXT = new Identifier("syncmatica", "server_context");
+    public static final Identifier CLIENT_CONTEXT = new Identifier(Reference.MOD_ID, "client_context");
+    public static final Identifier SERVER_CONTEXT = new Identifier(Reference.MOD_ID, "server_context");
+    public static final Identifier NETWORK_ID = new Identifier(Reference.MOD_ID, "main");
     public static final UUID syncmaticaId = UUID.fromString("4c1b738f-56fa-4011-8273-498c972424ea");
     protected static Map<Identifier, Context> contexts = null;
     protected static boolean context_init = false;
@@ -32,10 +33,17 @@ public class Syncmatica
      */
     public static void preInit()
     {
-        Syncmatica.debug("Syncmatica#preInit()");
-        PayloadManager.registerPlayChannels();
+        Syncmatica.debug("Syncmatica#preInit(): registering play channel(s)");
+        PayloadTypeRegistry.playC2S().register(SyncmaticaPayload.TYPE, SyncmaticaPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(SyncmaticaPayload.TYPE, SyncmaticaPayload.CODEC);
+        // These need to be registered ASAP at launch.
     }
 
+    /**
+     * Streamlined debugging tool via MOD_DEBUG boolean
+     * @param msg (message content)
+     * @param args (variable args)
+     */
     public static void debug(String msg, Object... args)
     {
         if (Reference.MOD_DEBUG)
