@@ -24,7 +24,7 @@
 	],
 	"depends": {
 		"minecraft": ">=1.20.6",
-		"fabric-networking-api-v1": ">=4.0.9"
+		"fabric-networking-api-v1": ">=4.0.10"
 	},
 	"suggests": {
 		"litematica": ">=0.17.999-snap",
