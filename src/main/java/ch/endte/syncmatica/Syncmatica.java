@@ -21,9 +21,9 @@ public class Syncmatica
 
     protected static final String SERVER_PATH = "." + File.separator + "syncmatics";
     protected static final String CLIENT_PATH = "." + File.separator + "schematics" + File.separator + "sync";
-    public static final Identifier CLIENT_CONTEXT = new Identifier(Reference.MOD_ID, "client_context");
-    public static final Identifier SERVER_CONTEXT = new Identifier(Reference.MOD_ID, "server_context");
-    public static final Identifier NETWORK_ID = new Identifier(Reference.MOD_ID, "main");
+    public static final Identifier CLIENT_CONTEXT = Identifier.of(Reference.MOD_ID, "client_context");
+    public static final Identifier SERVER_CONTEXT = Identifier.of(Reference.MOD_ID, "server_context");
+    public static final Identifier NETWORK_ID = Identifier.of(Reference.MOD_ID, "main");
     public static final UUID syncmaticaId = UUID.fromString("4c1b738f-56fa-4011-8273-498c972424ea");
     protected static Map<Identifier, Context> contexts = null;
     protected static boolean context_init = false;

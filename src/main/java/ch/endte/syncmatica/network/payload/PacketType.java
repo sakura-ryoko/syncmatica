@@ -80,7 +80,7 @@ public enum PacketType
 
     public final Identifier identifier;
 
-    PacketType(final String id, final String channel) { identifier = new Identifier(id, channel); }
+    PacketType(final String id, final String channel) { identifier = Identifier.of(id, channel); }
 
     public static boolean containsIdentifier(final Identifier id) {
         for (final PacketType p : PacketType.values()) {
