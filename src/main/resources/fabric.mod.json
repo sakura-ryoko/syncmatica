@@ -24,7 +24,7 @@
 	],
 	"depends": {
 		"minecraft": ">=1.21-rc.1",
-		"fabric-networking-api-v1": ">=4.0.12"
+		"fabric-networking-api-v1": ">=4.1.0"
 	},
 	"suggests": {
 		"litematica": ">=0.17.999-sakura",
