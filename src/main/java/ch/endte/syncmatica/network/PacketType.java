@@ -1,4 +1,4 @@
-package ch.endte.syncmatica.network.payload;
+package ch.endte.syncmatica.network;
 
 import net.minecraft.util.Identifier;
 

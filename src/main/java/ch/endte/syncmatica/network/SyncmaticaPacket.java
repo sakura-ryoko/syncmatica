@@ -1,4 +1,4 @@
-package ch.endte.syncmatica.network.payload;
+package ch.endte.syncmatica.network;
 
 import javax.annotation.Nonnull;
 import ch.endte.syncmatica.Syncmatica;

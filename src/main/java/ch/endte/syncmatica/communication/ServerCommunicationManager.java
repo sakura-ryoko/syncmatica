@@ -8,7 +8,7 @@ import ch.endte.syncmatica.communication.exchange.*;
 import ch.endte.syncmatica.data.LocalLitematicState;
 import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.extended_core.PlayerIdentifier;
-import ch.endte.syncmatica.network.payload.PacketType;
+import ch.endte.syncmatica.network.PacketType;
 import io.netty.buffer.Unpooled;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.network.PacketByteBuf;

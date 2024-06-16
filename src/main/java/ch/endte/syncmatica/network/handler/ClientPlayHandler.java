@@ -3,7 +3,7 @@ package ch.endte.syncmatica.network.handler;
 import javax.annotation.Nonnull;
 import java.util.Objects;
 import ch.endte.syncmatica.network.actor.ActorClientPlayHandler;
-import ch.endte.syncmatica.network.payload.SyncmaticaPacket;
+import ch.endte.syncmatica.network.SyncmaticaPacket;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.client.network.ClientPlayNetworkHandler;

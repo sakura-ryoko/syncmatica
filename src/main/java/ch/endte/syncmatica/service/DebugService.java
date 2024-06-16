@@ -1,7 +1,7 @@
 package ch.endte.syncmatica.service;
 
 import ch.endte.syncmatica.Syncmatica;
-import ch.endte.syncmatica.network.payload.PacketType;
+import ch.endte.syncmatica.network.PacketType;
 
 public class DebugService extends AbstractService {
 

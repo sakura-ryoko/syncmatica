@@ -2,7 +2,7 @@ package ch.endte.syncmatica.network.handler;
 
 import javax.annotation.Nonnull;
 import ch.endte.syncmatica.network.actor.IServerPlay;
-import ch.endte.syncmatica.network.payload.SyncmaticaPacket;
+import ch.endte.syncmatica.network.SyncmaticaPacket;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;

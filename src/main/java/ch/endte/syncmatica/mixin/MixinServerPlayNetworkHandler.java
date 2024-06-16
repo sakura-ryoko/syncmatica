@@ -8,7 +8,7 @@ import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.communication.ServerCommunicationManager;
 import ch.endte.syncmatica.network.actor.IServerPlay;
 import ch.endte.syncmatica.network.handler.ServerPlayHandler;
-import ch.endte.syncmatica.network.payload.SyncmaticaPacket;
+import ch.endte.syncmatica.network.SyncmaticaPacket;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;

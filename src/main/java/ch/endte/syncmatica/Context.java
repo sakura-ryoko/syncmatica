@@ -13,7 +13,7 @@ import ch.endte.syncmatica.data.SyncmaticManager;
 import ch.endte.syncmatica.extended_core.PlayerIdentifierProvider;
 import ch.endte.syncmatica.network.handler.ClientPlayHandler;
 import ch.endte.syncmatica.network.handler.ServerPlayHandler;
-import ch.endte.syncmatica.network.payload.SyncmaticaPacket;
+import ch.endte.syncmatica.network.SyncmaticaPacket;
 import ch.endte.syncmatica.service.DebugService;
 import ch.endte.syncmatica.service.IService;
 import ch.endte.syncmatica.service.JsonConfiguration;

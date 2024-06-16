@@ -8,7 +8,7 @@ import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.data.RedirectFileStorage;
 import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.litematica.LitematicManager;
-import ch.endte.syncmatica.network.payload.PacketType;
+import ch.endte.syncmatica.network.PacketType;
 import net.minecraft.network.PacketByteBuf;
 import fi.dy.masa.litematica.schematic.placement.SchematicPlacement;
 

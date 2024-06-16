@@ -8,7 +8,7 @@ import ch.endte.syncmatica.communication.CommunicationManager;
 import ch.endte.syncmatica.data.IFileStorage;
 import ch.endte.syncmatica.data.SyncmaticManager;
 import ch.endte.syncmatica.network.actor.ActorClientPlayHandler;
-import ch.endte.syncmatica.network.payload.SyncmaticaPacket;
+import ch.endte.syncmatica.network.SyncmaticaPacket;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
