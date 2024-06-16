@@ -8,7 +8,7 @@ import ch.endte.syncmatica.communication.CommunicationManager;
 import ch.endte.syncmatica.data.IFileStorage;
 import ch.endte.syncmatica.data.SyncmaticManager;
 import ch.endte.syncmatica.network.actor.ActorClientPlayHandler;
-import ch.endte.syncmatica.network.payload.SyncmaticaPayload;
+import ch.endte.syncmatica.network.payload.SyncmaticaPacket;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,8 +34,8 @@ public class Syncmatica
     public static void preInit()
     {
         Syncmatica.debug("Syncmatica#preInit(): registering play channel(s)");
-        PayloadTypeRegistry.playC2S().register(SyncmaticaPayload.TYPE, SyncmaticaPayload.CODEC);
-        PayloadTypeRegistry.playS2C().register(SyncmaticaPayload.TYPE, SyncmaticaPayload.CODEC);
+        PayloadTypeRegistry.playC2S().register(SyncmaticaPacket.Payload.ID, SyncmaticaPacket.Payload.CODEC);
+        PayloadTypeRegistry.playS2C().register(SyncmaticaPacket.Payload.ID, SyncmaticaPacket.Payload.CODEC);
         // These need to be registered ASAP at launch.
     }
 

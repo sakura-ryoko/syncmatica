@@ -8,7 +8,7 @@ import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.communication.ServerCommunicationManager;
 import ch.endte.syncmatica.network.actor.IServerPlay;
 import ch.endte.syncmatica.network.handler.ServerPlayHandler;
-import ch.endte.syncmatica.network.payload.SyncmaticaPayload;
+import ch.endte.syncmatica.network.payload.SyncmaticaPacket;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -53,7 +53,7 @@ public abstract class MixinServerPlayNetworkHandler implements IServerPlay
 
         if (thisPayload.getId().id().getNamespace().equals(Reference.MOD_ID))
         {
-            SyncmaticaPayload payload = (SyncmaticaPayload) thisPayload;
+            SyncmaticaPacket.Payload payload = (SyncmaticaPacket.Payload) thisPayload;
             ServerPlayHandler.decodeSyncData(payload.data(), this);
 
             // Cancel unnecessary processing if a PacketType we own is caught

@@ -9,7 +9,7 @@ import ch.endte.syncmatica.communication.exchange.Exchange;
 import ch.endte.syncmatica.network.handler.ClientPlayHandler;
 import ch.endte.syncmatica.network.handler.ServerPlayHandler;
 import ch.endte.syncmatica.network.payload.PacketType;
-import ch.endte.syncmatica.network.payload.SyncData;
+import ch.endte.syncmatica.network.payload.SyncmaticaPacket;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
@@ -51,7 +51,7 @@ public class ExchangeTarget
         if (context != null) {
             context.getDebugService().logSendPacket(type, persistentName);
         }
-        final SyncData newPacket = new SyncData(type.getId(), byteBuf);
+        final SyncmaticaPacket newPacket = new SyncmaticaPacket(type.getId(), byteBuf);
 
         if (newPacket.getType() == null)
         {

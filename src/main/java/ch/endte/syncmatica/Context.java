@@ -12,8 +12,8 @@ import ch.endte.syncmatica.data.IFileStorage;
 import ch.endte.syncmatica.data.SyncmaticManager;
 import ch.endte.syncmatica.extended_core.PlayerIdentifierProvider;
 import ch.endte.syncmatica.network.handler.ClientPlayHandler;
-import ch.endte.syncmatica.network.payload.SyncmaticaPayload;
 import ch.endte.syncmatica.network.handler.ServerPlayHandler;
+import ch.endte.syncmatica.network.payload.SyncmaticaPacket;
 import ch.endte.syncmatica.service.DebugService;
 import ch.endte.syncmatica.service.IService;
 import ch.endte.syncmatica.service.JsonConfiguration;
@@ -162,7 +162,7 @@ public class Context
             if (Reference.isServer() || Reference.isIntegratedServer() || Reference.isOpenToLan())
             {
                 Syncmatica.debug("Context#registerReceivers(): [SERVER] -> registerSyncmaticaHandler");
-                ServerPlayNetworking.registerGlobalReceiver(SyncmaticaPayload.TYPE, ServerPlayHandler::receiveSyncPayload);
+                ServerPlayNetworking.registerGlobalReceiver(SyncmaticaPacket.Payload.ID, ServerPlayHandler::receiveSyncPayload);
                 registerC2S = true;
             }
         }
@@ -171,7 +171,7 @@ public class Context
             if (Reference.isClient() && !registerS2C)
             {
                 Syncmatica.debug("Context#registerReceivers(): [CLIENT] -> registerSyncmaticaHandler");
-                ClientPlayNetworking.registerGlobalReceiver(SyncmaticaPayload.TYPE, ClientPlayHandler::receiveSyncPayload);
+                ClientPlayNetworking.registerGlobalReceiver(SyncmaticaPacket.Payload.ID, ClientPlayHandler::receiveSyncPayload);
                 registerS2C = true;
             }
         }
@@ -184,7 +184,7 @@ public class Context
             if (Reference.isServer() || Reference.isIntegratedServer() || Reference.isOpenToLan())
             {
                 Syncmatica.debug("Context#unregisterReceivers(): [SERVER] -> unregisterSyncmaticaHandlers");
-                ServerPlayNetworking.unregisterGlobalReceiver(SyncmaticaPayload.TYPE.id());
+                ServerPlayNetworking.unregisterGlobalReceiver(SyncmaticaPacket.Payload.ID.id());
                 registerC2S = false;
             }
         }
@@ -193,7 +193,7 @@ public class Context
             if (Reference.isClient())
             {
                 Syncmatica.debug("Context#unregisterReceivers(): [CLIENT] -> unregisterSyncmaticaHandlers");
-                ClientPlayNetworking.unregisterGlobalReceiver(SyncmaticaPayload.TYPE.id());
+                ClientPlayNetworking.unregisterGlobalReceiver(SyncmaticaPacket.Payload.ID.id());
                 registerS2C = false;
             }
         }

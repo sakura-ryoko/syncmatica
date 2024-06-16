@@ -5,7 +5,7 @@ import ch.endte.syncmatica.Reference;
 import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.network.handler.ServerPlayHandler;
 import ch.endte.syncmatica.network.payload.PacketType;
-import ch.endte.syncmatica.network.payload.SyncData;
+import ch.endte.syncmatica.network.payload.SyncmaticaPacket;
 import io.netty.buffer.Unpooled;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -36,7 +36,7 @@ public class MixinPlayerManager
                 PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
                 buf.writeString(Reference.MOD_VERSION);
 
-                ServerPlayHandler.encodeSyncData(new SyncData(PacketType.REGISTER_VERSION.getId(), buf), player);
+                ServerPlayHandler.encodeSyncData(new SyncmaticaPacket(PacketType.REGISTER_VERSION.getId(), buf), player);
             }
         }
     }
