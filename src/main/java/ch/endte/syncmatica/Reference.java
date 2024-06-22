@@ -15,7 +15,7 @@ public class Reference
     public static final String MOD_NAME = "Syncmatica";
     public static final String MOD_VERSION = StringTools.getModVersion(MOD_ID); // No more manually typing in the version # :)
     private static final EnvType MOD_ENV = FabricLoader.getInstance().getEnvironmentType();
-    public static final boolean MOD_DEBUG = true;
+    public static final boolean MOD_DEBUG = false;
 
     private static boolean DEDICATED_SERVER = false;
     private static boolean INTEGRATED_SERVER = false;
