@@ -42,8 +42,9 @@ public class SyncmaticaPacket
 
     protected void toPacket(PacketByteBuf output)
     {
-        output.writeIdentifier(this.channel);
-        output.writeBytes(this.packet.readBytes(this.packet.readableBytes()));
+    PacketByteBuf copiedPacket = new PacketByteBuf(this.packet.copy());
+    output.writeIdentifier(this.channel);
+    output.writeBytes(copiedPacket.readBytes(copiedPacket.readableBytes()));
     }
 
     public record Payload(SyncmaticaPacket data) implements CustomPayload
