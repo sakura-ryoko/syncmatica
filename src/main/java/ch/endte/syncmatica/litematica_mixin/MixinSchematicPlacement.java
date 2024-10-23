@@ -52,7 +52,7 @@ public abstract class MixinSchematicPlacement implements IIDContainer, MovingFin
         }
     }
 
-    @Inject(method = "<init>", at = @At("TAIL"), remap = false)
+    @Inject(method = "<init>(Lfi/dy/masa/litematica/schematic/LitematicaSchematic;Lnet/minecraft/util/math/BlockPos;Ljava/lang/String;ZZ)V", at = @At("TAIL"), remap = false)
     public void setNull(final LitematicaSchematic schematic, final BlockPos origin, final String name, final boolean enabled, final boolean enableRender, final CallbackInfo ci) {
         serverId = null;
     }
