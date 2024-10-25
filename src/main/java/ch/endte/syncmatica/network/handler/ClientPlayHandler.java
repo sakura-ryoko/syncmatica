@@ -1,7 +1,6 @@
 package ch.endte.syncmatica.network.handler;
 
 import javax.annotation.Nonnull;
-import java.util.Objects;
 import ch.endte.syncmatica.network.SyncmaticaPacket;
 import ch.endte.syncmatica.network.actor.ActorClientPlayHandler;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -17,7 +16,7 @@ import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
  */
 public class ClientPlayHandler
 {
-    public static void decodeSyncData(@Nonnull SyncmaticaPacket data, @Nonnull ClientPlayNetworkHandler handler)
+    public static void decodeSyncData(@Nonnull SyncmaticaPacket data, ClientPlayNetworkHandler handler)
     {
         CallbackInfo ci = new CallbackInfo("receiveSyncPacket", false);
         ActorClientPlayHandler.getInstance().packetEvent(data.getType(), data.getPacket(), handler, ci);
@@ -44,7 +43,12 @@ public class ClientPlayHandler
 
     public static void receiveSyncPayload(SyncmaticaPacket.Payload payload, ClientPlayNetworking.Context context)
     {
-        decodeSyncData(payload.data(), Objects.requireNonNull(context.client().getNetworkHandler()));
+        // Has threading issues ?
+        if (context.client().getNetworkHandler() != null) {
+            decodeSyncData(payload.data(), context.client().getNetworkHandler());
+        } else {
+            decodeSyncData(payload.data(), MinecraftClient.getInstance().getNetworkHandler());
+        }
     }
 
     public static <T extends CustomPayload> void sendSyncPacket(@Nonnull T payload)

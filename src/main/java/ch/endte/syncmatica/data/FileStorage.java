@@ -96,6 +96,10 @@ public class FileStorage implements IFileStorage {
         if (context.isServer()) {
             return new File(litematicPath, placement.getHash().toString() + ".litematic");
         }
-        return new File(litematicPath, placement.getName() + ".litematic");
+        if (placement.getFileName().contains(".litematic")) {
+            return new File(litematicPath, placement.getFileName());
+        } else {
+            return new File(litematicPath, placement.getFileName() + ".litematic");
+        }
     }
 }

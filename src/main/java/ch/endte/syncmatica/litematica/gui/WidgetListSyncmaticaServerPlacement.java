@@ -14,6 +14,8 @@ import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.litematica.ScreenHelper;
 import ch.endte.syncmatica.util.SyncmaticaUtil;
 import fi.dy.masa.litematica.gui.Icons;
+import fi.dy.masa.litematica.schematic.SchematicSchema;
+import fi.dy.masa.litematica.util.DataFixerMode;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.LeftRight;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
@@ -116,6 +118,24 @@ public class WidgetListSyncmaticaServerPlacement extends WidgetListBase<ServerPl
         drawString(drawContext, str, x, y, textColor);
         y += 12;
         drawString(drawContext, placement.getLastModifiedBy().getName(), x + 4, y, valueColor);
+        y += 12;
+
+        // Feature.VERSION
+        final int litematic = placement.getLitematicVersion();
+        final int dataVersion = placement.getDataVersion();
+
+        if (litematic > -1 && dataVersion > -1) {
+            final SchematicSchema version = new SchematicSchema(litematic, dataVersion);
+            final DataFixerMode.Schema schema = DataFixerMode.getSchemaByVersion(dataVersion);
+
+            str = StringUtils.translate("syncmatica.gui.label.placement_info.version", version.litematicVersion());
+            drawString(drawContext, str, x, y, textColor);
+            y += 12;
+
+            str = StringUtils.translate("syncmatica.gui.label.placement_info.schema", schema.getString(), version.minecraftDataVersion());
+            drawString(drawContext, str, x, y, textColor);
+            y += 12;
+        }
     }
 
     @Override

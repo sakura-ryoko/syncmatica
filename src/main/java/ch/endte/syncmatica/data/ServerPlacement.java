@@ -32,18 +32,28 @@ public class ServerPlacement {
 
     private SubRegionData subRegionData = new SubRegionData();
 
+    // Feature.VERSION
+    private int dataVersion;
+    private int litematicVersion;
+
     private SyncmaticaMaterialList matList;
 
-    public ServerPlacement(final UUID id, final String fileName, final UUID hashValue, final PlayerIdentifier owner) {
+    public ServerPlacement(final UUID id, final String fileName, final UUID hashValue, final PlayerIdentifier owner, int litematicVersion, int dataVersion) {
         this.id = id;
         this.fileName = fileName;
         this.hashValue = hashValue;
         this.owner = owner;
-        lastModifiedBy = owner;
+        this.lastModifiedBy = owner;
+        this.litematicVersion = litematicVersion;
+        this.dataVersion = dataVersion;
     }
 
     public ServerPlacement(final UUID id, final File file, final PlayerIdentifier owner) {
-        this(id, removeExtension(file), generateHash(file), owner);
+        this(id, removeExtension(file), generateHash(file), owner, -1, -1);
+    }
+
+    public ServerPlacement(UUID id, String fileName, UUID hash, PlayerIdentifier owner) {
+        this(id, fileName, hash, owner, -1, -1);
     }
 
     public UUID getId() {
@@ -51,7 +61,15 @@ public class ServerPlacement {
     }
 
     public String getName() {
-        return fileName;
+        if (this.getFileName().contains(".")) {
+            return removeExtension(this.getFileName());
+        }
+
+        return this.getFileName();
+    }
+
+    public String getFileName() {
+        return this.fileName;
     }
 
     public UUID getHash() {
@@ -76,6 +94,17 @@ public class ServerPlacement {
 
     public BlockMirror getMirror() {
         return mirror;
+    }
+
+    // Feature.VERSION
+    public int getLitematicVersion() { return litematicVersion; }
+
+    public int getDataVersion() { return dataVersion; }
+
+    public ServerPlacement setVersion(final int litematicVersion, final int dataVersion) {
+        this.litematicVersion = litematicVersion;
+        this.dataVersion = dataVersion;
+        return this;
     }
 
     public ServerPlacement move(final String dimensionId, final BlockPos origin, final BlockRotation rotation, final BlockMirror mirror) {
@@ -121,9 +150,15 @@ public class ServerPlacement {
         return this;
     }
 
-    private static String removeExtension(final File file) {
+    public static String removeExtension(final File file) {
         // source stackoverflow
         final String fileName = file.getName();
+        final int pos = fileName.lastIndexOf(".");
+        return fileName.substring(0, pos);
+    }
+
+    public static String removeExtension(final String fileName) {
+        // source stackoverflow
         final int pos = fileName.lastIndexOf(".");
         return fileName.substring(0, pos);
     }
@@ -157,6 +192,13 @@ public class ServerPlacement {
         if (subRegionData.isModified()) {
             obj.add("subregionData", subRegionData.toJson());
         }
+        // Feature.VERSION
+        if (litematicVersion > -1) {
+            obj.add("litematicVersion", new JsonPrimitive(litematicVersion));
+        }
+        if (dataVersion > -1) {
+            obj.add("dataVersion", new JsonPrimitive(dataVersion));
+        }
 
         return obj;
     }
@@ -171,13 +213,23 @@ public class ServerPlacement {
             final UUID id = UUID.fromString(obj.get("id").getAsString());
             final String name = obj.get("file_name").getAsString();
             final UUID hashValue = UUID.fromString(obj.get("hash").getAsString());
+            int version = -1;
+            int dataVersion = -1;
 
             PlayerIdentifier owner = PlayerIdentifier.MISSING_PLAYER;
             if (obj.has("owner")) {
                 owner = context.getPlayerIdentifierProvider().fromJson(obj.get("owner").getAsJsonObject());
             }
 
-            final ServerPlacement newPlacement = new ServerPlacement(id, name, hashValue, owner);
+            // Feature.VERSION
+            if (obj.has("litematicVersion")) {
+                version = obj.get("litematicVersion").getAsInt();
+            }
+            if (obj.has("dataVersion")) {
+                dataVersion = obj.get("dataVersion").getAsInt();
+            }
+
+            final ServerPlacement newPlacement = new ServerPlacement(id, name, hashValue, owner, version, dataVersion);
 
             final ServerPosition pos = ServerPosition.fromJson(obj.get("origin").getAsJsonObject());
             if (pos == null) {

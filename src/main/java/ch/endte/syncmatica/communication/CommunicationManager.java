@@ -88,7 +88,7 @@ public abstract class CommunicationManager
     {
         buf.writeUuid(metaData.getId());
 
-        buf.writeString(SyncmaticaUtil.sanitizeFileName(metaData.getName()));
+        buf.writeString(SyncmaticaUtil.sanitizeFileName(metaData.getFileName()));
         buf.writeUuid(metaData.getHash());
 
         if (exchangeTarget.getFeatureSet().hasFeature(Feature.CORE_EX))
@@ -97,6 +97,10 @@ public abstract class CommunicationManager
             buf.writeString(metaData.getOwner().getName());
             buf.writeUuid(metaData.getLastModifiedBy().uuid);
             buf.writeString(metaData.getLastModifiedBy().getName());
+        }
+        if (exchangeTarget.getFeatureSet().hasFeature(Feature.VERSION)) {
+            buf.writeVarInt(metaData.getLitematicVersion());
+            buf.writeVarInt(metaData.getDataVersion());
         }
 
         putPositionData(metaData, buf, exchangeTarget);
@@ -158,7 +162,18 @@ public abstract class CommunicationManager
             );
         }
 
-        final ServerPlacement placement = new ServerPlacement(id, fileName, hash, owner);
+        ServerPlacement placement;
+        int litematicVersion;
+        int dataVersion;
+
+        if (exchangeTarget.getFeatureSet().hasFeature(Feature.VERSION)) {
+            litematicVersion = buf.readVarInt();
+            dataVersion = buf.readVarInt();
+            placement = new ServerPlacement(id, fileName, hash, owner, litematicVersion, dataVersion);
+        } else {
+            placement = new ServerPlacement(id, fileName, hash, owner);
+        }
+
         placement.setLastModifiedBy(lastModifiedBy);
 
         receivePositionData(placement, buf, exchangeTarget);

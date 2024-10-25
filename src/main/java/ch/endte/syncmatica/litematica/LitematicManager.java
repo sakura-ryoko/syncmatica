@@ -13,6 +13,8 @@ import ch.endte.syncmatica.Context;
 import fi.dy.masa.litematica.data.DataManager;
 import fi.dy.masa.litematica.data.SchematicHolder;
 import fi.dy.masa.litematica.schematic.LitematicaSchematic;
+import fi.dy.masa.litematica.schematic.SchematicMetadata;
+import fi.dy.masa.litematica.schematic.SchematicSchema;
 import fi.dy.masa.litematica.schematic.placement.SchematicPlacement;
 import fi.dy.masa.litematica.schematic.placement.SchematicPlacementManager;
 import fi.dy.masa.litematica.schematic.placement.SubRegionPlacement;
@@ -22,7 +24,9 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
+import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.util.*;
 
@@ -91,8 +95,11 @@ public class LitematicManager {
 
         final BlockPos origin = placement.getPosition();
 
-        final SchematicPlacement litematicaPlacement = SchematicPlacement.createFor(schematic, origin, file.getName(), true, true);
-        rendering.put(placement, litematicaPlacement);
+        final SchematicPlacement litematicaPlacement = SchematicPlacement.createFor(schematic, origin, ServerPlacement.removeExtension(file.getName()), true, true);
+        // Feature.VERSION
+        final ServerPlacement adjusted = readVersionInfo(placement, litematicaPlacement);
+        rendering.put(Objects.requireNonNullElse(adjusted, placement), litematicaPlacement);
+
         ((IIDContainer) litematicaPlacement).syncmatica$setServerId(placement.getId());
         if (litematicaPlacement.isLocked()) {
             litematicaPlacement.toggleLocked();
@@ -103,6 +110,11 @@ public class LitematicManager {
         litematicaPlacement.toggleLocked();
 
         DataManager.getSchematicPlacementManager().addSchematicPlacement(litematicaPlacement, true);
+
+        // Mark as selected if none
+        if (DataManager.getSchematicPlacementManager().getSelectedSchematicPlacement() == null) {
+            DataManager.getSchematicPlacementManager().setSelectedSchematicPlacement(litematicaPlacement);
+        }
         context.getSyncmaticManager().updateServerPlacement(placement);
     }
 
@@ -122,6 +134,7 @@ public class LitematicManager {
         }
         try {
             final File placementFile = schem.getSchematicFile();
+            if (placementFile == null) { return null; }
             final FileType fileType = FileType.fromFile(placementFile);
             if (fileType == FileType.VANILLA_STRUCTURE || fileType == FileType.SCHEMATICA_SCHEMATIC) {
                 ScreenHelper.ifPresent(s -> s.addMessage(Message.MessageType.ERROR, "syncmatica.error.share_incompatible_schematic"));
@@ -141,7 +154,10 @@ public class LitematicManager {
             final String dimension = MinecraftClient.getInstance().getCameraEntity().getEntityWorld().getRegistryKey().getValue().toString();
             placement.move(dimension, schem.getOrigin(), schem.getRotation(), schem.getMirror());
             transferSubregionDataToServerPlacement(schem, placement);
-            return placement;
+
+            // Feature.VERSION
+            final ServerPlacement adjusted = readVersionInfo(placement, schem);
+            return Objects.requireNonNullElse(adjusted, placement);
         } catch (final Exception e) {
             ScreenHelper.ifPresent(s -> s.addMessage(Message.MessageType.ERROR, "syncmatica.error.create_from_schematic", e.getMessage()));
         }
@@ -209,7 +225,14 @@ public class LitematicManager {
         if (modPlacement.syncmatica$getServerId() != null && !modPlacement.syncmatica$getServerId().equals(placement.getId())) {
             return;
         }
-        rendering.put(placement, litematicaPlacement);
+        // Feature.VERSION
+        final ServerPlacement adjusted = readVersionInfo(placement, litematicaPlacement);
+        if (adjusted != null) {
+            rendering.put(adjusted, litematicaPlacement);
+        }
+        else {
+            rendering.put(placement, litematicaPlacement);
+        }
         modPlacement.syncmatica$setServerId(placement.getId());
 
         if (litematicaPlacement.isLocked()) {
@@ -223,6 +246,11 @@ public class LitematicManager {
         context.getSyncmaticManager().updateServerPlacement(placement);
         if (addToRendering) {
             DataManager.getSchematicPlacementManager().addSchematicPlacement(litematicaPlacement, false);
+
+            // Set as selected if none are
+            if (DataManager.getSchematicPlacementManager().getSelectedSchematicPlacement() == null) {
+                DataManager.getSchematicPlacementManager().setSelectedSchematicPlacement(litematicaPlacement);
+            }
         }
     }
 
@@ -291,12 +319,40 @@ public class LitematicManager {
             final UUID id = ((IIDContainer) schem).syncmatica$getServerId();
             final ServerPlacement p = context.getSyncmaticManager().getPlacement(id);
             if (isRendered(p)) {
-                rendering.put(p, schem);
+                final ServerPlacement adjusted = readVersionInfo(p, schem);
+                if (adjusted != null) {
+                    rendering.put(adjusted, schem);
+                }
+                else {
+                    rendering.put(p, schem);
+                }
                 DataManager.getSchematicPlacementManager().addSchematicPlacement(schem, false);
             }
         } else if (preLoadList != null) {
             preLoadList.add(schem);
         }
+    }
+
+    @Nullable
+    private ServerPlacement readVersionInfo(ServerPlacement p, SchematicPlacement s) {
+        try {
+            final File file = s.getSchematicFile();
+            if (file != null) {
+                final File dir = new File(file.getParent());
+
+                if (file.getName().endsWith(LitematicaSchematic.FILE_EXTENSION)) {
+                    final Pair<SchematicSchema, SchematicMetadata> pair = LitematicaSchematic.readMetadataAndVersionFromFile(dir, file.getName());
+
+                    if (pair != null) {
+                        final SchematicSchema schema = pair.getLeft();
+                        return p.setVersion(schema.litematicVersion(), schema.minecraftDataVersion());
+                    }
+                }
+            }
+        }
+        catch (Exception ignored) {}
+
+        return null;
     }
 
     public void commitLoad() {
