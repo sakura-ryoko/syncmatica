@@ -8,6 +8,7 @@ import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.communication.exchange.ModifyExchangeClient;
 import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.litematica.ScreenHelper;
+import ch.endte.syncmatica.litematica.gui.IGuiBase;
 import fi.dy.masa.litematica.gui.GuiPlacementConfiguration;
 import fi.dy.masa.litematica.schematic.placement.SchematicPlacement;
 import fi.dy.masa.malilib.gui.GuiBase;
@@ -35,7 +36,7 @@ public abstract class MixinGuiPlacementConfiguration extends GuiBase {
         if (!LitematicManager.getInstance().isSyncmatic(placement)) {
             return;
         }
-        final List<ButtonBase> buttons = ((MixinGuiBase) (Object) this).getButtons();
+        final List<ButtonBase> buttons = ((IGuiBase) this).getButtons();
         final ButtonBase button = buttons.get(6); // unlock button
         button.setActionListener((b, k) -> {
             if (placement.isLocked()) {

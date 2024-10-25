@@ -8,7 +8,8 @@ public enum Feature {
     MESSAGE, // ability to send messages to display from server to client
     QUOTA,  // quota on client uploads to the server
     DEBUG,  // ability to configure debugging
-    CORE_EX; // extended basic features - such as who owns a placement and subregion sharing
+    CORE_EX, // extended basic features - such as who owns a placement and subregion sharing
+    VERSION; // extended version metadata
 
     public static Feature fromString(final String s) {
         for (final Feature f : Feature.values()) {

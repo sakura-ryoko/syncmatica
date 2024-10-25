@@ -1,7 +1,6 @@
 package ch.endte.syncmatica.network.actor;
 
 import java.util.Objects;
-import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.communication.ClientCommunicationManager;
 import ch.endte.syncmatica.communication.CommunicationManager;
@@ -52,15 +51,17 @@ public class ActorClientPlayHandler
     public void startClient()
     {
         Syncmatica.debug("ActorClientPlayHandler#startClient()");
+        /*
         if (clientPlayNetworkHandler == null)
         {
             throw new RuntimeException("Tried to start client before receiving a connection");
         }
+         */
         final IFileStorage data = new RedirectFileStorage();
         final SyncmaticManager man = new SyncmaticManager();
         exTarget = new ExchangeTarget(clientPlayNetworkHandler);
         final CommunicationManager comms = new ClientCommunicationManager(exTarget);
-        Context ctx = Syncmatica.initClient(comms, data, man);
+        Syncmatica.initClient(comms, data, man);
         clientCommunication = comms;
         ScreenHelper.init();
         LitematicManager.getInstance().setActiveContext(Objects.requireNonNull(getContext(CLIENT_CONTEXT)));
