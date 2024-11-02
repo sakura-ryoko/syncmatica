@@ -52,8 +52,16 @@ public abstract class MixinSchematicPlacement implements IIDContainer, MovingFin
         }
     }
 
+    /*
     @Inject(method = "<init>(Lfi/dy/masa/litematica/schematic/LitematicaSchematic;Lnet/minecraft/util/math/BlockPos;Ljava/lang/String;ZZLfi/dy/masa/litematica/schematic/placement/SchematicPlacementManager;)V", at = @At("TAIL"), remap = false)
     public void setNull(LitematicaSchematic schematic, BlockPos origin, String name, boolean enabled, boolean enableRender, SchematicPlacementManager placementManager, CallbackInfo ci) {
+        serverId = null;
+    }
+     */
+
+    @Inject(method = "<init>*", at = @At("TAIL"), remap = false)
+    public void setNull(final LitematicaSchematic schematic, final BlockPos origin, final String name, final boolean enabled, final boolean enableRender, final CallbackInfo ci)
+    {
         serverId = null;
     }
 
