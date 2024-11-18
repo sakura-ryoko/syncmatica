@@ -14,6 +14,8 @@
 	"syncmatica.gui.label.placement_info.dimension_id": "Dimension",
 	"syncmatica.gui.label.placement_info.owner": "Originally shared by",
 	"syncmatica.gui.label.placement_info.last_modified": "Last modified by",
+	"syncmatica.gui.label.placement_info.version": "Litematic Version: §f%d§r",
+	"syncmatica.gui.label.placement_info.schema": "Minecraft: §f%s§r [Schema §f%d§r]",
 	"syncmatica.error.share_without_shift": "Press shift to share",
 	"syncmatica.error.share_modified_subregions": "Share Error - Connected Server does not support sharing of modified subregions - it needs to update.",
 	"syncmatica.error.modification_deny": "Denied Modification request - Another user is already modifying this placement.",
