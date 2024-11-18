@@ -14,6 +14,8 @@
 	"syncmatica.gui.label.placement_info.dimension_id": "維度",
 	"syncmatica.gui.label.placement_info.owner": "上傳者",
 	"syncmatica.gui.label.placement_info.last_modified": "最後修改",
+	"syncmatica.gui.label.placement_info.version": "精簡版: §f%d§r",
+	"syncmatica.gui.label.placement_info.schema": "我的世界: §f%s§r [架构 §f%d§r]",
 	"syncmatica.error.share_without_shift": "按下 Shift 鍵以分享原理圖",
 	"syncmatica.error.share_modified_subregions": "分享錯誤：伺服器不支持共享已修改的子區域，需要更新。",
 	"syncmatica.error.modification_deny": "修改請求被拒絕 - 其他用戶已修改此檔案的展示位置。",
