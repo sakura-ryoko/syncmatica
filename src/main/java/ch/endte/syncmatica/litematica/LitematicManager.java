@@ -318,14 +318,10 @@ public class LitematicManager {
         if (context != null && context.isStarted()) {
             final UUID id = ((IIDContainer) schem).syncmatica$getServerId();
             final ServerPlacement p = context.getSyncmaticManager().getPlacement(id);
-            if (isRendered(p)) {
+            if (p == null) { return; }
+            if (!isRendered(p)) {
                 final ServerPlacement adjusted = readVersionInfo(p, schem);
-                if (adjusted != null) {
-                    rendering.put(adjusted, schem);
-                }
-                else {
-                    rendering.put(p, schem);
-                }
+                rendering.put(Objects.requireNonNullElse(adjusted, p), schem);
                 DataManager.getSchematicPlacementManager().addSchematicPlacement(schem, false);
             }
         } else if (preLoadList != null) {
