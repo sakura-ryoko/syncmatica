@@ -1,6 +1,6 @@
 {
-  "syncmatica.gui.button.view_syncmatics": "Посмотреть Схематики",
-  "syncmatica.gui.button.material_gatherings": "Коллекции Материалов",
+  "syncmatica.gui.button.view_syncmatics": "Посмотреть Синкматики",
+  "syncmatica.gui.button.material_gatherings": "Сбор Материалов",
   "syncmatica.gui.button.load": "Загрузить",
   "syncmatica.gui.button.unload": "Выгрузить",
   "syncmatica.gui.button.remove": "Удалить",
@@ -20,9 +20,9 @@
   "syncmatica.error.share_modified_subregions": "Ошибка - сервер не поддерживает публикацию подрегионов - серверу нужно обновиться.",
   "syncmatica.error.modification_deny": "Отказано в изменение - другой пользователь уже редактирует схематику.",
   "syncmatica.error.player_dimension_mismatch": "Для загрузки игрок должен находиться в том же измерении, что и схематика.",
-  "syncmatica.error.create_from_schematic": "Ошибка создания схематики: {}",
+  "syncmatica.error.create_from_schematic": "Ошибка при создании Синкматики из схематики: {}",
   "syncmatica.error.share_incompatible_schematic": "Конвертируйте схематику с помощью Менеджера схем, чтобы поделиться ей",
   "syncmatica.error.invalid_file": "Невозможно поделиться файлом этого типа",
-  "syncmatica.error.failed_to_load": "Не удалось загрузить litematic {}",
-  "syncmatica.success.modification_accepted": "Принять запрос на модификацию - Снова заблокируйте размещение, чтобы загрузить результаты на сервер"
+  "syncmatica.error.failed_to_load": "Не удалось загрузить лайтматику {}",
+  "syncmatica.success.modification_accepted": "Запрос на изменение принят - снова заблокируйте схематику, чтобы отправить результаты на сервер"
 }
