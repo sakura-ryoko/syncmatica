@@ -18,7 +18,7 @@
   "syncmatica.gui.label.placement_info.schema": "Minecraft: §f%s§r [Schema §f%d§r]",
   "syncmatica.error.share_without_shift": "Нажмите шифт, что бы поделиться",
   "syncmatica.error.share_modified_subregions": "Ошибка - сервер не поддерживает публикацию подрегионов - серверу нужно обновиться.",
-  "syncmatica.error.modification_deny": "Отказано в изменение - другой пользователь уже редактирует схематику.",
+  "syncmatica.error.modification_deny": "Отказано в изменении - другой пользователь уже редактирует схематику.",
   "syncmatica.error.player_dimension_mismatch": "Для загрузки игрок должен находиться в том же измерении, что и схематика.",
   "syncmatica.error.create_from_schematic": "Ошибка при создании Синкматики из схематики: {}",
   "syncmatica.error.share_incompatible_schematic": "Конвертируйте схематику с помощью Менеджера схем, чтобы поделиться ей",
