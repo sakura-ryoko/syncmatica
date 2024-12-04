@@ -1,6 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.8-SNAPSHOT'
-	id 'maven-publish'
+	id 'fabric-loom' version '1.9-SNAPSHOT'
 }
 
 //sourceCompatibility = JavaVersion.VERSION_21
@@ -13,7 +12,7 @@ repositories {
 }
 
 group = project.maven_group + "." + project.mod_id
-archivesBaseName = project.mod_file_name + '-' + project.minecraft_version_out
+base.archivesName = project.mod_file_name + '-' + project.minecraft_version_out
 version = project.mod_version
 
 dependencies {
@@ -46,13 +45,9 @@ processResources {
 	}
 }
 
-java {
-	withSourcesJar()
-}
-
 jar {
 	from("LICENSE") {
-		rename { "${it}_${project.archivesBaseName}"}
+		rename { "${it}_${base.archivesName}"}
 	}
 }
 

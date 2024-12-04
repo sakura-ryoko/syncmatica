@@ -15,13 +15,13 @@ import ch.endte.syncmatica.litematica.ScreenHelper;
 import ch.endte.syncmatica.util.SyncmaticaUtil;
 import fi.dy.masa.litematica.gui.Icons;
 import fi.dy.masa.litematica.schematic.SchematicSchema;
-import fi.dy.masa.litematica.util.DataFixerMode;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.LeftRight;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.gui.widgets.WidgetListBase;
 import fi.dy.masa.malilib.gui.widgets.WidgetSearchBar;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.util.Schema;
 import fi.dy.masa.malilib.util.StringUtils;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.math.BlockPos;
@@ -126,15 +126,18 @@ public class WidgetListSyncmaticaServerPlacement extends WidgetListBase<ServerPl
 
         if (litematic > -1 && dataVersion > -1) {
             final SchematicSchema version = new SchematicSchema(litematic, dataVersion);
-            final DataFixerMode.Schema schema = DataFixerMode.getSchemaByVersion(dataVersion);
+            final Schema schema = Schema.getSchemaByDataVersion(dataVersion);
 
             str = StringUtils.translate("syncmatica.gui.label.placement_info.version", version.litematicVersion());
             drawString(drawContext, str, x, y, textColor);
             y += 12;
 
-            str = StringUtils.translate("syncmatica.gui.label.placement_info.schema", schema.getString(), version.minecraftDataVersion());
-            drawString(drawContext, str, x, y, textColor);
-            y += 12;
+            if (schema != null)
+            {
+                str = StringUtils.translate("syncmatica.gui.label.placement_info.schema", schema.getString(), version.minecraftDataVersion());
+                drawString(drawContext, str, x, y, textColor);
+                //y += 12;
+            }
         }
     }
 
