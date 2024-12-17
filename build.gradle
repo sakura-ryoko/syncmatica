@@ -26,8 +26,8 @@ dependencies {
 	//modImplementation "curse.maven:malilib-${project.minecraft_version_out}-303119:${project.malilib_fileid}"
 	//modImplementation "fi.dy.masa.malilib:malilib-fabric-${project.minecraft_version_out}:${project.malilib_version}"
 	//modImplementation "fi.dy.masa.litematica:litematica-fabric-${project.minecraft_version_out}:${project.litematica_version}"
-	modImplementation "com.github.sakura-ryoko:malilib:${project.malilib_id}"
-	modImplementation "com.github.sakura-ryoko:litematica:${project.litematica_id}"
+	modImplementation "com.github.sakura-ryoko:malilib:${project.malilib_version}"
+	modImplementation "com.github.sakura-ryoko:litematica:${project.litematica_version}"
 
 	include(modApi(fabricApi.module("fabric-networking-api-v1", project.fabric_api_version)))
 	include(modApi(fabricApi.module("fabric-resource-loader-v0", project.fabric_api_version)))
@@ -44,10 +44,6 @@ processResources {
 	filesMatching("fabric.mod.json") {
 		expand "mod_version": project.mod_version
 	}
-}
-
-java {
-	withSourcesJar()
 }
 
 jar {

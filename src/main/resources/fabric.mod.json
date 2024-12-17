@@ -27,8 +27,8 @@
 		"fabric-networking-api-v1": ">=4.1.0"
 	},
 	"suggests": {
-		"litematica": ">=0.19.0",
-		"malilib": ">=0.21.0"
+		"litematica": ">=0.19.54-sakura.8",
+		"malilib": ">=0.21.5-sakura.5"
 	},
 	
 	"icon": "assets/syncmatica/icon/logo.png",
