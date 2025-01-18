@@ -24,11 +24,11 @@
 	],
 	"depends": {
 		"minecraft": ">=1.21 <=1.21.1",
-		"fabric-networking-api-v1": ">=4.1.0"
+		"fabric-networking-api-v1": ">=4.2.0"
 	},
 	"suggests": {
-		"litematica": ">=0.19.54-sakura.8",
-		"malilib": ">=0.21.5-sakura.5"
+		"litematica": ">=0.19.56-sakura.1",
+		"malilib": ">=0.21.7-sakura.2"
 	},
 	
 	"icon": "assets/syncmatica/icon/logo.png",
