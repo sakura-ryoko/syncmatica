@@ -30,7 +30,11 @@
 		"litematica": ">=0.19.56-sakura.1",
 		"malilib": ">=0.21.7-sakura.2"
 	},
-	
+	"breaks": {
+		"litematica": "<0.19.52",
+		"malilib": "<0.21.2"
+	},
+
 	"icon": "assets/syncmatica/icon/logo.png",
 	"custom": {
 		"modmenu": {
