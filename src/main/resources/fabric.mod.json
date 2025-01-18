@@ -31,8 +31,8 @@
 		"malilib": ">=0.22.5-sakura.2"
 	},
 	"breaks": {
-		"litematica": "<0.20.0",
-		"malilib": "<0.22.0"
+		"litematica": "<0.20.1",
+		"malilib": "<0.22.1"
 	},
 
 	"icon": "assets/syncmatica/icon/logo.png",
