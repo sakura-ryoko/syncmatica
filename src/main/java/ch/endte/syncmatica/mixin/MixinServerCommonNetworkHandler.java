@@ -14,6 +14,8 @@ import net.minecraft.server.network.ServerPlayNetworkHandler;
 @Mixin(ServerCommonNetworkHandler.class)
 public class MixinServerCommonNetworkHandler
 {
+    // This exists because of the Communications Manager / Exchange Target system,
+    // and FAPI networking is too slow to register the receivers
     @Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
     private void syncmatica$handlePacket(CustomPayloadC2SPacket packet, CallbackInfo ci)
     {
@@ -30,7 +32,6 @@ public class MixinServerCommonNetworkHandler
             // Cancel unnecessary processing if a PacketType we own is caught
             if  (ci.isCancellable())
                 ci.cancel();
-
         }
     }
 }

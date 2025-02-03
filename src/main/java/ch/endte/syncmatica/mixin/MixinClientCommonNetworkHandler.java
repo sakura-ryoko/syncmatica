@@ -14,6 +14,8 @@ import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
 @Mixin(ClientCommonNetworkHandler.class)
 public class MixinClientCommonNetworkHandler
 {
+    // This exists because of the Communications Manager / Exchange Target system,
+    // and FAPI networking is too slow to register the receivers
     @Inject(method = "onCustomPayload(Lnet/minecraft/network/packet/s2c/common/CustomPayloadS2CPacket;)V", at = @At("HEAD"), cancellable = true)
     private void syncmatica$handlePacket(CustomPayloadS2CPacket packet, CallbackInfo ci)
     {
@@ -34,7 +36,6 @@ public class MixinClientCommonNetworkHandler
             // Cancel unnecessary processing if a PacketType we own is caught
             if  (ci.isCancellable())
                 ci.cancel();
-
         }
     }
 }

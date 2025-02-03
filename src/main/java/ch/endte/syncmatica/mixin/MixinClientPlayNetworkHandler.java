@@ -26,6 +26,8 @@ public abstract class MixinClientPlayNetworkHandler implements IClientPlay
     @Unique
     private ClientCommunicationManager comManager = null;
 
+    // This exists because of the Communications Manager / Exchange Target system,
+    // and FAPI networking is too slow to register the receivers
     @Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
     private void syncmatica$handlePacket(CustomPayload packet, CallbackInfo ci)
     {
@@ -42,7 +44,6 @@ public abstract class MixinClientPlayNetworkHandler implements IClientPlay
             // Cancel unnecessary processing if a PacketType we own is caught
             if  (ci.isCancellable())
                 ci.cancel();
-
         }
     }
 

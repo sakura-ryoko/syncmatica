@@ -18,6 +18,7 @@ public abstract class ServerPlayHandler
     public static void decodeSyncData(@Nonnull SyncmaticaPacket data, @Nonnull ServerPlayNetworkHandler handler)
     {
         IServerPlay iDo = ((IServerPlay) handler);
+
         iDo.syncmatica$operateComms(sm -> sm.onPacket(iDo.syncmatica$getExchangeTarget(), data.getType(), data.getPacket()));
     }
 
@@ -52,6 +53,7 @@ public abstract class ServerPlayHandler
     public static <T extends CustomPayload> void sendSyncPacket(@Nonnull T payload, @Nonnull ServerPlayNetworkHandler handler)
     {
         Packet<?> packet = new CustomPayloadS2CPacket(payload);
+
         if (handler.accepts(packet))
         {
             handler.sendPacket(packet);

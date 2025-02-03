@@ -1,6 +1,7 @@
 package ch.endte.syncmatica;
 
-public enum Feature {
+public enum Feature
+{
     CORE, // every feature that's part of 0.1.0 - it doesn't make sense to divide those further since compatibility with 0.0 of future versions
     // cannot be maintained and the version is very alpha.
     FEATURE, // the possibility of reporting on ones own features during version exchange
@@ -11,9 +12,12 @@ public enum Feature {
     CORE_EX, // extended basic features - such as who owns a placement and subregion sharing
     VERSION; // extended version metadata
 
-    public static Feature fromString(final String s) {
-        for (final Feature f : Feature.values()) {
-            if (f.toString().equals(s)) {
+    public static Feature fromString(final String s)
+    {
+        for (final Feature f : Feature.values())
+        {
+            if (f.toString().equals(s))
+            {
                 return f;
             }
         }
