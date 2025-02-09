@@ -133,6 +133,7 @@ public class LitematicManager {
             return null;
         }
         try {
+            // todo
             final File placementFile = schem.getSchematicFile();
             if (placementFile == null) { return null; }
             final FileType fileType = FileType.fromFile(placementFile);

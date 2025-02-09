@@ -203,6 +203,7 @@ public class Context
         return !version.equals("0.0.1");
     }
 
+    // todo
     public File getConfigFolder() {
         if (isServer() && isIntegratedServer()) {
 

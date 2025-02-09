@@ -48,6 +48,7 @@ public class ServerPlacement {
         this.dataVersion = dataVersion;
     }
 
+    // todo
     public ServerPlacement(final UUID id, final File file, final PlayerIdentifier owner) {
         this(id, removeExtension(file), generateHash(file), owner, -1, -1);
     }

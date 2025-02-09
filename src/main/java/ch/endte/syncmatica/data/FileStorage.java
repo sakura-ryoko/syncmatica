@@ -25,6 +25,7 @@ public class FileStorage implements IFileStorage {
 
     @Override
     public LocalLitematicState getLocalState(final ServerPlacement placement) {
+        // todo
         final File localFile = getSchematicPath(placement);
         if (localFile.isFile()) {
             if (isDownloading(placement)) {

@@ -7,6 +7,7 @@ import java.io.File;
 public interface IFileStorage {
     public LocalLitematicState getLocalState(ServerPlacement placement);
 
+    // todo
     public File createLocalLitematic(ServerPlacement placement);
 
     public File getLocalLitematic(ServerPlacement placement);

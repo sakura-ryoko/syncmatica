@@ -71,6 +71,7 @@ public class SyncmaticManager {
     public void shutdown() {
     }
 
+    // todo
     private void saveServer() {
         final JsonObject obj = new JsonObject();
         final JsonArray arr = new JsonArray();
@@ -94,6 +95,7 @@ public class SyncmaticManager {
         SyncmaticaUtil.backupAndReplace(backup.toPath(), current.toPath(), incoming.toPath());
     }
 
+    // todo
     private void loadServer() {
         final File f = new File(context.getConfigFolder(), "placements.json");
         if (f.exists() && f.isFile() && f.canRead()) {
