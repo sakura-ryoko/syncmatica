@@ -2,13 +2,18 @@ package ch.endte.syncmatica.network;
 
 import javax.annotation.Nonnull;
 import ch.endte.syncmatica.Syncmatica;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 
+import java.lang.ref.Cleaner;
+
 public class SyncmaticaPacket
 {
+    private static final Cleaner cleaner = Cleaner.create();
+
     private final PacketByteBuf packet;
     private final PacketType type;
     private final Identifier channel;
@@ -37,14 +42,18 @@ public class SyncmaticaPacket
 
     protected static SyncmaticaPacket fromPacket(PacketByteBuf input)
     {
-        return new SyncmaticaPacket(input.readIdentifier(), new PacketByteBuf(input.readBytes(input.readableBytes())));
+        // hardly to know its life cycle, so we still leave it to GC
+        return new SyncmaticaPacket(input.readIdentifier(), new GCPacketByteBuf(input.readBytes(input.readableBytes())));
     }
 
     protected void toPacket(PacketByteBuf output)
     {
-        PacketByteBuf serverReplay = new PacketByteBuf(this.packet.copy());
+        ByteBuf buf = this.packet.copy();
+
         output.writeIdentifier(this.channel);
-        output.writeBytes(serverReplay.readBytes(serverReplay.readableBytes()));
+        output.writeBytes(buf);  // use copy directly because we don't need to move the reader index
+
+        buf.release();  // release it otherwise it will cause memory leak
     }
 
     public record Payload(SyncmaticaPacket data) implements CustomPayload
@@ -66,6 +75,15 @@ public class SyncmaticaPacket
         public Id<Payload> getId()
         {
             return ID;
+        }
+    }
+
+    protected static class GCPacketByteBuf extends PacketByteBuf
+    {
+        public GCPacketByteBuf(ByteBuf buf)
+        {
+            super(buf);
+            cleaner.register(this, buf::release);
         }
     }
 }
