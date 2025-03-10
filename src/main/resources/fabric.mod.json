@@ -27,8 +27,8 @@
 		"fabric-networking-api-v1": ">=4.3.6"
 	},
 	"suggests": {
-		"litematica": ">=0.21.2-sakura.1",
-		"malilib": ">=0.23.2-sakura.2"
+		"litematica": ">=0.21.2",
+		"malilib": ">=0.23.2"
 	},
 	"breaks": {
 		"litematica": "<0.21.1",

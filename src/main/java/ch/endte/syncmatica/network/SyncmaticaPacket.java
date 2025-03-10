@@ -32,7 +32,7 @@ public class SyncmaticaPacket
 
     public PacketByteBuf getPacket()
     {
-        return new PacketByteBuf(this.packet);
+        return this.packet;
     }
 
     protected static SyncmaticaPacket fromPacket(PacketByteBuf input)
@@ -43,11 +43,6 @@ public class SyncmaticaPacket
     protected void toPacket(PacketByteBuf output)
     {
         output.writeIdentifier(this.channel);
-        /*
-        PacketByteBuf serverReplay = new PacketByteBuf(this.packet.copy());
-        output.writeBytes(serverReplay.readBytes(serverReplay.readableBytes()));
-         */
-
         output.writeBytes(this.packet.copy());
     }
 
