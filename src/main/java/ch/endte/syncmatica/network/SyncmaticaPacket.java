@@ -37,7 +37,7 @@ public class SyncmaticaPacket
 
     public PacketByteBuf getPacket()
     {
-        return new PacketByteBuf(this.packet);
+        return this.packet;
     }
 
     protected static SyncmaticaPacket fromPacket(PacketByteBuf input)
