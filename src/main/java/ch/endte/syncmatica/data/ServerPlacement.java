@@ -20,7 +20,6 @@ public class ServerPlacement
     private final UUID id;
     private final Path file; // Stores as a Path just for easier file name operations
     private final String fileName; // The basic "file name" field that may, or may not point to the actual origin file.
-    private final String displayName; // Save the proper Display Name of the Litematic file
     private final UUID hashValue; // UUID for the file contents
     // UUID since easier to transmit compare etc.
 
@@ -31,6 +30,9 @@ public class ServerPlacement
     private BlockRotation rotation;
     private BlockMirror mirror;
     private SubRegionData subRegionData = new SubRegionData();
+
+    // Feature.DISPLAY_NAME
+    private final String displayName; // Save the proper Display Name of the Litematic file
 
     // Feature.VERSION
     private int dataVersion;
@@ -196,6 +198,7 @@ public class ServerPlacement
         obj.add("id", new JsonPrimitive(id.toString()));
 
         obj.add("file_name", new JsonPrimitive(this.fileName));
+        // Feature.DISPLAY_NAME
         obj.add("display_name", new JsonPrimitive(this.displayName));
         obj.add("hash", new JsonPrimitive(hashValue.toString()));
 
@@ -232,7 +235,7 @@ public class ServerPlacement
             final UUID id = UUID.fromString(obj.get("id").getAsString());
             final String fileName = obj.get("file_name").getAsString();
             final UUID hashValue = UUID.fromString(obj.get("hash").getAsString());
-            String displayName = fileName;
+            String displayName;
             int version = -1;
             int dataVersion = -1;
 
@@ -241,10 +244,16 @@ public class ServerPlacement
                 owner = context.getPlayerIdentifierProvider().fromJson(obj.get("owner").getAsJsonObject());
             }
 
+            // Feature.DISPLAY_NAME
             if (obj.has("display_name"))
             {
                 displayName = obj.get("display_name").getAsString();
             }
+            else
+            {
+                displayName = fileName;
+            }
+
             // Feature.VERSION
             if (obj.has("litematicVersion")) {
                 version = obj.get("litematicVersion").getAsInt();
