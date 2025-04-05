@@ -2,6 +2,7 @@ package ch.endte.syncmatica.communication.exchange;
 
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
+import java.util.Objects;
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.communication.ClientCommunicationManager;
 import ch.endte.syncmatica.communication.ExchangeTarget;
@@ -27,7 +28,7 @@ public class ShareLitematicExchange extends AbstractExchange
         super(partner, con);
         this.schematicPlacement = schematicPlacement;
         toShare = p == null ? LitematicManager.getInstance().syncmaticFromSchematic(schematicPlacement) : p;
-        toUpload = schematicPlacement.getSchematicFile();
+        toUpload = Objects.requireNonNull(schematicPlacement.getSchematicFile()).toPath();
     }
 
     @Override
