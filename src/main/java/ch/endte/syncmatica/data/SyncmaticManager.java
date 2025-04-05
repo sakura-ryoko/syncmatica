@@ -1,15 +1,16 @@
 package ch.endte.syncmatica.data;
 
-import ch.endte.syncmatica.Context;
-import ch.endte.syncmatica.util.SyncmaticaUtil;
-import com.google.gson.*;
-
-import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Consumer;
+import ch.endte.syncmatica.Context;
+import ch.endte.syncmatica.Syncmatica;
+import ch.endte.syncmatica.util.SyncmaticaUtil;
+import com.google.gson.*;
 
 public class SyncmaticManager {
     public static final String PLACEMENTS_JSON_KEY = "placements";
@@ -80,26 +81,36 @@ public class SyncmaticManager {
         }
 
         obj.add(PLACEMENTS_JSON_KEY, arr);
-        final File backup = new File(context.getConfigFolder(), "placements.json.bak");
-        final File incoming = new File(context.getConfigFolder(), "placements.json.new");
-        final File current = new File(context.getConfigFolder(), "placements.json");
+//        final File backup = new File(context.getConfigFolder(), "placements.json.bak");
+//        final File incoming = new File(context.getConfigFolder(), "placements.json.new");
+//        final File current = new File(context.getConfigFolder(), "placements.json");
+        final Path backup = context.getConfigFolder().resolve("placements.json.bak");
+        final Path incoming = context.getConfigFolder().resolve("placements.json.new");
+        final Path current = context.getConfigFolder().resolve("placements.json");
 
-        try (final FileWriter writer = new FileWriter(incoming)) {
+        Syncmatica.debug("saveServer(): placements path: [{}]", current.toAbsolutePath().toString());
+
+        try (final FileWriter writer = new FileWriter(incoming.toFile())) {
             writer.write(new GsonBuilder().setPrettyPrinting().create().toJson(obj));
         } catch (final IOException e) {
             e.printStackTrace();
             return;
         }
 
-        SyncmaticaUtil.backupAndReplace(backup.toPath(), current.toPath(), incoming.toPath());
+        SyncmaticaUtil.backupAndReplace(backup, current, incoming);
     }
 
     private void loadServer() {
-        final File f = new File(context.getConfigFolder(), "placements.json");
-        if (f.exists() && f.isFile() && f.canRead()) {
+//        final File f = new File(context.getConfigFolder(), "placements.json");
+//        if (f.exists() && f.isFile() && f.canRead()) {
+        final Path f = context.getConfigFolder().resolve("placements.json");
+
+        Syncmatica.debug("loadServer(): placements path: [{}]", f.toAbsolutePath().toString());
+
+        if (Files.exists(f) && Files.isReadable(f)) {
             JsonElement element = null;
             try {
-                final FileReader reader = new FileReader(f);
+                final FileReader reader = new FileReader(f.toFile());
 
                 element = JsonParser.parseReader(reader);
                 reader.close();

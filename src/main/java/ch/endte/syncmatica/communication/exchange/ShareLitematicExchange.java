@@ -1,7 +1,7 @@
 package ch.endte.syncmatica.communication.exchange;
 
-import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.file.Path;
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.communication.ClientCommunicationManager;
 import ch.endte.syncmatica.communication.ExchangeTarget;
@@ -9,14 +9,16 @@ import ch.endte.syncmatica.data.RedirectFileStorage;
 import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.network.PacketType;
+
 import net.minecraft.network.PacketByteBuf;
+
 import fi.dy.masa.litematica.schematic.placement.SchematicPlacement;
 
 public class ShareLitematicExchange extends AbstractExchange
 {
     private final SchematicPlacement schematicPlacement;
     private final ServerPlacement toShare;
-    private final File toUpload;
+    private final Path toUpload;
 
     public ShareLitematicExchange(final SchematicPlacement schematicPlacement, final ExchangeTarget partner, final Context con) { this(schematicPlacement, partner, con, null); }
 

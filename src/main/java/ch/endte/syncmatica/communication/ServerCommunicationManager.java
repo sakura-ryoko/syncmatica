@@ -1,7 +1,7 @@
 package ch.endte.syncmatica.communication;
 
-import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.file.Path;
 import java.util.*;
 import ch.endte.syncmatica.Feature;
 import ch.endte.syncmatica.communication.exchange.*;
@@ -10,6 +10,7 @@ import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.extended_core.PlayerIdentifier;
 import ch.endte.syncmatica.network.PacketType;
 import io.netty.buffer.Unpooled;
+
 import com.mojang.authlib.GameProfile;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -75,7 +76,7 @@ public class ServerCommunicationManager extends CommunicationManager
             {
                 return;
             }
-            final File toUpload = context.getFileStorage().getLocalLitematic(placement);
+            final Path toUpload = context.getFileStorage().getLocalLitematic(placement);
             final UploadExchange upload;
             try
             {
