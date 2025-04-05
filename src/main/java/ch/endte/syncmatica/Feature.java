@@ -10,7 +10,8 @@ public enum Feature
     QUOTA,  // quota on client uploads to the server
     DEBUG,  // ability to configure debugging
     CORE_EX, // extended basic features - such as who owns a placement and subregion sharing
-    VERSION; // extended version metadata
+    VERSION, // extended version metadata
+    ;
 
     public static Feature fromString(final String s)
     {

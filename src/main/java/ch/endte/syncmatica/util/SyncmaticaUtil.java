@@ -63,7 +63,6 @@ public class SyncmaticaUtil {
     
     public static void backupAndReplace(final Path backup, final Path current, final Path incoming) {
         if (!Files.exists(incoming)) {
-
             return;
         }
 
@@ -74,7 +73,6 @@ public class SyncmaticaUtil {
 
     private static boolean overwrite(final Path backup, final Path current, final int tries) {
         if (!Files.exists(current)) {
-
             return true;
         }
         try {

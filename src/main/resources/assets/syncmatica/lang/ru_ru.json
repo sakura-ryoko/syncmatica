@@ -9,6 +9,7 @@
     "syncmatica.gui.button.share": "Поделиться",
     "syncmatica.gui.button.material_gathering_placement": "Материалы",
     "syncmatica.gui.title.manage_server_placements": "Управление Размещениями на Сервере - %s",
+    "syncmatica.gui.label.placement_info.display_name": "Name",
     "syncmatica.gui.label.placement_info.file_name": "Имя Файла",
     "syncmatica.gui.label.placement_info.position": "Источник (xyz)",
     "syncmatica.gui.label.placement_info.dimension_id": "Измерение",

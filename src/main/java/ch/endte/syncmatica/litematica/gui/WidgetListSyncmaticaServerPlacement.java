@@ -21,7 +21,7 @@ import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.gui.widgets.WidgetListBase;
 import fi.dy.masa.malilib.gui.widgets.WidgetSearchBar;
 import fi.dy.masa.malilib.render.RenderUtils;
-import fi.dy.masa.malilib.util.Schema;
+import fi.dy.masa.malilib.util.data.Schema;
 import fi.dy.masa.malilib.util.StringUtils;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.math.BlockPos;
@@ -88,10 +88,16 @@ public class WidgetListSyncmaticaServerPlacement extends WidgetListBase<ServerPl
         final int textColor = 0xC0C0C0C0;
         final int valueColor = 0xFFFFFFFF;
 
-        String str = StringUtils.translate("syncmatica.gui.label.placement_info.file_name");
+        String str = StringUtils.translate("syncmatica.gui.label.placement_info.display_name");
         drawString(drawContext, str, x, y, textColor);
         y += 12;
         drawString(drawContext, placement.getName(), x + 4, y, valueColor);
+        y += 12;
+
+        str = StringUtils.translate("syncmatica.gui.label.placement_info.file_name");
+        drawString(drawContext, str, x, y, textColor);
+        y += 12;
+        drawString(drawContext, placement.getFile().getFileName().toString(), x + 4, y, valueColor);
         y += 12;
 
         str = StringUtils.translate("syncmatica.gui.label.placement_info.dimension_id");
