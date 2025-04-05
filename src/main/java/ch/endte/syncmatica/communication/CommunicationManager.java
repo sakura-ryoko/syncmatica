@@ -1,7 +1,7 @@
 package ch.endte.syncmatica.communication;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import ch.endte.syncmatica.Context;
@@ -14,8 +14,8 @@ import ch.endte.syncmatica.extended_core.PlayerIdentifierProvider;
 import ch.endte.syncmatica.extended_core.SubRegionData;
 import ch.endte.syncmatica.extended_core.SubRegionPlacementModification;
 import ch.endte.syncmatica.network.PacketType;
-import ch.endte.syncmatica.util.SyncmaticaUtil;
 import io.netty.buffer.Unpooled;
+
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
@@ -88,7 +88,9 @@ public abstract class CommunicationManager
     {
         buf.writeUuid(metaData.getId());
 
-        buf.writeString(SyncmaticaUtil.sanitizeFileName(metaData.getFileName()));
+//        buf.writeString(SyncmaticaUtil.sanitizeFileName(metaData.getFileName()));
+        buf.writeString(metaData.getFileName());
+        buf.writeString(metaData.getName());
         buf.writeUuid(metaData.getHash());
 
         if (exchangeTarget.getFeatureSet().hasFeature(Feature.CORE_EX))
@@ -143,7 +145,9 @@ public abstract class CommunicationManager
     {
         final UUID id = buf.readUuid();
 
-        final String fileName = SyncmaticaUtil.sanitizeFileName(buf.readString(PACKET_MAX_STRING_SIZE));
+//        final String fileName = SyncmaticaUtil.sanitizeFileName(buf.readString(PACKET_MAX_STRING_SIZE));
+        final String fileName = buf.readString(PACKET_MAX_STRING_SIZE);
+        String displayName = buf.readString(PACKET_MAX_STRING_SIZE);
         final UUID hash = buf.readUuid();
 
         PlayerIdentifier owner = PlayerIdentifier.MISSING_PLAYER;
@@ -169,9 +173,9 @@ public abstract class CommunicationManager
         if (exchangeTarget.getFeatureSet().hasFeature(Feature.VERSION)) {
             litematicVersion = buf.readVarInt();
             dataVersion = buf.readVarInt();
-            placement = new ServerPlacement(id, fileName, hash, owner, litematicVersion, dataVersion);
+            placement = new ServerPlacement(id, fileName, displayName, hash, owner, litematicVersion, dataVersion);
         } else {
-            placement = new ServerPlacement(id, fileName, hash, owner);
+            placement = new ServerPlacement(id, fileName, displayName, hash, owner);
         }
 
         placement.setLastModifiedBy(lastModifiedBy);
@@ -213,7 +217,7 @@ public abstract class CommunicationManager
             // forgot a negation here
             throw new IllegalArgumentException(syncmatic.toString() + " is not ready for download local state is: " + context.getFileStorage().getLocalState(syncmatic).toString());
         }
-        final File toDownload = context.getFileStorage().createLocalLitematic(syncmatic);
+        final Path toDownload = context.getFileStorage().createLocalLitematic(syncmatic);
         final Exchange downloadExchange = new DownloadExchange(syncmatic, toDownload, source, context);
         setDownloadState(syncmatic, true);
         startExchange(downloadExchange);

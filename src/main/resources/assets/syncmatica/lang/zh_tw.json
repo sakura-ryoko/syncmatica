@@ -9,6 +9,7 @@
     "syncmatica.gui.button.share": "分享",
     "syncmatica.gui.button.material_gathering_placement": "材料",
     "syncmatica.gui.title.manage_server_placements": "管理伺服器配置 - %s",
+    "syncmatica.gui.label.placement_info.display_name": "Name",
     "syncmatica.gui.label.placement_info.file_name": "檔案名稱",
     "syncmatica.gui.label.placement_info.position": "原點 (xyz)",
     "syncmatica.gui.label.placement_info.dimension_id": "維度",

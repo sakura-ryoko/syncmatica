@@ -1,9 +1,10 @@
 package ch.endte.syncmatica.communication.exchange;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.DigestOutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -16,6 +17,7 @@ import ch.endte.syncmatica.communication.ServerCommunicationManager;
 import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.network.PacketType;
 import io.netty.buffer.Unpooled;
+
 import net.minecraft.network.PacketByteBuf;
 
 public class DownloadExchange extends AbstractExchange
@@ -23,14 +25,14 @@ public class DownloadExchange extends AbstractExchange
     private final ServerPlacement toDownload;
     private final OutputStream outputStream;
     private final MessageDigest md5;
-    private final File downloadFile;
+    private final Path downloadFile;
     private int bytesSent;
 
-    public DownloadExchange(final ServerPlacement syncmatic, final File downloadFile, final ExchangeTarget partner, final Context context) throws IOException, NoSuchAlgorithmException
+    public DownloadExchange(final ServerPlacement syncmatic, final Path downloadFile, final ExchangeTarget partner, final Context context) throws IOException, NoSuchAlgorithmException
     {
         super(partner, context);
         this.downloadFile = downloadFile;
-        final OutputStream os = new FileOutputStream(downloadFile); //NOSONAR
+        final OutputStream os = new FileOutputStream(downloadFile.toFile()); //NOSONAR
         toDownload = syncmatic;
         md5 = MessageDigest.getInstance("MD5");
         outputStream = new DigestOutputStream(os, md5);
@@ -134,15 +136,17 @@ public class DownloadExchange extends AbstractExchange
         {
             e.printStackTrace();
         }
-        if (!isSuccessful() && downloadFile.exists())
+//        if (!isSuccessful() && downloadFile.exists())
+        if (!isSuccessful() && Files.exists(downloadFile))
         {
             try
             {
-                if (!downloadFile.delete())
-                    Syncmatica.LOGGER.error("DownloadExchange#onClose(): failed to delete file: {}", downloadFile.toString());
+//                if (!downloadFile.delete())
+                Files.deleteIfExists(downloadFile);
             }
-            catch (Exception ignored) {}
-            // NO-OP
+            catch (Exception err) {
+                Syncmatica.LOGGER.error("DownloadExchange#onClose(): failed to delete file: {}; exception {}", downloadFile.toString(), err.getLocalizedMessage());
+            }
         }
     }
 
