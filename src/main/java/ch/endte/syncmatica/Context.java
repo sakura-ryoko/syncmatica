@@ -209,12 +209,15 @@ public class Context
         return !version.equals("0.0.1");
     }
 
-    public Path getConfigFolder() {
-        if (isServer() && isIntegratedServer()) {
+    public Path getConfigFolder()
+    {
+        if (this.isServer())
+        {
 //            return new File(worldFolder, Reference.MOD_ID);
             return worldFolder.resolve(Reference.MOD_ID).normalize();
         }
-//        return new File(new File("."), "config" + File.separator + Reference.MOD_ID);
+
+        //        return new File(new File("."), "config" + File.separator + Reference.MOD_ID);
         return Reference.CONFIG_ROOT.resolve(Reference.MOD_ID).normalize();
     }
 
