@@ -18,6 +18,7 @@ public class Reference
     private static final EnvType MOD_ENV = FabricLoader.getInstance().getEnvironmentType();
     public static final boolean MOD_DEBUG = false;
 
+    // Fixes various file saving problems by using the FAPI GameDir/ConfigDir instead of "."
     public static final Path GAME_ROOT = FabricLoader.getInstance().getGameDir();
     public static final Path CONFIG_ROOT = FabricLoader.getInstance().getConfigDir();
 
