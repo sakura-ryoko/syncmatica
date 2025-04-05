@@ -4,6 +4,7 @@ import java.nio.file.Path;
 import java.util.*;
 import javax.annotation.Nullable;
 import ch.endte.syncmatica.Context;
+import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.data.RedirectFileStorage;
 import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.data.ServerPosition;
@@ -96,8 +97,23 @@ public class LitematicManager {
 
         final BlockPos origin = placement.getPosition();
 
+        // Feature.DISPLAY_NAME
+        String displayName = placement.getName();
+
+        if (displayName.equals(placement.getFileName()))
+        {
+            displayName = schematic.getMetadata().getName();
+        }
+        else if (displayName.isEmpty())
+        {
+            displayName = ServerPlacement.removeExtension(file.toString());
+        }
+
+        Syncmatica.debug("renderSyncmatic() - displayName [{}] (schem: [{}])", displayName, schematic.getMetadata().getName());
+
 //        final SchematicPlacement litematicaPlacement = SchematicPlacement.createFor(schematic, origin, ServerPlacement.removeExtension(file.getName()), true, true);
-        final SchematicPlacement litematicaPlacement = SchematicPlacement.createFor(schematic, origin, ServerPlacement.removeExtension(file.toString()), true, true);
+//        final SchematicPlacement litematicaPlacement = SchematicPlacement.createFor(schematic, origin, ServerPlacement.removeExtension(file.toString()), true, true);
+        final SchematicPlacement litematicaPlacement = SchematicPlacement.createFor(schematic, origin, displayName, true, true);
         // Feature.VERSION
         final ServerPlacement adjusted = readVersionInfo(placement, litematicaPlacement);
         rendering.put(Objects.requireNonNullElse(adjusted, placement), litematicaPlacement);
