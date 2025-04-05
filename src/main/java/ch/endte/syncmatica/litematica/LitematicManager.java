@@ -1,5 +1,9 @@
 package ch.endte.syncmatica.litematica;
 
+import java.nio.file.Path;
+import java.util.*;
+import javax.annotation.Nullable;
+import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.data.RedirectFileStorage;
 import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.data.ServerPosition;
@@ -9,7 +13,14 @@ import ch.endte.syncmatica.extended_core.SubRegionData;
 import ch.endte.syncmatica.extended_core.SubRegionPlacementModification;
 import ch.endte.syncmatica.litematica_mixin.MixinSchematicPlacementManager;
 import ch.endte.syncmatica.litematica_mixin.MixinSubregionPlacement;
-import ch.endte.syncmatica.Context;
+import org.apache.commons.lang3.tuple.Pair;
+
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.util.BlockMirror;
+import net.minecraft.util.BlockRotation;
+import net.minecraft.util.math.BlockPos;
+
+import fi.dy.masa.malilib.gui.Message;
 import fi.dy.masa.litematica.data.DataManager;
 import fi.dy.masa.litematica.data.SchematicHolder;
 import fi.dy.masa.litematica.schematic.LitematicaSchematic;
@@ -19,16 +30,6 @@ import fi.dy.masa.litematica.schematic.placement.SchematicPlacement;
 import fi.dy.masa.litematica.schematic.placement.SchematicPlacementManager;
 import fi.dy.masa.litematica.schematic.placement.SubRegionPlacement;
 import fi.dy.masa.litematica.util.FileType;
-import fi.dy.masa.malilib.gui.Message;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.BlockMirror;
-import net.minecraft.util.BlockRotation;
-import net.minecraft.util.math.BlockPos;
-import org.apache.commons.lang3.tuple.Pair;
-
-import javax.annotation.Nullable;
-import java.io.File;
-import java.util.*;
 
 // responsible for loading and keeping track of rendered syncmatic placements
 // responsible for keeping track redirected litematic files (e.g. if the syncmatic was
@@ -84,18 +85,19 @@ public class LitematicManager {
         if (rendering.containsKey(placement)) {
             return;
         }
-        final File file = context.getFileStorage().getLocalLitematic(placement);
+        final Path file = context.getFileStorage().getLocalLitematic(placement);
 
         final LitematicaSchematic schematic = SchematicHolder.getInstance().getOrLoad(file);
 
         if (schematic == null) {
-            ScreenHelper.ifPresent(s -> s.addMessage(Message.MessageType.ERROR, "syncmatica.error.failed_to_load", file.getAbsolutePath()));
+            ScreenHelper.ifPresent(s -> s.addMessage(Message.MessageType.ERROR, "syncmatica.error.failed_to_load", file.toAbsolutePath().toString()));
             return;
         }
 
         final BlockPos origin = placement.getPosition();
 
-        final SchematicPlacement litematicaPlacement = SchematicPlacement.createFor(schematic, origin, ServerPlacement.removeExtension(file.getName()), true, true);
+//        final SchematicPlacement litematicaPlacement = SchematicPlacement.createFor(schematic, origin, ServerPlacement.removeExtension(file.getName()), true, true);
+        final SchematicPlacement litematicaPlacement = SchematicPlacement.createFor(schematic, origin, ServerPlacement.removeExtension(file.toString()), true, true);
         // Feature.VERSION
         final ServerPlacement adjusted = readVersionInfo(placement, litematicaPlacement);
         rendering.put(Objects.requireNonNullElse(adjusted, placement), litematicaPlacement);
@@ -133,7 +135,7 @@ public class LitematicManager {
             return null;
         }
         try {
-            final File placementFile = schem.getSchematicFile();
+            final Path placementFile = schem.getSchematicFile();
             if (placementFile == null) { return null; }
             final FileType fileType = FileType.fromFile(placementFile);
             if (fileType == FileType.VANILLA_STRUCTURE || fileType == FileType.SCHEMATICA_SCHEMATIC) {
@@ -149,7 +151,7 @@ public class LitematicManager {
                     MinecraftClient.getInstance().getSession().getUsername()
             );
 
-            final ServerPlacement placement = new ServerPlacement(UUID.randomUUID(), placementFile, owner);
+            final ServerPlacement placement = new ServerPlacement(UUID.randomUUID(), placementFile, schem.getName(), owner);
             // thanks miniHUD
             final String dimension = MinecraftClient.getInstance().getCameraEntity().getEntityWorld().getRegistryKey().getValue().toString();
             placement.move(dimension, schem.getOrigin(), schem.getRotation(), schem.getMirror());
@@ -332,12 +334,15 @@ public class LitematicManager {
     @Nullable
     private ServerPlacement readVersionInfo(ServerPlacement p, SchematicPlacement s) {
         try {
-            final File file = s.getSchematicFile();
+            final Path file = s.getSchematicFile();
             if (file != null) {
-                final File dir = new File(file.getParent());
+//                final File dir = new File(file.getParent());
+                final Path dir = file.getParent();
 
-                if (file.getName().endsWith(LitematicaSchematic.FILE_EXTENSION)) {
-                    final Pair<SchematicSchema, SchematicMetadata> pair = LitematicaSchematic.readMetadataAndVersionFromFile(dir, file.getName());
+//                if (file.getName().endsWith(LitematicaSchematic.FILE_EXTENSION)) {
+                if (file.toString().endsWith(LitematicaSchematic.FILE_EXTENSION)) {
+//                    final Pair<SchematicSchema, SchematicMetadata> pair = LitematicaSchematic.readMetadataAndVersionFromFile(dir, file.getName());
+                    final Pair<SchematicSchema, SchematicMetadata> pair = LitematicaSchematic.readMetadataAndVersionFromFile(dir, file.toString());
 
                     if (pair != null) {
                         final SchematicSchema schema = pair.getLeft();

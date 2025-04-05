@@ -1,13 +1,15 @@
 package ch.endte.syncmatica.data;
 
-import ch.endte.syncmatica.Context;
-import ch.endte.syncmatica.util.SyncmaticaUtil;
-
-import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import ch.endte.syncmatica.Context;
+import ch.endte.syncmatica.Syncmatica;
+import ch.endte.syncmatica.util.SyncmaticaUtil;
 
 // pretty sure this is some kind of pattern 
 // dont remember the name though
@@ -25,7 +27,7 @@ public class RedirectFileStorage implements IFileStorage {
         fs = new FileStorage();
     }
 
-    public void addRedirect(final File file) {
+    public void addRedirect(final Path file) {
         final RedirectData red = new RedirectData(file);
         redirect.put(red.getHash(), red);
     }
@@ -41,12 +43,12 @@ public class RedirectFileStorage implements IFileStorage {
     }
 
     @Override
-    public File createLocalLitematic(final ServerPlacement placement) {
+    public Path createLocalLitematic(final ServerPlacement placement) {
         return fs.createLocalLitematic(placement);
     }
 
     @Override
-    public File getLocalLitematic(final ServerPlacement placement) {
+    public Path getLocalLitematic(final ServerPlacement placement) {
         final UUID hashId = placement.getHash();
         if (redirect.containsKey(hashId)) {
             final RedirectData red = redirect.get(hashId);
@@ -65,11 +67,11 @@ public class RedirectFileStorage implements IFileStorage {
     }
 
     private class RedirectData {
-        File redirect = null;
+        Path redirect = null;
         UUID hash = null;
         long hashTimeStamp;
 
-        RedirectData(File file) {
+        RedirectData(Path file) {
             redirect = file;
             getHash();
             if (hash == null) {
@@ -78,21 +80,39 @@ public class RedirectFileStorage implements IFileStorage {
         }
 
         UUID getHash() {
-            if (hashTimeStamp == redirect.lastModified()) {
+//            if (hashTimeStamp == redirect.lastModified()) {
+            if (hashTimeStamp == this.getModifiedTime()) {
                 return hash;
             }
             try {
-                hash = SyncmaticaUtil.createChecksum(new FileInputStream(redirect));
+                hash = SyncmaticaUtil.createChecksum(new FileInputStream(redirect.toFile()));
             } catch (final Exception e) {
                 e.printStackTrace();
                 return null;
             }
-            hashTimeStamp = redirect.lastModified();
+//            hashTimeStamp = redirect.lastModified();
+            hashTimeStamp = this.getModifiedTime();
             return hash;
         }
 
+        long getModifiedTime()
+        {
+            try
+            {
+                return Files.getLastModifiedTime(redirect).toMillis();
+            }
+            catch (IOException e)
+            {
+                Syncmatica.LOGGER.warn("Exception getting last modified time of file [{}]", redirect.getFileName().toString());
+            }
+
+            // default to now
+            return System.currentTimeMillis();
+        }
+
         boolean exists() {
-            return redirect.exists() && redirect.canRead();
+//            return redirect.exists() && redirect.canRead();
+            return Files.exists(redirect) && Files.isReadable(redirect);
         }
     }
 

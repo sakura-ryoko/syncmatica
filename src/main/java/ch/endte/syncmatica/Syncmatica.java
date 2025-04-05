@@ -1,26 +1,29 @@
 package ch.endte.syncmatica;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import ch.endte.syncmatica.communication.CommunicationManager;
 import ch.endte.syncmatica.data.IFileStorage;
 import ch.endte.syncmatica.data.SyncmaticManager;
-import ch.endte.syncmatica.network.actor.ActorClientPlayHandler;
 import ch.endte.syncmatica.network.SyncmaticaPacket;
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import ch.endte.syncmatica.network.actor.ActorClientPlayHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import net.minecraft.util.Identifier;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 
 // could probably turn this into a singleton
 public class Syncmatica
 {
     public static Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
 
-    protected static final String SERVER_PATH = "." + File.separator + "syncmatics";
-    protected static final String CLIENT_PATH = "." + File.separator + "schematics" + File.separator + "sync";
+//    protected static final String SERVER_PATH = "." + File.separator + "syncmatics";
+//    protected static final String CLIENT_PATH = "." + File.separator + "schematics" + File.separator + "sync";
+    protected static final Path SERVER_PATH = Reference.GAME_ROOT.resolve("syncmatics");
+    protected static final Path CLIENT_PATH = Reference.GAME_ROOT.resolve("schematics").resolve("sync");
     public static final Identifier CLIENT_CONTEXT = Identifier.of(Reference.MOD_ID, "client_context");
     public static final Identifier SERVER_CONTEXT = Identifier.of(Reference.MOD_ID, "server_context");
     public static final Identifier NETWORK_ID = Identifier.of(Reference.MOD_ID, "main");
@@ -99,7 +102,8 @@ public class Syncmatica
                 fileStorage,
                 comms,
                 schematics,
-                new File(CLIENT_PATH)
+//                new File(CLIENT_PATH)
+                CLIENT_PATH
         );
         Syncmatica.init(clientContext, CLIENT_CONTEXT);
         return clientContext;
@@ -120,7 +124,7 @@ public class Syncmatica
     }
 
     public static Context initServer(final CommunicationManager comms, final IFileStorage fileStorage, final SyncmaticManager schematics,
-                                     final boolean isIntegratedServer, final File worldPath)
+                                     final boolean isIntegratedServer, final Path worldPath)
     {
         Syncmatica.debug("Syncmatica#initServer()");
 
@@ -129,10 +133,12 @@ public class Syncmatica
                 comms,
                 schematics,
                 true,
-                new File(SERVER_PATH),
+//                new File(SERVER_PATH),
+                SERVER_PATH,
                 isIntegratedServer,
                 worldPath
         );
+        Syncmatica.debug("INIT:Server Context; world path: '{}'", worldPath.toAbsolutePath().toString());
         Syncmatica.init(serverContext, SERVER_CONTEXT);
         return serverContext;
     }

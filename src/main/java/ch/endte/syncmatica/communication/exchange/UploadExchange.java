@@ -1,6 +1,7 @@
 package ch.endte.syncmatica.communication.exchange;
 
 import java.io.*;
+import java.nio.file.Path;
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.data.ServerPlacement;
@@ -20,11 +21,11 @@ public class UploadExchange extends AbstractExchange
     private final InputStream inputStream;
     private final byte[] buffer = new byte[BUFFER_SIZE];
 
-    public UploadExchange(final ServerPlacement syncmatic, final File uploadFile, final ExchangeTarget partner, final Context con) throws FileNotFoundException
+    public UploadExchange(final ServerPlacement syncmatic, final Path uploadFile, final ExchangeTarget partner, final Context con) throws FileNotFoundException
     {
         super(partner, con);
         toUpload = syncmatic;
-        inputStream = new FileInputStream(uploadFile);
+        inputStream = new FileInputStream(uploadFile.toFile());
     }
 
     @Override

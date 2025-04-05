@@ -54,7 +54,7 @@ public class MixinMinecraftServer
                 new FileStorage(),
                 new SyncmaticManager(),
                 !server.isDedicated(),
-                server.getSavePath(WorldSavePath.ROOT).toFile()
+                server.getSavePath(WorldSavePath.ROOT).normalize()
         ).startup();
     }
 

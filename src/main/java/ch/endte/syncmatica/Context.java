@@ -1,23 +1,25 @@
 package ch.endte.syncmatica;
 
-import javax.annotation.Nullable;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import ch.endte.syncmatica.communication.CommunicationManager;
 import ch.endte.syncmatica.communication.FeatureSet;
 import ch.endte.syncmatica.data.IFileStorage;
 import ch.endte.syncmatica.data.SyncmaticManager;
 import ch.endte.syncmatica.extended_core.PlayerIdentifierProvider;
+import ch.endte.syncmatica.network.SyncmaticaPacket;
 import ch.endte.syncmatica.network.handler.ClientPlayHandler;
 import ch.endte.syncmatica.network.handler.ServerPlayHandler;
-import ch.endte.syncmatica.network.SyncmaticaPacket;
 import ch.endte.syncmatica.service.DebugService;
 import ch.endte.syncmatica.service.IService;
 import ch.endte.syncmatica.service.JsonConfiguration;
 import ch.endte.syncmatica.service.QuotaService;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
@@ -29,8 +31,8 @@ public class Context
     private FeatureSet fs = null;
     private final boolean server;
     private final boolean integratedServer;
-    private final File litematicFolder;
-    private final File worldFolder;
+    private final Path litematicFolder;
+    private final Path worldFolder;
     private boolean isStarted = false;
     private final QuotaService quota;
     private final DebugService debugService;
@@ -42,7 +44,7 @@ public class Context
             final IFileStorage fs,
             final CommunicationManager comMan,
             final SyncmaticManager synMan,
-            final File litematicFolder
+            final Path litematicFolder
     ) {
         this(fs, comMan, synMan, false, litematicFolder, false, null);
     }
@@ -52,9 +54,9 @@ public class Context
             final CommunicationManager comMan,
             final SyncmaticManager synMan,
             final boolean isServer,
-            final File litematicFolder,
+            final Path litematicFolder,
             final boolean integrated,
-            final File worldFolder
+            final Path worldFolder
     ) {
         files = fs;
         fs.setContext(this);
@@ -74,14 +76,18 @@ public class Context
         playerIdentifierProvider = new PlayerIdentifierProvider(this);
         debugService = new DebugService();
         this.litematicFolder = litematicFolder;
-        if (!litematicFolder.exists())
+//        if (!litematicFolder.exists())
+        if (!Files.exists(litematicFolder))
         {
             try
             {
-                if (!litematicFolder.mkdirs())
-                    Syncmatica.LOGGER.fatal("Context(): Fatal error creating litematic Folder.  Check that Syncmatica has the permissions to do so.");
+//                if (!litematicFolder.mkdirs())
+                Files.createDirectory(litematicFolder);
             }
-            catch (Exception ignored) {}
+            catch (Exception e)
+            {
+                Syncmatica.LOGGER.fatal("Context(): Fatal error creating litematic Folder.  Exception: {}", e.getLocalizedMessage());
+            }
         }
         integratedServer = integrated;
         this.worldFolder = worldFolder;
@@ -131,7 +137,7 @@ public class Context
         return isStarted;
     }
 
-    public File getLitematicFolder() {
+    public Path getLitematicFolder() {
         return litematicFolder;
     }
 
@@ -150,7 +156,7 @@ public class Context
     public void shutdown() {
         Syncmatica.debug("Context#shutdown()");
         shutdownServices();
-        unregisterReceivers();
+//        unregisterReceivers();
         isStarted = false;
         synMan.shutdown();
     }
@@ -203,31 +209,48 @@ public class Context
         return !version.equals("0.0.1");
     }
 
-    public File getConfigFolder() {
+    public Path getConfigFolder() {
         if (isServer() && isIntegratedServer()) {
-
-            return new File(worldFolder, Reference.MOD_ID);
+//            return new File(worldFolder, Reference.MOD_ID);
+            return worldFolder.resolve(Reference.MOD_ID).normalize();
         }
-        return new File(new File("."), "config" + File.separator + Reference.MOD_ID);
+//        return new File(new File("."), "config" + File.separator + Reference.MOD_ID);
+        return Reference.CONFIG_ROOT.resolve(Reference.MOD_ID).normalize();
     }
 
-    public File getConfigFile() {
-        return new File(getConfigFolder(), "config.json");
+    public Path getConfigFile() {
+//        return new File(getConfigFolder(), "config.json");
+        return this.getConfigFolder().resolve("config.json");
     }
 
-    @Nullable
-    public File getAndCreateConfigFile() throws IOException {
-        getConfigFolder().mkdirs();
-        final File configFile = getConfigFile();
-        configFile.createNewFile();
+    public Path getAndCreateConfigFile() throws IOException {
+//        getConfigFolder().mkdirs();
+//        final File configFile = getConfigFile();
+//        configFile.createNewFile();
+        Path dir = this.getConfigFolder();
+        if (!Files.exists(dir))
+        {
+            Syncmatica.debug("creating config folder: [{}]", dir.toAbsolutePath().toString());
+            Files.createDirectory(dir);
+        }
+        Syncmatica.debug("config dir: [{}]", dir.toAbsolutePath().toString());
+        Path configFile = this.getConfigFile();
+        if (!Files.exists(configFile))
+        {
+            Syncmatica.debug("creating config file: [{}]", configFile.getFileName().toString());
+            Files.createFile(configFile);
+        }
+        Syncmatica.debug("config file: [{}]", configFile.getFileName().toString());
         return configFile;
     }
 
     public void loadConfiguration() {
         boolean attemptToLoad = false;
         JsonObject configuration;
+
+        Syncmatica.debug("loadConfig(): config file: '{}'", this.getConfigFile().toAbsolutePath().toString());
         try {
-            configuration = new Gson().fromJson(new BufferedReader(new FileReader(getConfigFile())), JsonObject.class);
+            configuration = new Gson().fromJson(new BufferedReader(new FileReader(this.getConfigFile().toFile())), JsonObject.class);
             attemptToLoad = true;
         } catch (final Exception ignored) {
             configuration = new JsonObject();
@@ -239,7 +262,7 @@ public class Context
         needsRewrite |= loadConfigurationForService(debugService, configuration, attemptToLoad);
         if (needsRewrite) {
             try (
-                    final Writer writer = new BufferedWriter(new FileWriter(getAndCreateConfigFile()))
+                    final Writer writer = new BufferedWriter(new FileWriter(getAndCreateConfigFile().toFile()))
             ) {
                 final Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 final String jsonString = gson.toJson(configuration);

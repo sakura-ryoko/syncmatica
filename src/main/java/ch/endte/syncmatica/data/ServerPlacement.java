@@ -1,5 +1,8 @@
 package ch.endte.syncmatica.data;
 
+import java.io.FileInputStream;
+import java.nio.file.Path;
+import java.util.UUID;
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.extended_core.PlayerIdentifier;
 import ch.endte.syncmatica.extended_core.SubRegionData;
@@ -7,19 +10,17 @@ import ch.endte.syncmatica.material.SyncmaticaMaterialList;
 import ch.endte.syncmatica.util.SyncmaticaUtil;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.UUID;
-
-public class ServerPlacement {
-
+public class ServerPlacement
+{
     private final UUID id;
-
-    private final String fileName;
+    private final Path file; // Stores as a Path just for easier file name operations
+    private final String fileName; // The basic "file name" field that may, or may not point to the actual origin file.
+    private final String displayName; // Save the proper Display Name of the Litematic file
     private final UUID hashValue; // UUID for the file contents
     // UUID since easier to transmit compare etc.
 
@@ -29,7 +30,6 @@ public class ServerPlacement {
     private ServerPosition origin;
     private BlockRotation rotation;
     private BlockMirror mirror;
-
     private SubRegionData subRegionData = new SubRegionData();
 
     // Feature.VERSION
@@ -38,9 +38,12 @@ public class ServerPlacement {
 
     private SyncmaticaMaterialList matList;
 
-    public ServerPlacement(final UUID id, final String fileName, final UUID hashValue, final PlayerIdentifier owner, int litematicVersion, int dataVersion) {
+    public ServerPlacement(final UUID id, final Path file, final String fileName, final String displayName, final UUID hashValue, final PlayerIdentifier owner, int litematicVersion, int dataVersion)
+    {
         this.id = id;
+        this.file = file;
         this.fileName = fileName;
+        this.displayName = displayName;
         this.hashValue = hashValue;
         this.owner = owner;
         this.lastModifiedBy = owner;
@@ -48,24 +51,38 @@ public class ServerPlacement {
         this.dataVersion = dataVersion;
     }
 
-    public ServerPlacement(final UUID id, final File file, final PlayerIdentifier owner) {
-        this(id, removeExtension(file), generateHash(file), owner, -1, -1);
+    public ServerPlacement(final UUID id, final Path file, final String displayName, final PlayerIdentifier owner)
+    {
+//        this(id, file, removeExtension(file), displayName, generateHash(file), owner, -1, -1);
+        this(id, file, file.toAbsolutePath().toString(), displayName, generateHash(file), owner, -1, -1);
     }
 
-    public ServerPlacement(UUID id, String fileName, UUID hash, PlayerIdentifier owner) {
-        this(id, fileName, hash, owner, -1, -1);
+    public ServerPlacement(UUID id, String fileName, final String displayName, UUID hash, PlayerIdentifier owner)
+    {
+        this(id, Path.of(fileName), fileName, displayName, hash, owner, -1, -1);
+    }
+
+    public ServerPlacement(UUID id, String fileName, final String displayName, UUID hash, PlayerIdentifier owner, int litematicVersion, int dataVersion)
+    {
+        this(id, Path.of(fileName), fileName, displayName, hash, owner, litematicVersion, dataVersion);
     }
 
     public UUID getId() {
         return id;
     }
 
-    public String getName() {
-        if (this.getFileName().contains(".")) {
-            return removeExtension(this.getFileName());
-        }
+    public Path getFile()
+    {
+        return this.file;
+    }
 
-        return this.getFileName();
+    public String getName() {
+//        if (this.getFileName().contains(".")) {
+//            return removeExtension(this.getFileName());
+//        }
+//
+//        return this.getFileName();
+        return this.displayName;
     }
 
     public String getFileName() {
@@ -150,9 +167,10 @@ public class ServerPlacement {
         return this;
     }
 
-    public static String removeExtension(final File file) {
+    public static String removeExtension(final Path file) {
         // source stackoverflow
-        final String fileName = file.getName();
+//        final String fileName = file.getName();
+        final String fileName = file.toString();
         final int pos = fileName.lastIndexOf(".");
         return fileName.substring(0, pos);
     }
@@ -163,10 +181,10 @@ public class ServerPlacement {
         return fileName.substring(0, pos);
     }
 
-    private static UUID generateHash(final File file) {
+    private static UUID generateHash(final Path file) {
         UUID hash = null;
         try {
-            hash = SyncmaticaUtil.createChecksum(new FileInputStream(file));
+            hash = SyncmaticaUtil.createChecksum(new FileInputStream(file.toFile()));
         } catch (final Exception e) {
             throw new RuntimeException(e);
         }
@@ -177,7 +195,8 @@ public class ServerPlacement {
         final JsonObject obj = new JsonObject();
         obj.add("id", new JsonPrimitive(id.toString()));
 
-        obj.add("file_name", new JsonPrimitive(fileName));
+        obj.add("file_name", new JsonPrimitive(this.fileName));
+        obj.add("display_name", new JsonPrimitive(this.displayName));
         obj.add("hash", new JsonPrimitive(hashValue.toString()));
 
         obj.add("origin", origin.toJson());
@@ -211,8 +230,9 @@ public class ServerPlacement {
                 && obj.has("rotation")
                 && obj.has("mirror")) {
             final UUID id = UUID.fromString(obj.get("id").getAsString());
-            final String name = obj.get("file_name").getAsString();
+            final String fileName = obj.get("file_name").getAsString();
             final UUID hashValue = UUID.fromString(obj.get("hash").getAsString());
+            String displayName = fileName;
             int version = -1;
             int dataVersion = -1;
 
@@ -221,6 +241,10 @@ public class ServerPlacement {
                 owner = context.getPlayerIdentifierProvider().fromJson(obj.get("owner").getAsJsonObject());
             }
 
+            if (obj.has("display_name"))
+            {
+                displayName = obj.get("display_name").getAsString();
+            }
             // Feature.VERSION
             if (obj.has("litematicVersion")) {
                 version = obj.get("litematicVersion").getAsInt();
@@ -229,7 +253,7 @@ public class ServerPlacement {
                 dataVersion = obj.get("dataVersion").getAsInt();
             }
 
-            final ServerPlacement newPlacement = new ServerPlacement(id, name, hashValue, owner, version, dataVersion);
+            final ServerPlacement newPlacement = new ServerPlacement(id, fileName, displayName, hashValue, owner, version, dataVersion);
 
             final ServerPosition pos = ServerPosition.fromJson(obj.get("origin").getAsJsonObject());
             if (pos == null) {

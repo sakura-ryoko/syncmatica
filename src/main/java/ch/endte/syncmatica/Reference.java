@@ -1,5 +1,6 @@
 package ch.endte.syncmatica;
 
+import java.nio.file.Path;
 import ch.endte.syncmatica.util.StringTools;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
@@ -15,7 +16,10 @@ public class Reference
     public static final String MOD_NAME = "Syncmatica";
     public static final String MOD_VERSION = StringTools.getModVersion(MOD_ID); // No more manually typing in the version # :)
     private static final EnvType MOD_ENV = FabricLoader.getInstance().getEnvironmentType();
-    public static final boolean MOD_DEBUG = false;
+    public static final boolean MOD_DEBUG = true;
+
+    public static final Path GAME_ROOT = FabricLoader.getInstance().getGameDir();
+    public static final Path CONFIG_ROOT = FabricLoader.getInstance().getConfigDir();
 
     private static boolean DEDICATED_SERVER = false;
     private static boolean INTEGRATED_SERVER = false;
