@@ -21,7 +21,7 @@ import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.gui.widgets.WidgetListBase;
 import fi.dy.masa.malilib.gui.widgets.WidgetSearchBar;
 import fi.dy.masa.malilib.render.RenderUtils;
-import fi.dy.masa.malilib.util.data.Schema;
+import fi.dy.masa.malilib.util.Schema;
 import fi.dy.masa.malilib.util.StringUtils;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.math.BlockPos;

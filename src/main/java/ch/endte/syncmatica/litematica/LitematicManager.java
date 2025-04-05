@@ -1,5 +1,6 @@
 package ch.endte.syncmatica.litematica;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.util.*;
 import javax.annotation.Nullable;
@@ -87,7 +88,7 @@ public class LitematicManager {
         }
         final Path file = context.getFileStorage().getLocalLitematic(placement);
 
-        final LitematicaSchematic schematic = SchematicHolder.getInstance().getOrLoad(file);
+        final LitematicaSchematic schematic = SchematicHolder.getInstance().getOrLoad(file.toFile());
 
         if (schematic == null) {
             ScreenHelper.ifPresent(s -> s.addMessage(Message.MessageType.ERROR, "syncmatica.error.failed_to_load", file.toAbsolutePath().toString()));
@@ -135,8 +136,7 @@ public class LitematicManager {
             return null;
         }
         try {
-            final Path placementFile = schem.getSchematicFile();
-            if (placementFile == null) { return null; }
+            final Path placementFile = Objects.requireNonNull(schem.getSchematicFile()).toPath();
             final FileType fileType = FileType.fromFile(placementFile);
             if (fileType == FileType.VANILLA_STRUCTURE || fileType == FileType.SCHEMATICA_SCHEMATIC) {
                 ScreenHelper.ifPresent(s -> s.addMessage(Message.MessageType.ERROR, "syncmatica.error.share_incompatible_schematic"));
@@ -334,15 +334,16 @@ public class LitematicManager {
     @Nullable
     private ServerPlacement readVersionInfo(ServerPlacement p, SchematicPlacement s) {
         try {
-            final Path file = s.getSchematicFile();
+            final File file = s.getSchematicFile();
+//            final Path file = Objects.requireNonNull(s.getSchematicFile()).toPath();
             if (file != null) {
-//                final File dir = new File(file.getParent());
-                final Path dir = file.getParent();
+                final File dir = new File(file.getParent());
+//                final Path dir = file.getParent();
 
-//                if (file.getName().endsWith(LitematicaSchematic.FILE_EXTENSION)) {
-                if (file.toString().endsWith(LitematicaSchematic.FILE_EXTENSION)) {
-//                    final Pair<SchematicSchema, SchematicMetadata> pair = LitematicaSchematic.readMetadataAndVersionFromFile(dir, file.getName());
-                    final Pair<SchematicSchema, SchematicMetadata> pair = LitematicaSchematic.readMetadataAndVersionFromFile(dir, file.toString());
+                if (file.getName().endsWith(LitematicaSchematic.FILE_EXTENSION)) {
+//                if (file.toString().endsWith(LitematicaSchematic.FILE_EXTENSION)) {
+                    final Pair<SchematicSchema, SchematicMetadata> pair = LitematicaSchematic.readMetadataAndVersionFromFile(dir, file.getName());
+//                    final Pair<SchematicSchema, SchematicMetadata> pair = LitematicaSchematic.readMetadataAndVersionFromFile(dir, file.toString());
 
                     if (pair != null) {
                         final SchematicSchema schema = pair.getLeft();
@@ -362,8 +363,9 @@ public class LitematicManager {
             final UUID id = ((IIDContainer) schem).syncmatica$getServerId();
             final ServerPlacement p = man.getPlacement(id);
             if (p != null) {
-                if (context.getFileStorage().getLocalLitematic(p) != schem.getSchematicFile()) {
-                    ((RedirectFileStorage) context.getFileStorage()).addRedirect(schem.getSchematicFile());
+                File temp = schem.getSchematicFile();
+                if (context.getFileStorage().getLocalLitematic(p).toFile() != temp) {
+                    ((RedirectFileStorage) context.getFileStorage()).addRedirect(Objects.requireNonNull(temp).toPath());
                 }
                 renderSyncmatic(p, schem, true);
             }
