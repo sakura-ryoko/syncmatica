@@ -87,11 +87,14 @@ public abstract class CommunicationManager
     public void putMetaData(final ServerPlacement metaData, final PacketByteBuf buf, final ExchangeTarget exchangeTarget)
     {
         buf.writeUuid(metaData.getId());
-
 //        buf.writeString(SyncmaticaUtil.sanitizeFileName(metaData.getFileName()));
         buf.writeString(metaData.getFileName());
-        buf.writeString(metaData.getName());
         buf.writeUuid(metaData.getHash());
+
+        if (exchangeTarget.getFeatureSet().hasFeature(Feature.DISPLAY_NAME))
+        {
+            buf.writeString(metaData.getName());
+        }
 
         if (exchangeTarget.getFeatureSet().hasFeature(Feature.CORE_EX))
         {
@@ -100,6 +103,7 @@ public abstract class CommunicationManager
             buf.writeUuid(metaData.getLastModifiedBy().uuid);
             buf.writeString(metaData.getLastModifiedBy().getName());
         }
+
         if (exchangeTarget.getFeatureSet().hasFeature(Feature.VERSION)) {
             buf.writeVarInt(metaData.getLitematicVersion());
             buf.writeVarInt(metaData.getDataVersion());
@@ -147,11 +151,20 @@ public abstract class CommunicationManager
 
 //        final String fileName = SyncmaticaUtil.sanitizeFileName(buf.readString(PACKET_MAX_STRING_SIZE));
         final String fileName = buf.readString(PACKET_MAX_STRING_SIZE);
-        String displayName = buf.readString(PACKET_MAX_STRING_SIZE);
         final UUID hash = buf.readUuid();
 
         PlayerIdentifier owner = PlayerIdentifier.MISSING_PLAYER;
         PlayerIdentifier lastModifiedBy = PlayerIdentifier.MISSING_PLAYER;
+
+        String displayName;
+        if (exchangeTarget.getFeatureSet().hasFeature(Feature.DISPLAY_NAME))
+        {
+            displayName = buf.readString(PACKET_MAX_STRING_SIZE);
+        }
+        else
+        {
+            displayName = fileName;
+        }
 
         if (exchangeTarget.getFeatureSet().hasFeature(Feature.CORE_EX))
         {

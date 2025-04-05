@@ -16,8 +16,9 @@ public class Reference
     public static final String MOD_NAME = "Syncmatica";
     public static final String MOD_VERSION = StringTools.getModVersion(MOD_ID); // No more manually typing in the version # :)
     private static final EnvType MOD_ENV = FabricLoader.getInstance().getEnvironmentType();
-    public static final boolean MOD_DEBUG = true;
+    public static final boolean MOD_DEBUG = false;
 
+    // Fixes various file saving problems by using the FAPI GameDir/ConfigDir instead of "."
     public static final Path GAME_ROOT = FabricLoader.getInstance().getGameDir();
     public static final Path CONFIG_ROOT = FabricLoader.getInstance().getConfigDir();
 
