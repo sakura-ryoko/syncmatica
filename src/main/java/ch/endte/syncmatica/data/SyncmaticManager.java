@@ -90,9 +90,11 @@ public class SyncmaticManager {
 
         Syncmatica.debug("saveServer(): placements path: [{}]", current.toAbsolutePath().toString());
 
+        // We still use FileWriter, etc for porting/compatibility -- for now.
         try (final FileWriter writer = new FileWriter(incoming.toFile())) {
             writer.write(new GsonBuilder().setPrettyPrinting().create().toJson(obj));
         } catch (final IOException e) {
+            Syncmatica.LOGGER.error("saveServer(): Exception writing incoming file '{}'; {}", incoming.getFileName().toString(), e.getLocalizedMessage());
             e.printStackTrace();
             return;
         }
@@ -116,11 +118,10 @@ public class SyncmaticManager {
                 reader.close();
 
             } catch (final Exception e) {
+                Syncmatica.LOGGER.error("loadServer(): Exception reading file '{}'; {}", f.getFileName().toString(), e.getLocalizedMessage());
                 e.printStackTrace();
             }
             if (element == null) {
-
-
                 return;
             }
             try {
@@ -131,10 +132,14 @@ public class SyncmaticManager {
                 final JsonArray arr = obj.getAsJsonArray(PLACEMENTS_JSON_KEY);
                 for (final JsonElement elem : arr) {
                     final ServerPlacement placement = ServerPlacement.fromJson(elem.getAsJsonObject(), context);
-                    schematics.put(placement.getId(), placement); // NOSONAR
-                }
 
+                    if (placement != null)
+                    {
+                        schematics.put(placement.getId(), placement); // NOSONAR
+                    }
+                }
             } catch (final IllegalStateException | NullPointerException e) {
+                Syncmatica.LOGGER.error("loadServer(): Exception loading server placement; {}", e.getLocalizedMessage());
                 e.printStackTrace();
             }
         }

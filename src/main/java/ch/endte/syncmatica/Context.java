@@ -257,10 +257,11 @@ public class Context
     public void loadConfiguration() {
         boolean attemptToLoad = false;
         JsonObject configuration;
+        Path f = this.getConfigFile();
 
-        Syncmatica.debug("loadConfig(): config file: '{}'", this.getConfigFile().toAbsolutePath().toString());
+        Syncmatica.debug("loadConfig(): config file: '{}'", f.toAbsolutePath().toString());
         try {
-            configuration = new Gson().fromJson(new BufferedReader(new FileReader(this.getConfigFile().toFile())), JsonObject.class);
+            configuration = new Gson().fromJson(new BufferedReader(new FileReader(f.toFile())), JsonObject.class);
             attemptToLoad = true;
         } catch (final Exception ignored) {
             configuration = new JsonObject();
@@ -279,6 +280,7 @@ public class Context
                 writer.write(jsonString);
             } catch (final Exception e)
             {
+                Syncmatica.LOGGER.error("loadConfiguration(): Exception loading config file '{}'; {}", f.getFileName().toString(), e.getLocalizedMessage());
                 e.printStackTrace();
             }
         }
@@ -303,6 +305,7 @@ public class Context
                 }
             } catch (final Exception e)
             {
+                Syncmatica.LOGGER.error("loadConfigurationForService(): Exception loading service config; {}", e.getLocalizedMessage());
                 e.printStackTrace();
             }
         }
