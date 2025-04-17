@@ -31,8 +31,8 @@
 		"malilib": ">=0.22.5"
 	},
 	"breaks": {
-		"litematica": "<0.20.1",
-		"malilib": "<0.22.1"
+		"litematica": "<0.20.3",
+		"malilib": "<0.22.4"
 	},
 
 	"icon": "assets/syncmatica/icon/logo.png",
