@@ -129,6 +129,10 @@ public class Context
         return server;
     }
 
+    public boolean isClient() {
+        return !server;
+    }
+
     public boolean isIntegratedServer() {
         return integratedServer;
     }
@@ -156,7 +160,7 @@ public class Context
     public void shutdown() {
         Syncmatica.debug("Context#shutdown()");
         shutdownServices();
-//        unregisterReceivers();
+        unregisterReceivers();
         isStarted = false;
         synMan.shutdown();
     }
@@ -171,6 +175,10 @@ public class Context
                 ServerPlayNetworking.registerGlobalReceiver(SyncmaticaPacket.Payload.ID, ServerPlayHandler::receiveSyncPayload);
                 registerC2S = true;
             }
+            else
+            {
+                Syncmatica.LOGGER.error("Context#registerReceivers(): isServer() Exception");
+            }
         }
         else
         {
@@ -180,28 +188,27 @@ public class Context
                 ClientPlayNetworking.registerGlobalReceiver(SyncmaticaPacket.Payload.ID, ClientPlayHandler::receiveSyncPayload);
                 registerS2C = true;
             }
+            else
+            {
+                Syncmatica.LOGGER.error("Context#registerReceivers(): isClient() Exception");
+            }
         }
     }
 
     public void unregisterReceivers()
     {
+        // Here, we shouldn't care about the Reference Status so we can have a clean deinit()
         if (this.isServer())
         {
-            if (Reference.isServer() || Reference.isIntegratedServer() || Reference.isOpenToLan())
-            {
-                Syncmatica.debug("Context#unregisterReceivers(): [SERVER] -> unregisterSyncmaticaHandlers");
-                ServerPlayNetworking.unregisterGlobalReceiver(SyncmaticaPacket.Payload.ID.id());
-                registerC2S = false;
-            }
+            Syncmatica.debug("Context#unregisterReceivers(): [SERVER] -> unregisterSyncmaticaHandlers");
+            ServerPlayNetworking.unregisterGlobalReceiver(SyncmaticaPacket.Payload.ID.id());
+            registerC2S = false;
         }
         else
         {
-            if (Reference.isClient())
-            {
-                Syncmatica.debug("Context#unregisterReceivers(): [CLIENT] -> unregisterSyncmaticaHandlers");
-                ClientPlayNetworking.unregisterGlobalReceiver(SyncmaticaPacket.Payload.ID.id());
-                registerS2C = false;
-            }
+            Syncmatica.debug("Context#unregisterReceivers(): [CLIENT] -> unregisterSyncmaticaHandlers");
+            ClientPlayNetworking.unregisterGlobalReceiver(SyncmaticaPacket.Payload.ID.id());
+            registerS2C = false;
         }
     }
 
