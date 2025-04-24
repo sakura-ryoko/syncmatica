@@ -2,8 +2,10 @@ package ch.endte.syncmatica.data;
 
 import java.io.FileInputStream;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.UUID;
 import ch.endte.syncmatica.Context;
+import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.extended_core.PlayerIdentifier;
 import ch.endte.syncmatica.extended_core.SubRegionData;
 import ch.endte.syncmatica.material.SyncmaticaMaterialList;
@@ -14,6 +16,9 @@ import com.google.gson.JsonPrimitive;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
+
+import fi.dy.masa.litematica.schematic.SchematicMetadata;
+import fi.dy.masa.litematica.schematic.SchematicSchema;
 
 public class ServerPlacement
 {
@@ -32,7 +37,7 @@ public class ServerPlacement
     private SubRegionData subRegionData = new SubRegionData();
 
     // Feature.DISPLAY_NAME
-    private final String displayName; // Save the proper Display Name of the Litematic file
+    private String displayName; // Save the proper Display Name of the Litematic file
 
     // Feature.VERSION
     private int dataVersion;
@@ -138,6 +143,19 @@ public class ServerPlacement
         return this;
     }
 
+    public ServerPlacement setSchema(SchematicSchema schema)
+    {
+        this.litematicVersion = schema.litematicVersion();
+        this.dataVersion = schema.minecraftDataVersion();
+        return this;
+    }
+
+    public ServerPlacement setMetadata(SchematicMetadata meta)
+    {
+        this.displayName = meta.getName();
+        return this;
+    }
+
     public PlayerIdentifier getOwner() {
         return owner;
     }
@@ -181,6 +199,25 @@ public class ServerPlacement
         // source stackoverflow
         final int pos = fileName.lastIndexOf(".");
         return fileName.substring(0, pos);
+    }
+
+    public static String normalizeFileName(final String badFileName)
+    {
+        String fileName = badFileName;
+
+        if (badFileName.contains("/") || badFileName.contains("\\"))
+        {
+            Path dirtyPath = Paths.get(badFileName);
+            fileName = dirtyPath.getFileName().toString();
+            Syncmatica.debug("normalizeFileName(): Normalizing placement filename '{}' to: '{}'", badFileName, fileName);
+        }
+
+        return fileName;
+    }
+
+    public String getNormalFileName()
+    {
+        return normalizeFileName(this.fileName);
     }
 
     private static UUID generateHash(final Path file) {
@@ -251,7 +288,8 @@ public class ServerPlacement
             }
             else
             {
-                displayName = fileName;
+                // Check for Absolute Paths being used, and fix
+                displayName = SyncmaticaUtil.sanitizeFileName(normalizeFileName(fileName));
             }
 
             // Feature.VERSION

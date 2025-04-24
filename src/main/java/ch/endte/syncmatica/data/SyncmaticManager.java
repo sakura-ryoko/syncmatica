@@ -6,8 +6,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
+import javax.annotation.Nullable;
 import ch.endte.syncmatica.Context;
+import ch.endte.syncmatica.Reference;
 import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.util.SyncmaticaUtil;
 import com.google.gson.*;
@@ -40,6 +44,22 @@ public class SyncmaticManager {
         return schematics.values();
     }
 
+    public boolean hasPlacementHash(UUID hash)
+    {
+        AtomicBoolean bool = new AtomicBoolean(false);
+
+        this.getAll().forEach(
+                (p) ->
+                {
+                    if (p.getHash().compareTo(hash) == 0)
+                    {
+                        bool.set(true);
+                    }
+                });
+
+        return bool.get();
+    }
+
     public void removePlacement(final ServerPlacement placement) {
         schematics.remove(placement.getId());
         updateServerPlacement(placement);
@@ -63,13 +83,20 @@ public class SyncmaticManager {
         }
     }
 
-    public void startup() {
-        if (context.isServer()) {
+    public void startup()
+    {
+        if (context.isServer())
+        {
             loadServer();
         }
     }
 
-    public void shutdown() {
+    public void shutdown()
+    {
+        if (context.isServer())
+        {
+            saveServer();
+        }
     }
 
     private void saveServer() {
@@ -88,7 +115,7 @@ public class SyncmaticManager {
         final Path incoming = context.getConfigFolder().resolve("placements.json.new");
         final Path current = context.getConfigFolder().resolve("placements.json");
 
-        Syncmatica.debug("saveServer(): placements path: [{}]", current.toAbsolutePath().toString());
+        Syncmatica.debug("saveServer(): placements path: '{}'", current.toAbsolutePath().toString());
 
         // We still use FileWriter, etc for porting/compatibility -- for now.
         try (final FileWriter writer = new FileWriter(incoming.toFile())) {
@@ -106,6 +133,30 @@ public class SyncmaticManager {
 //        final File f = new File(context.getConfigFolder(), "placements.json");
 //        if (f.exists() && f.isFile() && f.canRead()) {
         final Path f = context.getConfigFolder().resolve("placements.json");
+        final Path upgrade = Reference.CONFIG_ROOT.resolve(Reference.MOD_ID).normalize().resolve("placements.json");
+
+        if (Files.exists(upgrade))
+        {
+            try
+            {
+                if (!Files.exists(f) && Files.isRegularFile(upgrade))
+                {
+                    Syncmatica.LOGGER.warn("loadServer(): Migrating '{}' to: '{}'", upgrade.toAbsolutePath().toString(), f.toAbsolutePath().toString());
+                    Files.move(upgrade, f);
+                }
+                else if (Files.isRegularFile(upgrade))
+                {
+                    Path oldFile = context.getConfigFolder().resolve("placements.json.old");
+                    Syncmatica.LOGGER.warn("loadServer(): Backing up stale '{}' to: '{}'", upgrade.toAbsolutePath().toString(), oldFile.toAbsolutePath().toString());
+                    Files.move(upgrade, oldFile);
+                }
+            }
+            catch (Exception e)
+            {
+                Syncmatica.LOGGER.error("loadServer(): Exception moving upgrade file '{}'; {}", upgrade.getFileName().toString(), e.getLocalizedMessage());
+                e.printStackTrace();
+            }
+        }
 
         Syncmatica.debug("loadServer(): placements path: [{}]", f.toAbsolutePath().toString());
 

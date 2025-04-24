@@ -3,6 +3,8 @@ package ch.endte.syncmatica.communication;
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
+import javax.annotation.Nullable;
 import ch.endte.syncmatica.Feature;
 import ch.endte.syncmatica.communication.exchange.*;
 import ch.endte.syncmatica.data.LocalLitematicState;
@@ -24,6 +26,24 @@ public class ServerCommunicationManager extends CommunicationManager
     public ServerCommunicationManager() { super(); }
 
     public GameProfile getGameProfile(final ExchangeTarget exchangeTarget) { return playerMap.get(exchangeTarget).getGameProfile(); }
+
+    @Nullable
+    public ExchangeTarget fromExistingPlayer(final ServerPlayerEntity player)
+    {
+        AtomicReference<ExchangeTarget> newTarget = new AtomicReference<>();
+
+        this.playerMap.forEach(
+                (ex, p) ->
+                {
+                    if (player.getId() == p.getId())
+                    {
+                        newTarget.set(ex);
+                    }
+                }
+        );
+
+        return newTarget.get();
+    }
 
     public void sendMessage(final ExchangeTarget client, final MessageType msgType, final String identifier)
     {
@@ -233,7 +253,7 @@ public class ServerCommunicationManager extends CommunicationManager
         }
     }
 
-    private void addPlacement(final ExchangeTarget t, final ServerPlacement placement)
+    public void addPlacement(final ExchangeTarget t, final ServerPlacement placement)
     {
         if (context.getSyncmaticManager().getPlacement(placement.getId()) != null)
         {
