@@ -10,7 +10,7 @@ public enum Feature {
     DEBUG,  // ability to configure debugging
     CORE_EX, // extended basic features - such as who owns a placement and subregion sharing
     VERSION, // extended version metadata
-    DISPLAY_NAME,
+    DISPLAY_NAME, // extended file / display name feature for saving and loading files
     ;
 
     public static Feature fromString(final String s) {

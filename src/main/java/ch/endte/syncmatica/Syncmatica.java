@@ -4,6 +4,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import ch.endte.syncmatica.command.SyncmaticaCommand;
 import ch.endte.syncmatica.communication.CommunicationManager;
 import ch.endte.syncmatica.data.IFileStorage;
 import ch.endte.syncmatica.data.SyncmaticManager;
@@ -140,6 +141,7 @@ public class Syncmatica
         );
         Syncmatica.debug("INIT:Server Context; world path: '{}'", worldPath.toAbsolutePath().toString());
         Syncmatica.init(serverContext, SERVER_CONTEXT);
+        SyncmaticaCommand.INSTANCE.updateSyncmaticDir(serverContext);
         return serverContext;
     }
 

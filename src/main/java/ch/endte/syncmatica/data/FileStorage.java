@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.UUID;
 import ch.endte.syncmatica.Context;
@@ -129,18 +130,25 @@ public class FileStorage implements IFileStorage {
         return false;
     }
 
-    private Path getSchematicPath(final ServerPlacement placement) {
+    private Path getSchematicPath(final ServerPlacement placement)
+    {
         final Path litematicPath = context.getLitematicFolder();
-        if (context.isServer()) {
+
+        if (context.isServer())
+        {
 //            return new File(litematicPath, placement.getHash().toString() + ".litematic");
             return litematicPath.resolve(placement.getHash().toString()+".litematic");
         }
-        if (placement.getFileName().contains(".litematic")) {
+
+        String fileName = placement.getNormalFileName();
+        Syncmatica.debug("getSchematicPath(): Placement filename: '{}'", fileName);
+
+        if (fileName.contains(".litematic")) {
 //            return new File(litematicPath, placement.getFileName());
-            return litematicPath.resolve(placement.getFileName());
+            return litematicPath.resolve(fileName);
         } else {
 //            return new File(litematicPath, placement.getFileName() + ".litematic");
-            return litematicPath.resolve(placement.getFileName()+".litematic");
+            return litematicPath.resolve(fileName + ".litematic");
         }
     }
 }

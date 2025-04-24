@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.GlobalPos;
 
 public class ServerPosition {
     private final BlockPos position;
@@ -15,6 +16,11 @@ public class ServerPosition {
     public ServerPosition(final BlockPos pos, final String dim) {
         position = pos;
         dimensionId = dim;
+    }
+
+    public static ServerPosition fromGlobalPos(GlobalPos pos)
+    {
+        return new ServerPosition(pos.pos(), pos.dimension().getValue().toString());
     }
 
     public BlockPos getBlockPosition() {
