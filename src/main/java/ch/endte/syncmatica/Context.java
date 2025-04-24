@@ -12,10 +12,7 @@ import ch.endte.syncmatica.extended_core.PlayerIdentifierProvider;
 import ch.endte.syncmatica.network.SyncmaticaPacket;
 import ch.endte.syncmatica.network.handler.ClientPlayHandler;
 import ch.endte.syncmatica.network.handler.ServerPlayHandler;
-import ch.endte.syncmatica.service.DebugService;
-import ch.endte.syncmatica.service.IService;
-import ch.endte.syncmatica.service.JsonConfiguration;
-import ch.endte.syncmatica.service.QuotaService;
+import ch.endte.syncmatica.service.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -243,14 +240,14 @@ public class Context
             Syncmatica.debug("creating config folder: [{}]", dir.toAbsolutePath().toString());
             Files.createDirectory(dir);
         }
+
         Syncmatica.debug("config dir: [{}]", dir.toAbsolutePath().toString());
         Path configFile = this.getConfigFile();
         if (!Files.exists(configFile))
         {
-            Syncmatica.debug("creating config file: [{}]", configFile.getFileName().toString());
             Files.createFile(configFile);
         }
-        Syncmatica.debug("config file: [{}]", configFile.getFileName().toString());
+
         return configFile;
     }
 
@@ -325,7 +322,8 @@ public class Context
 
     private void startupServices() {
         Syncmatica.debug("Context#startupServices()");
-        if (quota != null) {
+        if (quota != null)
+        {
             quota.startup();
         }
         debugService.startup();

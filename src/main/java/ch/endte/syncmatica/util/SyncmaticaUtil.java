@@ -1,5 +1,8 @@
 package ch.endte.syncmatica.util;
 
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtIo;
+import net.minecraft.nbt.NbtSizeTracker;
 import net.minecraft.util.math.BlockPos;
 
 import java.io.IOException;
@@ -10,7 +13,13 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.UUID;
+import javax.annotation.Nonnull;
 import ch.endte.syncmatica.Syncmatica;
+import org.apache.commons.lang3.tuple.Pair;
+
+import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.litematica.schematic.SchematicMetadata;
+import fi.dy.masa.litematica.schematic.SchematicSchema;
 
 public class SyncmaticaUtil {
 
@@ -96,5 +105,41 @@ public class SyncmaticaUtil {
         final double combinedZ = a.getZ() - z;
 
         return combinedX * combinedX + combinedY * combinedY + combinedZ * combinedZ;
+    }
+
+    public static NbtCompound readNbtFromFile(@Nonnull Path file)
+    {
+        if (!Files.exists(file) || !Files.isReadable(file))
+        {
+            return new NbtCompound();
+        }
+
+        try
+        {
+            return NbtIo.readCompressed(Files.newInputStream(file), NbtSizeTracker.ofUnlimitedBytes());
+        }
+        catch (Exception e)
+        {
+            Syncmatica.LOGGER.warn("readNbtFromFile: Failed to read NBT data from file '{}'", file.toString());
+        }
+
+        return new NbtCompound();
+    }
+
+    public static Pair<SchematicMetadata, SchematicSchema> litematicPeek(Path file)
+    {
+        NbtCompound nbt = SyncmaticaUtil.readNbtFromFile(file);
+
+        if (nbt.isEmpty() || !nbt.contains("Metadata"))
+        {
+            return Pair.of(null, null);
+        }
+
+        final int version = nbt.contains("Version") ? nbt.getInt("Version") : -1;
+        final int dataVersion = nbt.contains("MinecraftDataVersion") ? nbt.getInt("MinecraftDataVersion") : -1;
+        SchematicMetadata metadata = new SchematicMetadata();
+        metadata.readFromNBT(nbt.getCompound("Metadata"));
+
+        return Pair.of(metadata, new SchematicSchema(version, dataVersion));
     }
 }
