@@ -396,26 +396,26 @@ public class SchematicMetadata
 
     public void readFromNBT(NbtCompound nbt)
     {
-        this.name = nbt.getString("Name", "?");
-        this.author = nbt.getString("Author", "?");
-        this.description = nbt.getString("Description", "");
-        this.regionCount = nbt.getInt("RegionCount", 0);
-        this.timeCreated = nbt.getLong("TimeCreated", -1L);
-        this.timeModified = nbt.getLong("TimeModified", -1L);
+        this.name = nbt.getString("Name");
+        this.author = nbt.getString("Author");
+        this.description = nbt.getString("Description");
+        this.regionCount = nbt.getInt("RegionCount");
+        this.timeCreated = nbt.getLong("TimeCreated");
+        this.timeModified = nbt.getLong("TimeModified");
 
         if (nbt.contains("TotalVolume"))
         {
-            this.totalVolume = nbt.getInt("TotalVolume", 0);
+            this.totalVolume = nbt.getInt("TotalVolume");
         }
 
         if (nbt.contains("TotalBlocks"))
         {
-            this.totalBlocks = nbt.getInt("TotalBlocks", 0);
+            this.totalBlocks = nbt.getInt("TotalBlocks");
         }
 
         if (nbt.contains("EnclosingSize"))
         {
-            Vec3i size = SyncmaticaUtil.readVec3iFromTag(nbt.getCompoundOrEmpty("EnclosingSize"));
+            Vec3i size = SyncmaticaUtil.readVec3iFromTag(nbt.getCompound("EnclosingSize"));
 
             if (size != null)
             {
@@ -425,7 +425,7 @@ public class SchematicMetadata
 
         if (nbt.contains("PreviewImageData"))
         {
-            this.thumbnailPixelData = Arrays.stream(nbt.getIntArray("PreviewImageData").orElse(new int[0]));
+            this.thumbnailPixelData = Arrays.stream(nbt.getIntArray("PreviewImageData"));
         }
         else
         {

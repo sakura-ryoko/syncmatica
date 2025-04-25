@@ -185,7 +185,7 @@ public class SyncmaticaUtil
             tag.contains("y") &&
             tag.contains("z"))
         {
-            return new Vec3i(tag.getInt("x", 0), tag.getInt("y", 0), tag.getInt("z", 0));
+            return new Vec3i(tag.getInt("x"), tag.getInt("y"), tag.getInt("z"));
         }
 
         return null;
