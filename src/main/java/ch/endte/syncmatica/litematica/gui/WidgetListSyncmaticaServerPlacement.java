@@ -6,6 +6,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import ch.endte.syncmatica.litematica.schematic.Schema;
+import ch.endte.syncmatica.litematica.schematic.SchematicSchema;
 import com.google.common.collect.ImmutableList;
 
 import ch.endte.syncmatica.data.ServerPlacement;
@@ -14,14 +16,12 @@ import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.litematica.ScreenHelper;
 import ch.endte.syncmatica.util.SyncmaticaUtil;
 import fi.dy.masa.litematica.gui.Icons;
-import fi.dy.masa.litematica.schematic.SchematicSchema;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.LeftRight;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.gui.widgets.WidgetListBase;
 import fi.dy.masa.malilib.gui.widgets.WidgetSearchBar;
 import fi.dy.masa.malilib.render.RenderUtils;
-import fi.dy.masa.malilib.util.data.Schema;
 import fi.dy.masa.malilib.util.StringUtils;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.math.BlockPos;
