@@ -361,7 +361,7 @@ public class LitematicManager {
                 if (file.toString().endsWith(LitematicaSchematic.FILE_EXTENSION)) {
 //                    final Pair<SchematicSchema, SchematicMetadata> pair = LitematicaSchematic.readMetadataAndVersionFromFile(dir, file.getName());
 //                    final Pair<SchematicSchema, SchematicMetadata> pair = LitematicaSchematic.readMetadataAndVersionFromFile(dir, file.toString());
-                    final Pair<SchematicMetadata, SchematicSchema> pair = SyncmaticaUtil.litematicPeek(file.asPath());
+                    final Pair<SchematicMetadata, SchematicSchema> pair = SyncmaticaUtil.litematicPeek(file.toPath());
 
                     if (pair != null) {
                         final SchematicSchema schema = pair.getRight();
