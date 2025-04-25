@@ -148,7 +148,7 @@ public class SyncmaticaCommand implements IServerCommand
 
         if (this.files.isEmpty())
         {
-            ctx.getSource().sendFeedback(() -> Text.of("No Syncmatic file found that need to be loaded."), false);
+            ctx.getSource().sendFeedback(() -> Text.of("No Syncmatic file(s) found that needs to be loaded."), false);
             return 0;
         }
 
@@ -209,7 +209,7 @@ public class SyncmaticaCommand implements IServerCommand
 
         if (this.files.isEmpty())
         {
-            ctx.getSource().sendFeedback(() -> Text.of("No Syncmatic file found that need to be loaded."), false);
+            ctx.getSource().sendFeedback(() -> Text.of("No Syncmatic file(s) found that needs to be loaded."), false);
             return 0;
         }
 
