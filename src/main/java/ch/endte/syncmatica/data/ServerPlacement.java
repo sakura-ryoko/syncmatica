@@ -38,6 +38,7 @@ public class ServerPlacement
 
     // Feature.DISPLAY_NAME
     private String displayName; // Save the proper Display Name of the Litematic file
+    private boolean dirty;
 
     // Feature.VERSION
     private int dataVersion;
@@ -230,6 +231,16 @@ public class ServerPlacement
         return hash;
     }
 
+    public boolean isDirty()
+    {
+        return this.dirty;
+    }
+
+    public void markDirty()
+    {
+        this.dirty = true;
+    }
+
     public JsonObject toJson() {
         final JsonObject obj = new JsonObject();
         obj.add("id", new JsonPrimitive(id.toString()));
@@ -275,6 +286,7 @@ public class ServerPlacement
             String displayName;
             int version = -1;
             int dataVersion = -1;
+            boolean dirty = false;
 
             PlayerIdentifier owner = PlayerIdentifier.MISSING_PLAYER;
             if (obj.has("owner")) {
@@ -290,6 +302,7 @@ public class ServerPlacement
             {
                 // Check for Absolute Paths being used, and fix
                 displayName = SyncmaticaUtil.sanitizeFileName(normalizeFileName(fileName));
+                dirty = true;
             }
 
             // Feature.VERSION
@@ -315,10 +328,17 @@ public class ServerPlacement
                         .fromJson(obj.get("lastModifiedBy").getAsJsonObject());
             } else {
                 newPlacement.lastModifiedBy = owner;
+                dirty = true;
             }
 
             if (obj.has("subregionData")) {
                 newPlacement.subRegionData = SubRegionData.fromJson(obj.get("subregionData"));
+            }
+
+            // This means that something has changed to correct the placement data at load time
+            if (dirty)
+            {
+                newPlacement.markDirty();
             }
 
             return newPlacement;
