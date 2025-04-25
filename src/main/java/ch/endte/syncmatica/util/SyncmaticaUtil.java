@@ -135,10 +135,15 @@ public class SyncmaticaUtil {
             return Pair.of(null, null);
         }
 
-        final int version = nbt.contains("Version") ? nbt.getInt("Version") : -1;
-        final int dataVersion = nbt.contains("MinecraftDataVersion") ? nbt.getInt("MinecraftDataVersion") : -1;
+        final int version = nbt.contains("Version") ? nbt.getInt("Version", -1) : -1;
+        final int dataVersion = nbt.contains("MinecraftDataVersion") ? nbt.getInt("MinecraftDataVersion", -1) : -1;
         SchematicMetadata metadata = new SchematicMetadata();
-        metadata.readFromNBT(nbt.getCompound("Metadata"));
+        NbtCompound tags = nbt.getCompoundOrEmpty("Metadata");
+
+        if (!tags.isEmpty())
+        {
+            metadata.readFromNBT(tags);
+        }
 
         return Pair.of(metadata, new SchematicSchema(version, dataVersion));
     }
