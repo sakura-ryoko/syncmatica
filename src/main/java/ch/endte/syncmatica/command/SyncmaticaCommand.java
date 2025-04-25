@@ -15,6 +15,8 @@ import ch.endte.syncmatica.communication.ServerCommunicationManager;
 import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.data.ServerPosition;
 import ch.endte.syncmatica.extended_core.PlayerIdentifier;
+import ch.endte.syncmatica.litematica.schematic.SchematicMetadata;
+import ch.endte.syncmatica.litematica.schematic.SchematicSchema;
 import ch.endte.syncmatica.util.SyncmaticaUtil;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import org.apache.commons.lang3.tuple.Pair;
@@ -33,9 +35,6 @@ import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
 import net.minecraft.world.World;
-
-import fi.dy.masa.litematica.schematic.SchematicMetadata;
-import fi.dy.masa.litematica.schematic.SchematicSchema;
 
 public class SyncmaticaCommand implements IServerCommand
 {

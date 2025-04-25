@@ -8,6 +8,8 @@ import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.extended_core.PlayerIdentifier;
 import ch.endte.syncmatica.extended_core.SubRegionData;
+import ch.endte.syncmatica.litematica.schematic.SchematicMetadata;
+import ch.endte.syncmatica.litematica.schematic.SchematicSchema;
 import ch.endte.syncmatica.material.SyncmaticaMaterialList;
 import ch.endte.syncmatica.util.SyncmaticaUtil;
 import com.google.gson.JsonObject;
@@ -16,9 +18,6 @@ import com.google.gson.JsonPrimitive;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
-
-import fi.dy.masa.litematica.schematic.SchematicMetadata;
-import fi.dy.masa.litematica.schematic.SchematicSchema;
 
 public class ServerPlacement
 {
