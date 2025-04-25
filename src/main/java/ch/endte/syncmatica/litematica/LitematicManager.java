@@ -13,8 +13,12 @@ import ch.endte.syncmatica.data.SyncmaticManager;
 import ch.endte.syncmatica.extended_core.PlayerIdentifier;
 import ch.endte.syncmatica.extended_core.SubRegionData;
 import ch.endte.syncmatica.extended_core.SubRegionPlacementModification;
+import ch.endte.syncmatica.litematica.schematic.FileType;
+import ch.endte.syncmatica.litematica.schematic.SchematicMetadata;
+import ch.endte.syncmatica.litematica.schematic.SchematicSchema;
 import ch.endte.syncmatica.litematica_mixin.MixinSchematicPlacementManager;
 import ch.endte.syncmatica.litematica_mixin.MixinSubregionPlacement;
+import ch.endte.syncmatica.util.SyncmaticaUtil;
 import org.apache.commons.lang3.tuple.Pair;
 
 import net.minecraft.client.MinecraftClient;
@@ -26,12 +30,9 @@ import fi.dy.masa.malilib.gui.Message;
 import fi.dy.masa.litematica.data.DataManager;
 import fi.dy.masa.litematica.data.SchematicHolder;
 import fi.dy.masa.litematica.schematic.LitematicaSchematic;
-import fi.dy.masa.litematica.schematic.SchematicMetadata;
-import fi.dy.masa.litematica.schematic.SchematicSchema;
 import fi.dy.masa.litematica.schematic.placement.SchematicPlacement;
 import fi.dy.masa.litematica.schematic.placement.SchematicPlacementManager;
 import fi.dy.masa.litematica.schematic.placement.SubRegionPlacement;
-import fi.dy.masa.litematica.util.FileType;
 
 // responsible for loading and keeping track of rendered syncmatic placements
 // responsible for keeping track redirected litematic files (e.g. if the syncmatic was
@@ -353,16 +354,17 @@ public class LitematicManager {
             final File file = s.getSchematicFile();
 //            final Path file = Objects.requireNonNull(s.getSchematicFile()).toPath();
             if (file != null) {
-                final File dir = new File(file.getParent());
+//                final File dir = new File(file.getParent());
 //                final Path dir = file.getParent();
 
-                if (file.getName().endsWith(LitematicaSchematic.FILE_EXTENSION)) {
-//                if (file.toString().endsWith(LitematicaSchematic.FILE_EXTENSION)) {
-                    final Pair<SchematicSchema, SchematicMetadata> pair = LitematicaSchematic.readMetadataAndVersionFromFile(dir, file.getName());
+//                if (file.getName().endsWith(LitematicaSchematic.FILE_EXTENSION)) {
+                if (file.toString().endsWith(LitematicaSchematic.FILE_EXTENSION)) {
+//                    final Pair<SchematicSchema, SchematicMetadata> pair = LitematicaSchematic.readMetadataAndVersionFromFile(dir, file.getName());
 //                    final Pair<SchematicSchema, SchematicMetadata> pair = LitematicaSchematic.readMetadataAndVersionFromFile(dir, file.toString());
+                    final Pair<SchematicMetadata, SchematicSchema> pair = SyncmaticaUtil.litematicPeek(file.asPath());
 
                     if (pair != null) {
-                        final SchematicSchema schema = pair.getLeft();
+                        final SchematicSchema schema = pair.getRight();
                         return p.setVersion(schema.litematicVersion(), schema.minecraftDataVersion());
                     }
                 }
