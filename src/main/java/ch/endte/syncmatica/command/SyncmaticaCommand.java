@@ -50,27 +50,27 @@ public class SyncmaticaCommand implements IServerCommand
         dispatcher.register(
                 CommandManager
                         .literal(Reference.MOD_ID)
-                        .requires(Permissions.require(Reference.MOD_ID +".command", DEFAULT_PERMISSIONS))
+                        .requires(Permissions.require(Reference.MOD_ID + ".command", DEFAULT_PERMISSIONS))
                         .then(CommandManager.literal("load")
-                              .requires(Permissions.require(Reference.MOD_ID+".command.load", DEFAULT_PERMISSIONS))
-                              .executes(this::doLoadAll)
-                              .then(CommandManager.argument("file", StringArgumentType.string())
-                                                  .suggests(
-                                                          (ctx, builder) ->
-                                                                  CommandSource.suggestMatching(this.files.keySet(), builder,
-                                                                                                ent -> ServerPlacement.removeExtension(ent.getFileName().toString()),
-                                                                                                ent2 -> this.formatTooltip(this.files.get(ent2).getLeft()
-                                                                                                )
-                                                                  )
-                                                  )
-                                                  .requires(Permissions.require(Reference.MOD_ID + ".command.load_each", DEFAULT_PERMISSIONS))
-                                                  .executes((ctx) ->
-                                                            {
-                                                                String result = StringArgumentType.getString(ctx, "file");
-                                                                return this.doLoadEach(ctx, result);
-                                                            })
-                        )
-        ));
+                                            .requires(Permissions.require(Reference.MOD_ID + ".command.load", DEFAULT_PERMISSIONS))
+                                            .executes(this::doLoadAll)
+                                            .then(CommandManager.argument("file", StringArgumentType.string())
+                                                                .suggests(
+                                                                        (ctx, builder) ->
+                                                                                CommandSource.suggestMatching(this.files.keySet(), builder,
+                                                                                                              ent -> ServerPlacement.removeExtension(ent.getFileName().toString()),
+                                                                                                              ent2 -> this.formatTooltip(this.files.get(ent2).getLeft()
+                                                                                                              )
+                                                                                )
+                                                                )
+                                                                .requires(Permissions.require(Reference.MOD_ID + ".command.load_each", DEFAULT_PERMISSIONS))
+                                                                .executes((ctx) ->
+                                                                          {
+                                                                              String result = StringArgumentType.getString(ctx, "file");
+                                                                              return this.doLoadEach(ctx, result);
+                                                                          })
+                                            )
+                        ));
     }
 
     public void updateSyncmaticDir(Context context)
@@ -181,23 +181,23 @@ public class SyncmaticaCommand implements IServerCommand
                     }
                 });
 
-        ctx.getSource().sendFeedback(() -> Text.of("§b"+ String.format("%02d", count.get()) + "§r Syncmatic file(s) found and loaded."), false);
+        ctx.getSource().sendFeedback(() -> Text.of("§b" + String.format("%02d", count.get()) + "§r Syncmatic file(s) found / loaded."), true);
         this.updateSyncmaticDir(this.context);
         return 1;
     }
 
     private boolean loadEach(ServerCommandSource src, Path p, SchematicMetadata meta, SchematicSchema schema, PlayerIdentifier owner, GlobalPos pos)
     {
-        ServerPlacement placement = new ServerPlacement(UUID.randomUUID(), p, p.getFileName().toString(), owner);
+        ServerPlacement placement = new ServerPlacement(UUID.randomUUID(), p.normalize(), p.getFileName().toString(), owner);
         placement = placement.move(ServerPosition.fromGlobalPos(pos), BlockRotation.NONE, BlockMirror.NONE);
         placement = placement.setMetadata(meta);
         placement = placement.setSchema(schema);
-//        this.context.getSyncmaticManager().addPlacement(placement);
+
         // Update placement to all clients
         ServerCommunicationManager comms = (ServerCommunicationManager) this.context.getCommunicationManager();
         comms.addPlacement(comms.fromExistingPlayer(src.getPlayer()), placement);
         final String name = placement.getName();
-        src.sendFeedback(() -> Text.of("Loaded Server Placement '"+name+"'"), false);
+        src.sendFeedback(() -> Text.of("Loaded Server Placement '§d" + name + "§r'"), true);
         return true;
     }
 
@@ -234,7 +234,7 @@ public class SyncmaticaCommand implements IServerCommand
 
         if (this.loadEach(ctx.getSource(), file, pair.getLeft(), pair.getRight(), owner, globalPos))
         {
-            ctx.getSource().sendFeedback(() -> Text.of("§b01§r Syncmatic file(s) found and loaded."), false);
+            ctx.getSource().sendFeedback(() -> Text.of("§b01§r Syncmatic file(s) found / loaded."), true);
         }
 
         this.updateSyncmaticDir(this.context);
