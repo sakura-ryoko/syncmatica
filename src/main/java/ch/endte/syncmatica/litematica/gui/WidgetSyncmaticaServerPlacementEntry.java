@@ -3,24 +3,25 @@ package ch.endte.syncmatica.litematica.gui;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.Syncmatica;
-import ch.endte.syncmatica.data.LocalLitematicState;
-import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.communication.ClientCommunicationManager;
 import ch.endte.syncmatica.communication.ExchangeTarget;
+import ch.endte.syncmatica.data.LocalLitematicState;
+import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.network.PacketType;
+import io.netty.buffer.Unpooled;
+
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.network.PacketByteBuf;
+
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.widgets.WidgetListEntryBase;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
-import io.netty.buffer.Unpooled;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.network.PacketByteBuf;
 
 
 public class WidgetSyncmaticaServerPlacementEntry extends WidgetListEntryBase<ServerPlacement> {
