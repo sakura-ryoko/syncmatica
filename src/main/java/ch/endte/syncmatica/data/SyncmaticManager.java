@@ -7,9 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
-import javax.annotation.Nullable;
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.Reference;
 import ch.endte.syncmatica.Syncmatica;
@@ -181,13 +179,24 @@ public class SyncmaticManager {
                     return;
                 }
                 final JsonArray arr = obj.getAsJsonArray(PLACEMENTS_JSON_KEY);
+                boolean dirty = false;
                 for (final JsonElement elem : arr) {
                     final ServerPlacement placement = ServerPlacement.fromJson(elem.getAsJsonObject(), context);
 
                     if (placement != null)
                     {
+                        if (placement.isDirty())
+                        {
+                            dirty = true;
+                        }
                         schematics.put(placement.getId(), placement); // NOSONAR
                     }
+                }
+
+                // Dirty flag detected; re-save placements.json
+                if (dirty)
+                {
+                    this.saveServer();
                 }
             } catch (final IllegalStateException | NullPointerException e) {
                 Syncmatica.LOGGER.error("loadServer(): Exception loading server placement; {}", e.getLocalizedMessage());
