@@ -300,7 +300,7 @@ public class ServerPlacement
             else
             {
                 // Check for Absolute Paths being used, and fix
-                displayName = SyncmaticaUtil.sanitizeFileName(normalizeFileName(fileName));
+                displayName = SyncmaticaUtil.sanitizeUnicodeFileName(normalizeFileName(fileName));
                 dirty = true;
             }
 
