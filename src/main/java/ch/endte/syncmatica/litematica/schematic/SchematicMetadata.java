@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.IntStream;
 import javax.annotation.Nullable;
+
 import ch.endte.syncmatica.util.SyncmaticaUtil;
 
 import com.mojang.serialization.Codec;
@@ -29,9 +30,10 @@ public class SchematicMetadata
                     PrimitiveCodec.LONG.fieldOf("TimeCreated").forGetter(get -> get.timeCreated),
                     PrimitiveCodec.LONG.fieldOf("TimeModified").forGetter(get -> get.timeModified),
                     Vec3i.CODEC.fieldOf("EnclosingSize").forGetter(get -> get.enclosingSize),
-                    PrimitiveCodec.INT_STREAM.optionalFieldOf("PreviewImageData", null).forGetter(get -> get.thumbnailPixelData)
-            ).apply(inst, SchematicMetadata::new)
-    );
+                    PrimitiveCodec.INT_STREAM.optionalFieldOf("PreviewImageData", null)
+                                             .forGetter(get -> get.thumbnailPixelData)
+                              ).apply(inst, SchematicMetadata::new)
+                                                                                  );
     private String name;
     private String author;
     private String description;
@@ -62,7 +64,8 @@ public class SchematicMetadata
         this.thumbnailPixelData = null;
     }
 
-    private SchematicMetadata(String name, String author, String desc, int regionCount, int volume, int blocks, long created, long modified, Vec3i size, @Nullable IntStream thumbnail)
+    private SchematicMetadata(String name, String author, String desc, int regionCount, int volume, int blocks,
+                              long created, long modified, Vec3i size, @Nullable IntStream thumbnail)
     {
         this.name = name;
         this.author = author;

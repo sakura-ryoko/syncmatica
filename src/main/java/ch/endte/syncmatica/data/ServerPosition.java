@@ -6,14 +6,16 @@ import com.google.gson.JsonPrimitive;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
 
-public class ServerPosition {
+public class ServerPosition
+{
     private final BlockPos position;
     private final String dimensionId;
 
     public static final String NETHER_DIMENSION_ID = "minecraft:the_nether";
     public static final String OVERWORLD_DIMENSION_ID = "minecraft:overworld";
 
-    public ServerPosition(final BlockPos pos, final String dim) {
+    public ServerPosition(final BlockPos pos, final String dim)
+    {
         position = pos;
         dimensionId = dim;
     }
@@ -23,15 +25,18 @@ public class ServerPosition {
         return new ServerPosition(pos.pos(), pos.dimension().getValue().toString());
     }
 
-    public BlockPos getBlockPosition() {
+    public BlockPos getBlockPosition()
+    {
         return position;
     }
 
-    public String getDimensionId() {
+    public String getDimensionId()
+    {
         return dimensionId;
     }
 
-    public JsonObject toJson() {
+    public JsonObject toJson()
+    {
         final JsonObject obj = new JsonObject();
         final JsonArray arr = new JsonArray();
         arr.add(new JsonPrimitive(position.getX()));
@@ -42,8 +47,10 @@ public class ServerPosition {
         return obj;
     }
 
-    public static ServerPosition fromJson(final JsonObject obj) {
-        if (obj.has("position") && obj.has("dimension")) {
+    public static ServerPosition fromJson(final JsonObject obj)
+    {
+        if (obj.has("position") && obj.has("dimension"))
+        {
             final int x;
             final int y;
             final int z;

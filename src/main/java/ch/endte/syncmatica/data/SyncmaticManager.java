@@ -8,37 +8,46 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
+
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.Reference;
 import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.util.SyncmaticaUtil;
 import com.google.gson.*;
 
-public class SyncmaticManager {
+public class SyncmaticManager
+{
     public static final String PLACEMENTS_JSON_KEY = "placements";
     private final Map<UUID, ServerPlacement> schematics = new HashMap<>();
     private final Collection<Consumer<ServerPlacement>> consumers = new ArrayList<>();
 
     Context context;
 
-    public void setContext(final Context con) {
-        if (context == null) {
+    public void setContext(final Context con)
+    {
+        if (context == null)
+        {
             context = con;
-        } else {
+        }
+        else
+        {
             throw new Context.DuplicateContextAssignmentException("Duplicate Context assignment");
         }
     }
 
-    public void addPlacement(final ServerPlacement placement) {
+    public void addPlacement(final ServerPlacement placement)
+    {
         schematics.put(placement.getId(), placement);
         updateServerPlacement(placement);
     }
 
-    public ServerPlacement getPlacement(final UUID id) {
+    public ServerPlacement getPlacement(final UUID id)
+    {
         return schematics.get(id);
     }
 
-    public Collection<ServerPlacement> getAll() {
+    public Collection<ServerPlacement> getAll()
+    {
         return schematics.values();
     }
 
@@ -58,25 +67,31 @@ public class SyncmaticManager {
         return bool.get();
     }
 
-    public void removePlacement(final ServerPlacement placement) {
+    public void removePlacement(final ServerPlacement placement)
+    {
         schematics.remove(placement.getId());
         updateServerPlacement(placement);
     }
 
-    public void addServerPlacementConsumer(final Consumer<ServerPlacement> consumer) {
+    public void addServerPlacementConsumer(final Consumer<ServerPlacement> consumer)
+    {
         consumers.add(consumer);
     }
 
-    public void removeServerPlacementConsumer(final Consumer<ServerPlacement> consumer) {
+    public void removeServerPlacementConsumer(final Consumer<ServerPlacement> consumer)
+    {
         consumers.remove(consumer);
     }
 
-    public void updateServerPlacement(final ServerPlacement updated) {
-        for (final Consumer<ServerPlacement> consumer : consumers) {
+    public void updateServerPlacement(final ServerPlacement updated)
+    {
+        for (final Consumer<ServerPlacement> consumer : consumers)
+        {
             consumer.accept(updated);
         }
 
-        if (context.isServer()) {
+        if (context.isServer())
+        {
             saveServer();
         }
     }
@@ -97,11 +112,13 @@ public class SyncmaticManager {
         }
     }
 
-    private void saveServer() {
+    private void saveServer()
+    {
         final JsonObject obj = new JsonObject();
         final JsonArray arr = new JsonArray();
 
-        for (final ServerPlacement p : getAll()) {
+        for (final ServerPlacement p : getAll())
+        {
             arr.add(p.toJson());
         }
 
@@ -116,10 +133,14 @@ public class SyncmaticManager {
         Syncmatica.debug("saveServer(): placements path: '{}'", current.toAbsolutePath().toString());
 
         // We still use FileWriter, etc for porting/compatibility -- for now.
-        try (final FileWriter writer = new FileWriter(incoming.toFile())) {
+        try (final FileWriter writer = new FileWriter(incoming.toFile()))
+        {
             writer.write(new GsonBuilder().setPrettyPrinting().create().toJson(obj));
-        } catch (final IOException e) {
-            Syncmatica.LOGGER.error("saveServer(): Exception writing incoming file '{}'; {}", incoming.getFileName().toString(), e.getLocalizedMessage());
+        }
+        catch (final IOException e)
+        {
+            Syncmatica.LOGGER.error("saveServer(): Exception writing incoming file '{}'; {}",
+                                    incoming.getFileName().toString(), e.getLocalizedMessage());
             e.printStackTrace();
             return;
         }
@@ -127,7 +148,8 @@ public class SyncmaticManager {
         SyncmaticaUtil.backupAndReplace(backup, current, incoming);
     }
 
-    private void loadServer() {
+    private void loadServer()
+    {
 //        final File f = new File(context.getConfigFolder(), "placements.json");
 //        if (f.exists() && f.isFile() && f.canRead()) {
         final Path f = context.getConfigFolder().resolve("placements.json");
@@ -139,48 +161,60 @@ public class SyncmaticManager {
             {
                 if (!Files.exists(f) && Files.isRegularFile(upgrade))
                 {
-                    Syncmatica.LOGGER.warn("loadServer(): Migrating '{}' to: '{}'", upgrade.toAbsolutePath().toString(), f.toAbsolutePath().toString());
+                    Syncmatica.LOGGER.warn("loadServer(): Migrating '{}' to: '{}'", upgrade.toAbsolutePath().toString(),
+                                           f.toAbsolutePath().toString());
                     Files.move(upgrade, f);
                 }
                 else if (Files.isRegularFile(upgrade))
                 {
                     Path oldFile = context.getConfigFolder().resolve("placements.json.old");
-                    Syncmatica.LOGGER.warn("loadServer(): Backing up stale '{}' to: '{}'", upgrade.toAbsolutePath().toString(), oldFile.toAbsolutePath().toString());
+                    Syncmatica.LOGGER.warn("loadServer(): Backing up stale '{}' to: '{}'",
+                                           upgrade.toAbsolutePath().toString(), oldFile.toAbsolutePath().toString());
                     Files.move(upgrade, oldFile);
                 }
             }
             catch (Exception e)
             {
-                Syncmatica.LOGGER.error("loadServer(): Exception moving upgrade file '{}'; {}", upgrade.getFileName().toString(), e.getLocalizedMessage());
+                Syncmatica.LOGGER.error("loadServer(): Exception moving upgrade file '{}'; {}",
+                                        upgrade.getFileName().toString(), e.getLocalizedMessage());
                 e.printStackTrace();
             }
         }
 
         Syncmatica.debug("loadServer(): placements path: [{}]", f.toAbsolutePath().toString());
 
-        if (Files.exists(f) && Files.isReadable(f)) {
+        if (Files.exists(f) && Files.isReadable(f))
+        {
             JsonElement element = null;
-            try {
+            try
+            {
                 final FileReader reader = new FileReader(f.toFile());
 
                 element = JsonParser.parseReader(reader);
                 reader.close();
 
-            } catch (final Exception e) {
-                Syncmatica.LOGGER.error("loadServer(): Exception reading file '{}'; {}", f.getFileName().toString(), e.getLocalizedMessage());
+            }
+            catch (final Exception e)
+            {
+                Syncmatica.LOGGER.error("loadServer(): Exception reading file '{}'; {}", f.getFileName().toString(),
+                                        e.getLocalizedMessage());
                 e.printStackTrace();
             }
-            if (element == null) {
+            if (element == null)
+            {
                 return;
             }
-            try {
+            try
+            {
                 final JsonObject obj = element.getAsJsonObject();
-                if (obj == null || !obj.has(PLACEMENTS_JSON_KEY)) {
+                if (obj == null || !obj.has(PLACEMENTS_JSON_KEY))
+                {
                     return;
                 }
                 final JsonArray arr = obj.getAsJsonArray(PLACEMENTS_JSON_KEY);
                 boolean dirty = false;
-                for (final JsonElement elem : arr) {
+                for (final JsonElement elem : arr)
+                {
                     final ServerPlacement placement = ServerPlacement.fromJson(elem.getAsJsonObject(), context);
 
                     if (placement != null)
@@ -198,8 +232,11 @@ public class SyncmaticManager {
                 {
                     this.saveServer();
                 }
-            } catch (final IllegalStateException | NullPointerException e) {
-                Syncmatica.LOGGER.error("loadServer(): Exception loading server placement; {}", e.getLocalizedMessage());
+            }
+            catch (final IllegalStateException | NullPointerException e)
+            {
+                Syncmatica.LOGGER.error("loadServer(): Exception loading server placement; {}",
+                                        e.getLocalizedMessage());
                 e.printStackTrace();
             }
         }

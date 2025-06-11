@@ -1,15 +1,15 @@
 package ch.endte.syncmatica.data;
 
+import ch.endte.syncmatica.Context;
+import ch.endte.syncmatica.Syncmatica;
+import ch.endte.syncmatica.util.SyncmaticaUtil;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.UUID;
-import ch.endte.syncmatica.Context;
-import ch.endte.syncmatica.Syncmatica;
-import ch.endte.syncmatica.util.SyncmaticaUtil;
 
 public class FileStorage implements IFileStorage {
 
@@ -140,7 +140,7 @@ public class FileStorage implements IFileStorage {
             return litematicPath.resolve(placement.getHash().toString()+".litematic");
         }
 
-        String fileName = placement.getNormalFileName();
+        String fileName = SyncmaticaUtil.sanitizeUnicodeFileName(placement.getNormalFileName());
         Syncmatica.debug("getSchematicPath(): Placement filename: '{}'", fileName);
 
         if (fileName.contains(".litematic")) {
