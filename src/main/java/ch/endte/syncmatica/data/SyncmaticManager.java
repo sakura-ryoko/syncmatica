@@ -223,6 +223,7 @@ public class SyncmaticManager
                         {
                             dirty = true;
                         }
+
                         schematics.put(placement.getId(), placement); // NOSONAR
                     }
                 }
@@ -230,6 +231,7 @@ public class SyncmaticManager
                 // Dirty flag detected; re-save placements.json
                 if (dirty)
                 {
+                    Syncmatica.LOGGER.warn("loadServer(): Found a dirty placements.json; re-saving with corrections.");
                     this.saveServer();
                 }
             }

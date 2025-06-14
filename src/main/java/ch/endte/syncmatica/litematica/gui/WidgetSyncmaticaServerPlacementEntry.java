@@ -12,24 +12,28 @@ import ch.endte.syncmatica.communication.ClientCommunicationManager;
 import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.network.PacketType;
+
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.widgets.WidgetListEntryBase;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
+
 import io.netty.buffer.Unpooled;
+
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.network.PacketByteBuf;
 
 
-public class WidgetSyncmaticaServerPlacementEntry extends WidgetListEntryBase<ServerPlacement> {
-
+public class WidgetSyncmaticaServerPlacementEntry extends WidgetListEntryBase<ServerPlacement>
+{
     private final ServerPlacement placement;
     private final boolean isOdd;
 
     public WidgetSyncmaticaServerPlacementEntry(final int x, int y, final int width, final int height, final ServerPlacement entry,
-                                                final int listIndex) {
+                                                final int listIndex)
+    {
         super(x, y, width, height, entry, listIndex);
         placement = entry;
         isOdd = (listIndex % 2 == 1);
@@ -59,106 +63,131 @@ public class WidgetSyncmaticaServerPlacementEntry extends WidgetListEntryBase<Se
                 , () -> LitematicManager.getInstance().getActiveContext().getCommunicationManager().getDownloadState(placement)
                 , null));
         multi.add(new BaseButtonType("syncmatica.gui.button.download"
-                , () -> {
-            final Context con = LitematicManager.getInstance().getActiveContext();
-            final LocalLitematicState state = con.getFileStorage().getLocalState(placement);
-            return !state.isLocalFileReady() && state.isReadyForDownload();
-        }, new ButtonListener(ButtonListener.Type.DOWNLOAD, this)));
+                , () ->
+                                     {
+                                         final Context con = LitematicManager.getInstance().getActiveContext();
+                                         final LocalLitematicState state = con.getFileStorage().getLocalState(placement);
+                                         return !state.isLocalFileReady() && state.isReadyForDownload();
+                                     }, new ButtonListener(ButtonListener.Type.DOWNLOAD, this)));
         multi.add(new BaseButtonType("syncmatica.gui.button.load",
-                () -> !LitematicManager.getInstance().isRendered(placement),
-                new ButtonListener(ButtonListener.Type.LOAD, this)));
+                                     () -> !LitematicManager.getInstance().isRendered(placement),
+                                     new ButtonListener(ButtonListener.Type.LOAD, this)));
         multi.add(new BaseButtonType("syncmatica.gui.button.unload",
-                () -> LitematicManager.getInstance().isRendered(placement),
-                new ButtonListener(ButtonListener.Type.UNLOAD, this)));
+                                     () -> LitematicManager.getInstance().isRendered(placement),
+                                     new ButtonListener(ButtonListener.Type.UNLOAD, this)));
 
         final ButtonGeneric button = new MultiTypeButton(posX, y, true, multi);
         addButton(button, null);
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected, DrawContext drawContext) {
+    public void render(DrawContext drawContext, int mouseX, int mouseY, boolean selected)
+    {
         // Source: WidgetSchematicEntry
-        RenderUtils.color(1f, 1f, 1f, 1f);
+//        RenderUtils.color(1f, 1f, 1f, 1f);
 
         // Draw a lighter background for the hovered and the selected entry
-        if (selected || isMouseOver(mouseX, mouseY)) {
-            RenderUtils.drawRect(x, y, width, height, 0x70FFFFFF);
-        } else if (isOdd) {
-            RenderUtils.drawRect(x, y, width, height, 0x20FFFFFF);
+        if (selected || isMouseOver(mouseX, mouseY))
+        {
+            RenderUtils.drawRect(drawContext, x, y, width, height, 0x70FFFFFF);
+        }
+        else if (isOdd)
+        {
+            RenderUtils.drawRect(drawContext, x, y, width, height, 0x20FFFFFF);
         }
         // Draw a slightly lighter background for even entries
-        else {
-            RenderUtils.drawRect(x, y, width, height, 0x50FFFFFF);
+        else
+        {
+            RenderUtils.drawRect(drawContext, x, y, width, height, 0x50FFFFFF);
         }
 
         final String schematicName = placement.getName();
-        drawString(x + 20, y + 7, 0xFFFFFFFF, schematicName, drawContext);
-        drawSubWidgets(mouseX, mouseY, drawContext);
+        drawString(drawContext, x + 20, y + 7, 0xFFFFFFFF, schematicName);
+        drawSubWidgets(drawContext, mouseX, mouseY);
     }
 
-    private static class ButtonListener implements IButtonActionListener {
+    private static class ButtonListener implements IButtonActionListener
+    {
 
         Type type;
         WidgetSyncmaticaServerPlacementEntry placement;
 
-        public ButtonListener(final Type type, final WidgetSyncmaticaServerPlacementEntry placement) {
+        public ButtonListener(final Type type, final WidgetSyncmaticaServerPlacementEntry placement)
+        {
             this.type = type;
             this.placement = placement;
         }
 
         @Override
-        public void actionPerformedWithButton(final ButtonBase button, final int arg1) {
-            if (type == null) {
+        public void actionPerformedWithButton(final ButtonBase button, final int arg1)
+        {
+            if (type == null)
+            {
                 return;
             }
             button.setEnabled(false);
             type.onAction(placement);
         }
 
-        public enum Type {
-            LOAD() {
-                @Override
-                void onAction(final WidgetSyncmaticaServerPlacementEntry placement) {
-                    LitematicManager.getInstance().renderSyncmatic(placement.placement);
-                }
-            },
-            UNLOAD() {
-                @Override
-                void onAction(final WidgetSyncmaticaServerPlacementEntry placement) {
-                    LitematicManager.getInstance().unrenderSyncmatic(placement.placement);
-                }
-            },
-            DOWNLOAD() {
-                @Override
-                void onAction(final WidgetSyncmaticaServerPlacementEntry placement) {
-                    final Context con = LitematicManager.getInstance().getActiveContext();
-                    final ExchangeTarget server = ((ClientCommunicationManager) con.getCommunicationManager()).getServer();
-                    if (con.getCommunicationManager().getDownloadState(placement.placement)) {
-                        return;
-                    }
-                    try {
-                        con.getCommunicationManager().download(placement.placement, server);
-                    } catch (final NoSuchAlgorithmException | IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            },
-            REMOVE() {
-                @Override
-                void onAction(final WidgetSyncmaticaServerPlacementEntry placement) {
-                    final Context con = LitematicManager.getInstance().getActiveContext();
-                    final ExchangeTarget server = ((ClientCommunicationManager) con.getCommunicationManager()).getServer();
-                    final PacketByteBuf packetBuf = new PacketByteBuf(Unpooled.buffer());
-                    packetBuf.writeUuid(placement.placement.getId());
-                    server.sendPacket(PacketType.REMOVE_SYNCMATIC, packetBuf, LitematicManager.getInstance().getActiveContext());
-                }
-            },
-            MATERIAL_GATHERING() {
-                @Override
-                void onAction(final WidgetSyncmaticaServerPlacementEntry placement) {
-                    Syncmatica.LOGGER.info("Opened Material Gatherings GUI - currently unsupported operation");
-                }
-            };
+        public enum Type
+        {
+            LOAD()
+                    {
+                        @Override
+                        void onAction(final WidgetSyncmaticaServerPlacementEntry placement)
+                        {
+                            LitematicManager.getInstance().renderSyncmatic(placement.placement);
+                        }
+                    },
+            UNLOAD()
+                    {
+                        @Override
+                        void onAction(final WidgetSyncmaticaServerPlacementEntry placement)
+                        {
+                            LitematicManager.getInstance().unrenderSyncmatic(placement.placement);
+                        }
+                    },
+            DOWNLOAD()
+                    {
+                        @Override
+                        void onAction(final WidgetSyncmaticaServerPlacementEntry placement)
+                        {
+                            final Context con = LitematicManager.getInstance().getActiveContext();
+                            final ExchangeTarget server = ((ClientCommunicationManager) con.getCommunicationManager()).getServer();
+                            if (con.getCommunicationManager().getDownloadState(placement.placement))
+                            {
+                                return;
+                            }
+                            try
+                            {
+                                con.getCommunicationManager().download(placement.placement, server);
+                            }
+                            catch (final NoSuchAlgorithmException | IOException e)
+                            {
+                                e.printStackTrace();
+                            }
+                        }
+                    },
+            REMOVE()
+                    {
+                        @Override
+                        void onAction(final WidgetSyncmaticaServerPlacementEntry placement)
+                        {
+                            final Context con = LitematicManager.getInstance().getActiveContext();
+                            final ExchangeTarget server = ((ClientCommunicationManager) con.getCommunicationManager()).getServer();
+                            final PacketByteBuf packetBuf = new PacketByteBuf(Unpooled.buffer());
+                            packetBuf.writeUuid(placement.placement.getId());
+                            server.sendPacket(PacketType.REMOVE_SYNCMATIC, packetBuf, LitematicManager.getInstance().getActiveContext());
+                        }
+                    },
+            MATERIAL_GATHERING()
+                    {
+                        @Override
+                        void onAction(final WidgetSyncmaticaServerPlacementEntry placement)
+                        {
+                            Syncmatica.LOGGER.warn("Opened Material Gatherings GUI - currently unsupported operation");
+                        }
+                    };
 
             abstract void onAction(WidgetSyncmaticaServerPlacementEntry placement);
         }

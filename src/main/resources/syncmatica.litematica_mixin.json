@@ -7,15 +7,11 @@
 	"client": [
 		"MixinGuiMainMenu",
 		"MixinWidgetListSchematicPlacement",
-		"MixinSchematicPlacement",
 		"MixinWidgetSchematicPlacement",
 		"MixinGuiBase",
-		"MixinSchematicHolder",
 		"MixinButtonBase",
 		"MixinWidgetSchematicPlacement",
-		"MixinGuiPlacementConfiguration",
-		"MixinSubregionPlacement",
-		"MixinSchematicPlacementManager"
+		"MixinGuiPlacementConfiguration"
 	],
 	"server": [],
 	"injectors": {

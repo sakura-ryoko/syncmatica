@@ -1,0 +1,4 @@
+		"MixinSchematicPlacement",
+		"MixinSchematicHolder",
+		"MixinSubregionPlacement",
+		"MixinSchematicPlacementManager",

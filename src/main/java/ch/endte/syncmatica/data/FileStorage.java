@@ -11,29 +11,38 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class FileStorage implements IFileStorage {
+public class FileStorage implements IFileStorage
+{
 
     private final HashMap<ServerPlacement, Long> buffer = new HashMap<>();
     private Context context = null;
 
     @Override
-    public void setContext(final Context con) {
-        if (context == null) {
+    public void setContext(final Context con)
+    {
+        if (context == null)
+        {
             context = con;
-        } else {
+        }
+        else
+        {
             throw new Context.DuplicateContextAssignmentException("Duplicate Context assignment");
         }
     }
 
     @Override
-    public LocalLitematicState getLocalState(final ServerPlacement placement) {
+    public LocalLitematicState getLocalState(final ServerPlacement placement)
+    {
         final Path localFile = getSchematicPath(placement);
 //        if (localFile.isFile()) {
-        if (Files.isRegularFile(localFile)) {
-            if (isDownloading(placement)) {
+        if (Files.isRegularFile(localFile))
+        {
+            if (isDownloading(placement))
+            {
                 return LocalLitematicState.DOWNLOADING_LITEMATIC;
             }
-            if ((buffer.containsKey(placement) && buffer.get(placement) == this.getLastModified(localFile)) || hashCompare(localFile, placement)) {
+            if ((buffer.containsKey(placement) && buffer.get(placement) == this.getLastModified(localFile)) || hashCompare(localFile, placement))
+            {
                 return LocalLitematicState.LOCAL_LITEMATIC_PRESENT;
             }
             return LocalLitematicState.LOCAL_LITEMATIC_DESYNC;
@@ -59,26 +68,34 @@ public class FileStorage implements IFileStorage {
         return System.currentTimeMillis();
     }
 
-    private boolean isDownloading(final ServerPlacement placement) {
-        if (context == null) {
+    private boolean isDownloading(final ServerPlacement placement)
+    {
+        if (context == null)
+        {
             throw new RuntimeException("No CommunicationManager has been set yet - cannot get litematic state");
         }
         return context.getCommunicationManager().getDownloadState(placement);
     }
 
     @Override
-    public Path getLocalLitematic(final ServerPlacement placement) {
-        if (getLocalState(placement).isLocalFileReady()) {
+    public Path getLocalLitematic(final ServerPlacement placement)
+    {
+        if (getLocalState(placement).isLocalFileReady())
+        {
             return getSchematicPath(placement);
-        } else {
+        }
+        else
+        {
             return null;
         }
     }
 
     // method for creating an empty file for the litematic data
     @Override
-    public Path createLocalLitematic(final ServerPlacement placement) {
-        if (getLocalState(placement).isLocalFileReady()) {
+    public Path createLocalLitematic(final ServerPlacement placement)
+    {
+        if (getLocalState(placement).isLocalFileReady())
+        {
             throw new IllegalArgumentException("");
         }
 //        final File file = getSchematicPath(placement);
@@ -111,19 +128,25 @@ public class FileStorage implements IFileStorage {
         return file;
     }
 
-    private boolean hashCompare(final Path localFile, final ServerPlacement placement) {
+    private boolean hashCompare(final Path localFile, final ServerPlacement placement)
+    {
         UUID hash = null;
-        try {
+        try
+        {
             hash = SyncmaticaUtil.createChecksum(new FileInputStream(localFile.toFile()));
-        } catch (final Exception e) {
+        }
+        catch (final Exception e)
+        {
             // can be safely ignored since we established that file has been found
             e.printStackTrace();
         }// wtf just exception?
 
-        if (hash == null) {
+        if (hash == null)
+        {
             return false;
         }
-        if (hash.equals(placement.getHash())) {
+        if (hash.equals(placement.getHash()))
+        {
             buffer.put(placement, this.getLastModified(localFile));
             return true;
         }
@@ -137,18 +160,21 @@ public class FileStorage implements IFileStorage {
         if (context.isServer())
         {
 //            return new File(litematicPath, placement.getHash().toString() + ".litematic");
-            return litematicPath.resolve(placement.getHash().toString()+".litematic");
+            return litematicPath.resolve(placement.getHash().toString() + ".litematic");
         }
 
         String fileName = SyncmaticaUtil.sanitizeUnicodeFileName(placement.getNormalFileName());
         Syncmatica.debug("getSchematicPath(): Placement filename: '{}'", fileName);
 
-        if (fileName.contains(".litematic")) {
+        if (fileName.endsWith(".litematic"))
+        {
 //            return new File(litematicPath, placement.getFileName());
             return litematicPath.resolve(fileName);
-        } else {
+        }
+        else
+        {
 //            return new File(litematicPath, placement.getFileName() + ".litematic");
-            return litematicPath.resolve(fileName + ".litematic");
+            return litematicPath.resolve(fileName+".litematic");
         }
     }
 }

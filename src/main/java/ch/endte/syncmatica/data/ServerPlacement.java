@@ -15,6 +15,7 @@ import ch.endte.syncmatica.material.SyncmaticaMaterialList;
 import ch.endte.syncmatica.util.SyncmaticaUtil;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import org.apache.commons.lang3.tuple.Pair;
 
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
@@ -23,10 +24,10 @@ import net.minecraft.util.math.BlockPos;
 public class ServerPlacement
 {
     private final UUID id;
-    private final Path file; // Stores as a Path just for easier file name operations
-    private final String fileName; // The basic "file name" field that may, or may not point to the actual origin file.
     private final UUID hashValue; // UUID for the file contents
     // UUID since easier to transmit compare etc.
+    private Path file; // Stores as a Path just for easier file name operations
+    private String fileName; // The basic "file name" field that may, or may not point to the actual origin file.
 
     private PlayerIdentifier owner; // player that shared it
     private PlayerIdentifier lastModifiedBy; // player that last modified it
@@ -58,11 +59,11 @@ public class ServerPlacement
         this.lastModifiedBy = owner;
         this.litematicVersion = litematicVersion;
         this.dataVersion = dataVersion;
+        this.dirty = false;
     }
 
     public ServerPlacement(final UUID id, final Path file, final String displayName, final PlayerIdentifier owner)
     {
-//        this(id, file, removeExtension(file), displayName, generateHash(file), owner, -1, -1);
         this(id, file, file.toAbsolutePath().toString(), displayName, generateHash(file), owner, -1, -1);
     }
 
@@ -159,6 +160,13 @@ public class ServerPlacement
         return this;
     }
 
+    public ServerPlacement setFile(Path file)
+    {
+        this.file = file;
+        this.fileName = file.toAbsolutePath().toString();
+        return this;
+    }
+
     public ServerPlacement setSchema(SchematicSchema schema)
     {
         this.litematicVersion = schema.litematicVersion();
@@ -233,11 +241,19 @@ public class ServerPlacement
 
         if (badFileName.contains("/") || badFileName.contains("\\"))
         {
-            Path dirtyPath = Paths.get(badFileName);
+            fileName = SyncmaticaUtil.sanitizeUnicodeSubDirFileName(badFileName);
+//            Syncmatica.debug("normalizeFileName(): sanitize: [{}] -> [{}]", badFileName, fileName);
+
+            Path dirtyPath = Paths.get(fileName);
             fileName = dirtyPath.getFileName().toString();
-            Syncmatica.debug("normalizeFileName(): Normalizing placement filename '{}' to: '{}'", badFileName,
-                             fileName);
         }
+        else
+        {
+            fileName = SyncmaticaUtil.sanitizeUnicodeFileName(badFileName);
+        }
+
+        Syncmatica.debug("normalizeFileName(): Normalizing placement filename '{}' to: '{}'",
+                         badFileName, fileName);
 
         return fileName;
     }
@@ -318,7 +334,7 @@ public class ServerPlacement
             && obj.has("mirror"))
         {
             final UUID id = UUID.fromString(obj.get("id").getAsString());
-            final String fileName = obj.get("file_name").getAsString();
+            final String badFileName = obj.get("file_name").getAsString();
             final UUID hashValue = UUID.fromString(obj.get("hash").getAsString());
             String displayName;
             int version = -1;
@@ -339,7 +355,8 @@ public class ServerPlacement
             else
             {
                 // Check for Absolute Paths being used, and fix
-                displayName = SyncmaticaUtil.sanitizeUnicodeFileName(normalizeFileName(fileName));
+                displayName = normalizeFileName(badFileName);
+                Syncmatica.debug("ServerPlacement#fromJson(): displayName NORMALIZE [{}] --> Dirty", displayName);
                 dirty = true;
             }
 
@@ -353,10 +370,37 @@ public class ServerPlacement
                 dataVersion = obj.get("dataVersion").getAsInt();
             }
 
+            String fileName = badFileName;
+
+            if (!badFileName.endsWith(".litematic"))
+            {
+                fileName = SyncmaticaUtil.sanitizeUnicodeFileName(badFileName) + ".litematic";
+                Syncmatica.debug("ServerPlacement#fromJson(): no Extension [{}] -> [{}] --> Dirty", badFileName, fileName);
+                dirty = true;
+            }
+
+            // Verify Metadata // Correct it if file is found, but only for Server Side;
+            // because Client side Litematica handles that for us here.
+            if (context.isServer())
+            {
+                final Path testFile = context.getLitematicFolder().resolve(hashValue + ".litematic");
+                final Pair<SchematicMetadata, SchematicSchema> pair = SyncmaticaUtil.litematicPeek(testFile);
+
+                if (pair.getLeft() != null && !displayName.equals(pair.getLeft().getName()))
+                {
+                    displayName = pair.getLeft().getName();
+                    version = pair.getRight().litematicVersion();
+                    dataVersion = pair.getRight().minecraftDataVersion();
+                    Syncmatica.debug("ServerPlacement#fromJson(): Fix Metadata Name: [{}] --> Dirty", displayName);
+                    dirty = true;
+                }
+            }
+
             final ServerPlacement newPlacement = new ServerPlacement(id, fileName, displayName, hashValue, owner,
                                                                      version, dataVersion);
 
             final ServerPosition pos = ServerPosition.fromJson(obj.get("origin").getAsJsonObject());
+
             if (pos == null)
             {
                 return null;
@@ -372,8 +416,13 @@ public class ServerPlacement
             }
             else
             {
+                if (!newPlacement.lastModifiedBy.getName().equals(owner.getName()))
+                {
+                    Syncmatica.debug("ServerPlacement#fromJson(): Update owner: [{}] -> [{}] --> Dirty", newPlacement.lastModifiedBy.getName(), owner.getName());
+                    dirty = true;
+                }
+
                 newPlacement.lastModifiedBy = owner;
-                dirty = true;
             }
 
             if (obj.has("subregionData"))

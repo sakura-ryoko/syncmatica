@@ -84,6 +84,7 @@ public class Context
             catch (Exception e)
             {
                 Syncmatica.LOGGER.fatal("Context(): Fatal error creating litematic Folder.  Exception: {}", e.getLocalizedMessage());
+                throw new RuntimeException(e);
             }
         }
         integratedServer = integrated;

@@ -23,8 +23,8 @@ import net.minecraft.util.math.Vec3i;
 
 public class SyncmaticaUtil
 {
-    static final int[] ILLEGAL_CHARS = {34, 60, 62, 124, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 58, 42, 63, 92, 47};
-    static final String ILLEGAL_PATTERNS = "(^(con|prn|aux|nul|com[0-9]|lpt[0-9])(\\..*)?$)|(^\\.\\.*$)";
+    public static final int[] ILLEGAL_CHARS = {34, 60, 62, 124, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 58, 42, 63, 92, 47};
+    public static final String ILLEGAL_PATTERNS = "(^(con|prn|aux|nul|com[0-9]|lpt[0-9])(\\..*)?$)|(^\\.\\.*$)";
     public static final String REGEX_SANITIZE = "[\\\\/:*?\"<>|]|\\p{C}|\\p{M}";
 
     private SyncmaticaUtil()
@@ -83,7 +83,58 @@ public class SyncmaticaUtil
 
     public static String sanitizeUnicodeFileName(String fileIn)
     {
-        return fileIn.replaceAll(REGEX_SANITIZE, "");
+        return fileIn.replaceAll(REGEX_SANITIZE, "_").stripLeading().stripTrailing();
+    }
+
+    public static String sanitizeUnicodeSubDirFileName(final String badFileName)
+    {
+        StringBuilder builder = new StringBuilder();
+        String current = badFileName;
+
+        if (badFileName.contains("/"))
+        {
+            String[] split = current.split("/");
+
+            if (split.length > 1)
+            {
+                builder.append(sanitizeUnicodeFileName(split[0]));
+
+                for (int i = 1; i < split.length; i++)
+                {
+                    builder.append("/").append(sanitizeUnicodeFileName(split[i]));
+                }
+            }
+            else
+            {
+                builder.append(sanitizeUnicodeFileName(split[0]));
+            }
+
+            current = builder.toString();
+            builder = new StringBuilder();
+        }
+
+        if (badFileName.contains("\\"))
+        {
+            String[] split = current.split("\\\\");
+
+            if (split.length > 1)
+            {
+                builder.append(sanitizeUnicodeFileName(split[0]));
+
+                for (int i = 1; i < split.length; i++)
+                {
+                    builder.append("\\").append(sanitizeUnicodeFileName(split[i]));
+                }
+            }
+            else
+            {
+                builder.append(sanitizeUnicodeFileName(split[0]));
+            }
+
+            current = builder.toString();
+        }
+
+        return current;
     }
 
     public static void backupAndReplace(final Path backup, final Path current, final Path incoming)

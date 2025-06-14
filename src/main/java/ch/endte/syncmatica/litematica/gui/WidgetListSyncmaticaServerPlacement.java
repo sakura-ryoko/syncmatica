@@ -15,6 +15,7 @@ import ch.endte.syncmatica.data.ServerPosition;
 import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.litematica.ScreenHelper;
 import ch.endte.syncmatica.util.SyncmaticaUtil;
+
 import fi.dy.masa.litematica.gui.Icons;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.LeftRight;
@@ -23,18 +24,21 @@ import fi.dy.masa.malilib.gui.widgets.WidgetListBase;
 import fi.dy.masa.malilib.gui.widgets.WidgetSearchBar;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
+
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.math.BlockPos;
 
 
-public class WidgetListSyncmaticaServerPlacement extends WidgetListBase<ServerPlacement, WidgetSyncmaticaServerPlacementEntry> {
+public class WidgetListSyncmaticaServerPlacement extends WidgetListBase<ServerPlacement, WidgetSyncmaticaServerPlacementEntry>
+{
 
     private final int infoWidth;
     private final int infoHeight;
     private final GuiSyncmaticaServerPlacementList parent;
 
     public WidgetListSyncmaticaServerPlacement(final int x, final int y, final int width, final int height, final GuiSyncmaticaServerPlacementList parent,
-                                               final ISelectionListener<ServerPlacement> selectionListener) {
+                                               final ISelectionListener<ServerPlacement> selectionListener)
+    {
         super(x, y, width, height, selectionListener);
         browserEntryHeight = 22;
         infoWidth = 170;
@@ -47,7 +51,8 @@ public class WidgetListSyncmaticaServerPlacement extends WidgetListBase<ServerPl
     }
 
     @Override
-    public void setSize(final int width, final int height) {
+    public void setSize(final int width, final int height)
+    {
         super.setSize(width, height);
 
         browserWidth = getBrowserWidthForTotalWidth(width);
@@ -55,33 +60,37 @@ public class WidgetListSyncmaticaServerPlacement extends WidgetListBase<ServerPl
     }
 
 
-    protected int getBrowserWidthForTotalWidth(final int width) {
+    protected int getBrowserWidthForTotalWidth(final int width)
+    {
         return width - 6 - infoWidth;
     }
 
     // source: WidgetFileBrowserBase
     @Override
-    public void drawContents(DrawContext drawContext, int mouseX, int mouseY, float partialTicks) {
+    public void drawContents(DrawContext drawContext, int mouseX, int mouseY, float partialTicks)
+    {
         // Draw an outline around the entire widget
-        RenderUtils.drawOutlinedBox(posX, posY, browserWidth, browserHeight, 0xB0000000, GuiBase.COLOR_HORIZONTAL_BAR);
+        RenderUtils.drawOutlinedBox(drawContext, posX, posY, browserWidth, browserHeight, 0xB0000000, GuiBase.COLOR_HORIZONTAL_BAR);
 
         super.drawContents(drawContext, mouseX, mouseY, partialTicks);
 
-        drawPlacementInfo(getLastSelectedEntry(), drawContext);
+        drawPlacementInfo(drawContext, getLastSelectedEntry());
     }
 
-    private void drawPlacementInfo(final ServerPlacement placement, final DrawContext drawContext) {
+    private void drawPlacementInfo(final DrawContext drawContext, final ServerPlacement placement)
+    {
         int x = posX + totalWidth - infoWidth;
         int y = posY;
         final int height = Math.min(infoHeight, parent.getMaxInfoHeight());
 
-        RenderUtils.drawOutlinedBox(x, y, infoWidth, height, 0xA0000000, GuiBase.COLOR_HORIZONTAL_BAR);
+        RenderUtils.drawOutlinedBox(drawContext, x, y, infoWidth, height, 0xA0000000, GuiBase.COLOR_HORIZONTAL_BAR);
 
-        if (placement == null) {
+        if (placement == null)
+        {
             return;
         }
 
-        RenderUtils.color(1f, 1f, 1f, 1f);
+//        RenderUtils.color(1f, 1f, 1f, 1f);
 
         x += 3;
         y += 3;
@@ -130,7 +139,8 @@ public class WidgetListSyncmaticaServerPlacement extends WidgetListBase<ServerPl
         final int litematic = placement.getLitematicVersion();
         final int dataVersion = placement.getDataVersion();
 
-        if (litematic > -1 && dataVersion > -1) {
+        if (litematic > -1 && dataVersion > -1)
+        {
             final SchematicSchema version = new SchematicSchema(litematic, dataVersion);
             final Schema schema = Schema.getSchemaByDataVersion(dataVersion);
 
@@ -148,24 +158,28 @@ public class WidgetListSyncmaticaServerPlacement extends WidgetListBase<ServerPl
     }
 
     @Override
-    protected List<String> getEntryStringsForFilter(final ServerPlacement entry) {
+    protected List<String> getEntryStringsForFilter(final ServerPlacement entry)
+    {
         final String metaName = entry.getName().toLowerCase();
         return ImmutableList.of(metaName);
     }
 
     @Override
-    protected WidgetSyncmaticaServerPlacementEntry createListEntryWidget(final int x, final int y, final int listIndex, final boolean isOdd, final ServerPlacement entry) {
+    protected WidgetSyncmaticaServerPlacementEntry createListEntryWidget(final int x, final int y, final int listIndex, final boolean isOdd, final ServerPlacement entry)
+    {
         return new WidgetSyncmaticaServerPlacementEntry(x, y, browserEntryWidth, getBrowserEntryHeightFor(entry), entry, listIndex);
     }
 
     @Override
-    protected Collection<ServerPlacement> getAllEntries() {
+    protected Collection<ServerPlacement> getAllEntries()
+    {
         final ServerPosition playerPosition = LitematicManager.getInstance().getPlayerPosition();
         final Collection<ServerPlacement> serverPlacements = LitematicManager.getInstance().getActiveContext().getSyncmaticManager().getAll();
         return serverPlacements.stream().sorted(new PlayerDistanceComparator(playerPosition)).collect(Collectors.toList());
     }
 
-    public static class PlayerDistanceComparator implements Comparator<ServerPlacement> {
+    public static class PlayerDistanceComparator implements Comparator<ServerPlacement>
+    {
         // should have probably turned this into multiple comparators rather than one big thing
 
         private final String playerDimension;
@@ -173,46 +187,56 @@ public class WidgetListSyncmaticaServerPlacement extends WidgetListBase<ServerPl
         private final BlockPos playerPositionOverworld;
         private final BlockPos playerPositionNether;
 
-        PlayerDistanceComparator(final ServerPosition playerPosition) {
+        PlayerDistanceComparator(final ServerPosition playerPosition)
+        {
             this.playerPosition = playerPosition.getBlockPosition();
             playerDimension = playerPosition.getDimensionId();
 
-            if (playerPosition.getDimensionId().equals(ServerPosition.OVERWORLD_DIMENSION_ID)) {
+            if (playerPosition.getDimensionId().equals(ServerPosition.OVERWORLD_DIMENSION_ID))
+            {
                 playerPositionNether = new BlockPos(
                         this.playerPosition.getX() << 3,
                         this.playerPosition.getY() << 3,
                         this.playerPosition.getZ() << 3
                 );
-            } else {
+            }
+            else
+            {
                 playerPositionNether = this.playerPosition;
             }
-            if (playerPosition.getDimensionId().equals(ServerPosition.NETHER_DIMENSION_ID)) {
+            if (playerPosition.getDimensionId().equals(ServerPosition.NETHER_DIMENSION_ID))
+            {
                 playerPositionOverworld = new BlockPos(
                         this.playerPosition.getX() >> 3,
                         this.playerPosition.getY() >> 3,
                         this.playerPosition.getZ() >> 3
                 );
-            } else {
+            }
+            else
+            {
                 playerPositionOverworld = this.playerPosition;
             }
         }
 
         @Override
-        public int compare(final ServerPlacement serverPlacement1, final ServerPlacement serverPlacement2) {
+        public int compare(final ServerPlacement serverPlacement1, final ServerPlacement serverPlacement2)
+        {
             final String dimension1 = serverPlacement1.getDimension();
             final String dimension2 = serverPlacement2.getDimension();
 
             final boolean equalDimension1 = compareDimensions(dimension1, playerDimension);
             final boolean equalDimension2 = compareDimensions(dimension2, playerDimension);
 
-            if (equalDimension1 ^ equalDimension2) {
+            if (equalDimension1 ^ equalDimension2)
+            {
                 return equalDimension1 ? -1 : 1;
             }
 
             final boolean linkedDimensions1 = areInLinkedDimensions(dimension1, playerDimension);
             final boolean linkedDimensions2 = areInLinkedDimensions(dimension2, playerDimension);
 
-            if (linkedDimensions1 ^ linkedDimensions2) {
+            if (linkedDimensions1 ^ linkedDimensions2)
+            {
                 return linkedDimensions1 ? -1 : 1;
             }
 
@@ -222,8 +246,10 @@ public class WidgetListSyncmaticaServerPlacement extends WidgetListBase<ServerPl
             );
         }
 
-        private double getDimensionDistanceSquared(final ServerPosition position) {
-            if (position.getDimensionId().equals(ServerPosition.OVERWORLD_DIMENSION_ID)) {
+        private double getDimensionDistanceSquared(final ServerPosition position)
+        {
+            if (position.getDimensionId().equals(ServerPosition.OVERWORLD_DIMENSION_ID))
+            {
                 return SyncmaticaUtil.getBlockDistanceSquared(
                         position.getBlockPosition(),
                         playerPositionOverworld.getX(),
@@ -231,7 +257,8 @@ public class WidgetListSyncmaticaServerPlacement extends WidgetListBase<ServerPl
                         playerPositionOverworld.getZ()
                 );
             }
-            if (position.getDimensionId().equals(ServerPosition.NETHER_DIMENSION_ID)) {
+            if (position.getDimensionId().equals(ServerPosition.NETHER_DIMENSION_ID))
+            {
                 return SyncmaticaUtil.getBlockDistanceSquared(
                         position.getBlockPosition(),
                         playerPositionNether.getX(),
@@ -247,20 +274,24 @@ public class WidgetListSyncmaticaServerPlacement extends WidgetListBase<ServerPl
             );
         }
 
-        private boolean compareDimensions(final String dimensionId1, final String dimensionId2) {
+        private boolean compareDimensions(final String dimensionId1, final String dimensionId2)
+        {
             return dimensionId1.equals(dimensionId2);
         }
 
-        private boolean areInLinkedDimensions(final String dimension1, final String dimension2) {
+        private boolean areInLinkedDimensions(final String dimension1, final String dimension2)
+        {
             return (isOverworld(dimension1) && isNether(dimension2))
                     || (isNether(dimension1) && isOverworld(dimension2));
         }
 
-        private boolean isNether(final String dimensionId) {
+        private boolean isNether(final String dimensionId)
+        {
             return dimensionId.equals(ServerPosition.NETHER_DIMENSION_ID);
         }
 
-        private boolean isOverworld(final String dimensionId) {
+        private boolean isOverworld(final String dimensionId)
+        {
             return dimensionId.equals(ServerPosition.OVERWORLD_DIMENSION_ID);
         }
     }
