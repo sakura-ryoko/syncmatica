@@ -17,7 +17,7 @@
     "syncmatica.gui.button.unload": "Выгрузить",
     "syncmatica.gui.button.view_syncmatics": "Просмотр Синкматик",
     "syncmatica.gui.label.placement_info.dimension_id": "Измерение",
-    "syncmatica.gui.label.placement_info.display_name": "Name_Test",
+    "syncmatica.gui.label.placement_info.display_name": "Name",
     "syncmatica.gui.label.placement_info.file_name": "Имя Файла",
     "syncmatica.gui.label.placement_info.last_modified": "Последнее изменение",
     "syncmatica.gui.label.placement_info.owner": "Изначально Разместил(а)",
