@@ -23,16 +23,16 @@
 		"syncmatica.litematica_mixin.json"
 	],
 	"depends": {
-		"minecraft": ">=1.21.6 <1.21.8",
+		"minecraft": ">=1.21.6 <=1.21.8",
 		"fabric-networking-api-v1": ">=5.0.1"
 	},
 	"suggests": {
-		"malilib": ">=0.25.1- <0.26.0",
-		"litematica": ">=0.23.1- <0.24.0"
+		"malilib": ">=0.25.3- <0.26.0",
+		"litematica": ">=0.23.3- <0.24.0"
 	},
 	"breaks": {
-		"malilib": "<0.25.1-",
-		"litematica": "<0.23.1-"
+		"malilib": "<0.25.3-",
+		"litematica": "<0.23.3-"
 	},
 	
 	"icon": "assets/syncmatica/icon/logo.png",
