@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nullable;
+
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 
@@ -24,6 +25,11 @@ public enum Schema implements StringIdentifiable
     // TODO --> Add Schema Versions to this as versions get released
     // Minecraft Data Versions
     SCHEMA_FUTURE  (9999, "FUTURE"),
+    SCHEMA_1_21_08 (4440, "1.21.8"),
+    SCHEMA_1_21_07 (4438, "1.21.7"),
+    SCHEMA_1_21_06 (4435, "1.21.6"),
+    SCHEMA_25W21A  (4429, "25w21a"),
+    SCHEMA_25W16A  (4423, "25w16a"),
     SCHEMA_1_21_05 (4325, "1.21.5"),
     SCHEMA_25W10A  (4319, "25w10a"),
     SCHEMA_25W03A  (4304, "25w03a"), // Entity Data Components ( https://www.minecraft.net/en-us/article/minecraft-snapshot-25w03a )
@@ -167,6 +173,7 @@ public enum Schema implements StringIdentifiable
 
     /**
      * Returns the Schema of the closest dataVersion, or below it.
+     *
      * @param dataVersion (Schema ID)
      * @return (Schema | null)
      */
@@ -185,6 +192,7 @@ public enum Schema implements StringIdentifiable
 
     /**
      * Returns the Schema of the exact String entry, if found
+     *
      * @param str (MC Version)
      * @return (Schema | null)
      */
@@ -204,7 +212,7 @@ public enum Schema implements StringIdentifiable
     @Override
     public String toString()
     {
-        return "MC: "+this.getString()+" [Schema: "+this.getDataVersion()+"]";
+        return "MC: " + this.getString() + " [Schema: " + this.getDataVersion() + "]";
     }
 
     @Override
@@ -213,13 +221,13 @@ public enum Schema implements StringIdentifiable
         return this.str;
     }
 
-//    @Override
+    //    @Override
     public int getIndex()
     {
         return this.schemaId;
     }
 
-//    @Override
+    //    @Override
     public String getStringValue()
     {
         return this.str;
