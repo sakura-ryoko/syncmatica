@@ -19,11 +19,11 @@
     "syncmatica.gui.label.placement_info.schema": "Minecraft: §f%s§r [Схема §f%d§r]",
     "syncmatica.error.share_without_shift": "Натисніть Shift, щоб поділитися",
     "syncmatica.error.share_modified_subregions": "Помилка спільного доступу — підключений сервер не підтримує спільний доступ до змінених підрегіонів — його потрібно оновити.",
-    "syncmatica.error.modification_deny": "Запит на зміну відхилено — інший користувач уже змінює це розташування.",
-    "syncmatica.error.player_dimension_mismatch": "Для завантаження гравець має бути в тому ж розмірі, що й місце розташування.",
+    "syncmatica.error.modification_deny": "Запит на зміну відхилено — інший користувач уже змінює це розміщення.",
+    "syncmatica.error.player_dimension_mismatch": "Для завантаження гравець має бути в тому ж розмірі, що й місце розміщення.",
     "syncmatica.error.create_from_schematic": "Помилка створення синхромматики зі схематики: {}",
     "syncmatica.error.share_incompatible_schematic": "Перетворіть цей файл за допомогою менеджера схематик із головного меню, щоб поділитися ним",
     "syncmatica.error.invalid_file": "Неможливо поділитися цим типом файлу",
     "syncmatica.error.failed_to_load": "Не вдалося завантажити litematic {}",
-    "syncmatica.success.modification_accepted": "Запит на зміну прийнято — знову заблокуйте розташування, щоб надіслати результати на сервер"
+    "syncmatica.success.modification_accepted": "Запит на зміну прийнято — знову заблокуйте розміщення, щоб надіслати результати на сервер"
 }
