@@ -159,7 +159,7 @@ public class SyncmaticaCommand implements IServerCommand
         if (player != null)
         {
             owner = this.context.getPlayerIdentifierProvider().createOrGet(player.getGameProfile());
-            globalPos = new GlobalPos(player.getWorld().getRegistryKey(), player.getBlockPos());
+            globalPos = new GlobalPos(player.getEntityWorld().getRegistryKey(), player.getBlockPos());
         }
         else
         {
@@ -223,7 +223,7 @@ public class SyncmaticaCommand implements IServerCommand
         if (player != null)
         {
             owner = this.context.getPlayerIdentifierProvider().createOrGet(player.getGameProfile());
-            globalPos = new GlobalPos(player.getWorld().getRegistryKey(), player.getBlockPos());
+            globalPos = new GlobalPos(player.getEntityWorld().getRegistryKey(), player.getBlockPos());
         }
         else
         {

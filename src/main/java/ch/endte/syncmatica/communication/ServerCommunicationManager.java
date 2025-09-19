@@ -66,7 +66,7 @@ public class ServerCommunicationManager extends CommunicationManager
         final VersionHandshakeServer hi = new VersionHandshakeServer(newPlayer, context);
         playerMap.put(newPlayer, player);
         final GameProfile profile = player.getGameProfile();
-        context.getPlayerIdentifierProvider().updateName(profile.getId(), profile.getName());
+        context.getPlayerIdentifierProvider().updateName(profile.id(), profile.name());
         startExchangeUnchecked(hi);
     }
 
