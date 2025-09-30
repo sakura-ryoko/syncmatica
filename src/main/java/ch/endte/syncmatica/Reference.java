@@ -4,6 +4,7 @@ import java.nio.file.Path;
 import ch.endte.syncmatica.util.StringTools;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.SharedConstants;
 
 /**
  * Main (Generic) Reference Calls --
@@ -15,6 +16,7 @@ public class Reference
     public static final String MOD_ID = "syncmatica";
     public static final String MOD_NAME = "Syncmatica";
     public static final String MOD_VERSION = StringTools.getModVersion(MOD_ID); // No more manually typing in the version # :)
+    public static final String MC_VERSION = SharedConstants.getGameVersion().id();
     private static final EnvType MOD_ENV = FabricLoader.getInstance().getEnvironmentType();
     public static final boolean MOD_DEBUG = false;
 
