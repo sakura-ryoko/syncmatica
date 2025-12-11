@@ -1,6 +1,8 @@
 package ch.endte.syncmatica.network.actor;
 
 import java.util.Objects;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.network.FriendlyByteBuf;
 import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.communication.ClientCommunicationManager;
 import ch.endte.syncmatica.communication.CommunicationManager;
@@ -12,8 +14,6 @@ import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.litematica.ScreenHelper;
 import ch.endte.syncmatica.network.PacketType;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.PacketByteBuf;
 
 import static ch.endte.syncmatica.Syncmatica.CLIENT_CONTEXT;
 import static ch.endte.syncmatica.Syncmatica.getContext;
@@ -24,7 +24,7 @@ import static ch.endte.syncmatica.Syncmatica.getContext;
 public class ActorClientPlayHandler
 {
     private static ActorClientPlayHandler instance;
-    private static ClientPlayNetworkHandler clientPlayNetworkHandler;
+    private static ClientPacketListener clientPlayNetworkHandler;
     private CommunicationManager clientCommunication;
     private ExchangeTarget exTarget;
 
@@ -38,7 +38,7 @@ public class ActorClientPlayHandler
         return instance;
     }
 
-    public void startEvent(final ClientPlayNetworkHandler handler)
+    public void startEvent(final ClientPacketListener handler)
     {
         Syncmatica.debug("ActorClientPlayHandler#startEvent()");
         if (clientPlayNetworkHandler == null)
@@ -67,7 +67,7 @@ public class ActorClientPlayHandler
         LitematicManager.getInstance().setActiveContext(Objects.requireNonNull(getContext(CLIENT_CONTEXT)));
     }
 
-    public void packetEvent(final PacketType type, final PacketByteBuf data, final ClientPlayNetworkHandler clientContext, CallbackInfo ci)
+    public void packetEvent(final PacketType type, final FriendlyByteBuf data, final ClientPacketListener clientContext, CallbackInfo ci)
     {
         if (clientCommunication == null)
         {
@@ -78,7 +78,7 @@ public class ActorClientPlayHandler
                 ci.cancel();
     }
 
-    public boolean packetEvent(final PacketType type, final PacketByteBuf bufSupplier)
+    public boolean packetEvent(final PacketType type, final FriendlyByteBuf bufSupplier)
     {
         if (clientCommunication.handlePacket(type))
         {
@@ -96,5 +96,5 @@ public class ActorClientPlayHandler
         clientPlayNetworkHandler = null;
     }
 
-    private static void setClientContext(final ClientPlayNetworkHandler clientHandler) { ActorClientPlayHandler.clientPlayNetworkHandler = clientHandler; }
+    private static void setClientContext(final ClientPacketListener clientHandler) { ActorClientPlayHandler.clientPlayNetworkHandler = clientHandler; }
 }

@@ -1,12 +1,10 @@
 package ch.endte.syncmatica.litematica.gui;
 
 import org.apache.logging.log4j.LogManager;
-
-import net.minecraft.client.gui.screen.Screen;
-
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
+import net.minecraft.client.gui.screens.Screen;
 
 public class ButtonListenerChangeMenu implements IButtonActionListener
 {

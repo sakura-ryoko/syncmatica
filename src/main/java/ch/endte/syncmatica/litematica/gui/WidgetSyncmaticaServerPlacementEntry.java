@@ -3,6 +3,7 @@ package ch.endte.syncmatica.litematica.gui;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import net.minecraft.network.FriendlyByteBuf;
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.communication.ClientCommunicationManager;
@@ -12,9 +13,6 @@ import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.network.PacketType;
 import io.netty.buffer.Unpooled;
-
-import net.minecraft.network.PacketByteBuf;
-
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
@@ -173,8 +171,8 @@ public class WidgetSyncmaticaServerPlacementEntry extends WidgetListEntryBase<Se
                         {
                             final Context con = LitematicManager.getInstance().getActiveContext();
                             final ExchangeTarget server = ((ClientCommunicationManager) con.getCommunicationManager()).getServer();
-                            final PacketByteBuf packetBuf = new PacketByteBuf(Unpooled.buffer());
-                            packetBuf.writeUuid(placement.placement.getId());
+                            final FriendlyByteBuf packetBuf = new FriendlyByteBuf(Unpooled.buffer());
+                            packetBuf.writeUUID(placement.placement.getId());
                             server.sendPacket(PacketType.REMOVE_SYNCMATIC, packetBuf, LitematicManager.getInstance().getActiveContext());
                         }
                     },

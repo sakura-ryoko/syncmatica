@@ -3,8 +3,8 @@ package ch.endte.syncmatica.data;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.GlobalPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 
 public class ServerPosition
 {
@@ -22,7 +22,7 @@ public class ServerPosition
 
     public static ServerPosition fromGlobalPos(GlobalPos pos)
     {
-        return new ServerPosition(pos.pos(), pos.dimension().getValue().toString());
+        return new ServerPosition(pos.pos(), pos.dimension().identifier().toString());
     }
 
     public BlockPos getBlockPosition()

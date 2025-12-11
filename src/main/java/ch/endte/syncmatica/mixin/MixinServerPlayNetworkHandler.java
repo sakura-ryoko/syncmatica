@@ -15,19 +15,19 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import net.minecraft.network.ClientConnection;
-import net.minecraft.network.DisconnectionInfo;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
+import net.minecraft.network.Connection;
+import net.minecraft.network.DisconnectionDetails;
+import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ConnectedClientData;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.CommonListenerCookie;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 
-@Mixin(value = ServerPlayNetworkHandler.class, priority = 1001)
+@Mixin(value = ServerGamePacketListenerImpl.class, priority = 1001)
 public abstract class MixinServerPlayNetworkHandler implements IServerPlay
 {
-    @Shadow public abstract ServerPlayerEntity getPlayer();
+    @Shadow public abstract ServerPlayer getPlayer();
 
     @Unique
     private ExchangeTarget exTarget = null;
@@ -35,25 +35,25 @@ public abstract class MixinServerPlayNetworkHandler implements IServerPlay
     private ServerCommunicationManager comManager = null;
 
     @Inject(method = "<init>", at = @At("TAIL"))
-    public void syncmatica$onConnect(MinecraftServer server, ClientConnection clientConnection, ServerPlayerEntity player, ConnectedClientData clientData, CallbackInfo ci)
+    public void syncmatica$onConnect(MinecraftServer server, Connection clientConnection, ServerPlayer player, CommonListenerCookie clientData, CallbackInfo ci)
     {
         syncmatica$operateComms(sm -> sm.onPlayerJoin(syncmatica$getExchangeTarget(), player));
     }
 
-    @Inject(method = "onDisconnected", at = @At("HEAD"))
-    public void syncmatica$onDisconnected(DisconnectionInfo info, CallbackInfo ci)
+    @Inject(method = "onDisconnect", at = @At("HEAD"))
+    public void syncmatica$onDisconnected(DisconnectionDetails info, CallbackInfo ci)
     {
         syncmatica$operateComms(sm -> sm.onPlayerLeave(syncmatica$getExchangeTarget()));
     }
 
     // This exists because of the Communications Manager / Exchange Target system,
     // and FAPI networking is too slow to register the receivers
-    @Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
-    private void syncmatica$onCustomPayload(CustomPayloadC2SPacket packet, CallbackInfo ci)
+    @Inject(method = "handleCustomPayload", at = @At("HEAD"), cancellable = true)
+    private void syncmatica$onCustomPayload(ServerboundCustomPayloadPacket packet, CallbackInfo ci)
     {
-        CustomPayload thisPayload = packet.payload();
+        CustomPacketPayload thisPayload = packet.payload();
 
-        if (thisPayload.getId().id().getNamespace().equals(Reference.MOD_ID))
+        if (thisPayload.type().id().getNamespace().equals(Reference.MOD_ID))
         {
             SyncmaticaPacket.Payload payload = (SyncmaticaPacket.Payload) thisPayload;
             ServerPlayHandler.decodeSyncData(payload.data(), this);
@@ -86,7 +86,7 @@ public abstract class MixinServerPlayNetworkHandler implements IServerPlay
     {
         if (exTarget == null)
         {
-            exTarget = new ExchangeTarget((ServerPlayNetworkHandler) (Object) this);
+            exTarget = new ExchangeTarget((ServerGamePacketListenerImpl) (Object) this);
         }
         return exTarget;
     }

@@ -1,6 +1,9 @@
 package ch.endte.syncmatica.mixin;
 
 import java.util.function.Consumer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.Reference;
 import ch.endte.syncmatica.Syncmatica;
@@ -14,11 +17,8 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.packet.CustomPayload;
 
-@Mixin(value = ClientPlayNetworkHandler.class, priority = 1001)
+@Mixin(value = ClientPacketListener.class, priority = 1001)
 public abstract class MixinClientPlayNetworkHandler implements IClientPlay
 {
     @Unique
@@ -28,18 +28,18 @@ public abstract class MixinClientPlayNetworkHandler implements IClientPlay
 
     // This exists because of the Communications Manager / Exchange Target system,
     // and FAPI networking is too slow to register the receivers
-    @Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
-    private void syncmatica$handlePacket(CustomPayload packet, CallbackInfo ci)
+    @Inject(method = "handleCustomPayload", at = @At("HEAD"), cancellable = true)
+    private void syncmatica$handlePacket(CustomPacketPayload packet, CallbackInfo ci)
     {
-        if (!MinecraftClient.getInstance().isOnThread())
+        if (!Minecraft.getInstance().isSameThread())
         {
             return; //only execute packet on main thread
         }
 
-        if (packet.getId().id().getNamespace().equals(Reference.MOD_ID))
+        if (packet.type().id().getNamespace().equals(Reference.MOD_ID))
         {
             SyncmaticaPacket.Payload payload = (SyncmaticaPacket.Payload) packet;
-            ClientPlayHandler.decodeSyncData(payload.data(), (ClientPlayNetworkHandler) (Object) this);
+            ClientPlayHandler.decodeSyncData(payload.data(), (ClientPacketListener) (Object) this);
 
             // Cancel unnecessary processing if a PacketType we own is caught
             if  (ci.isCancellable())
@@ -69,7 +69,7 @@ public abstract class MixinClientPlayNetworkHandler implements IClientPlay
     {
         if (exTarget == null)
         {
-            exTarget = new ExchangeTarget((ClientPlayNetworkHandler) (Object) this);
+            exTarget = new ExchangeTarget((ClientPacketListener) (Object) this);
         }
         return exTarget;
     }

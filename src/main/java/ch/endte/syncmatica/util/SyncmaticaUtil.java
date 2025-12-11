@@ -14,12 +14,11 @@ import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.litematica.schematic.SchematicMetadata;
 import ch.endte.syncmatica.litematica.schematic.SchematicSchema;
 import org.apache.commons.lang3.tuple.Pair;
-
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.nbt.NbtSizeTracker;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
 
 public class SyncmaticaUtil
 {
@@ -184,38 +183,38 @@ public class SyncmaticaUtil
         return combinedX * combinedX + combinedY * combinedY + combinedZ * combinedZ;
     }
 
-    public static NbtCompound readNbtFromFile(@Nonnull Path file)
+    public static CompoundTag readNbtFromFile(@Nonnull Path file)
     {
         if (!Files.exists(file) || !Files.isReadable(file))
         {
-            return new NbtCompound();
+            return new CompoundTag();
         }
 
         try
         {
-            return NbtIo.readCompressed(Files.newInputStream(file), NbtSizeTracker.ofUnlimitedBytes());
+            return NbtIo.readCompressed(Files.newInputStream(file), NbtAccounter.unlimitedHeap());
         }
         catch (Exception e)
         {
             Syncmatica.LOGGER.warn("readNbtFromFile: Failed to read NBT data from file '{}'", file.toString());
         }
 
-        return new NbtCompound();
+        return new CompoundTag();
     }
 
     public static Pair<SchematicMetadata, SchematicSchema> litematicPeek(Path file)
     {
-        NbtCompound nbt = SyncmaticaUtil.readNbtFromFile(file);
+        CompoundTag nbt = SyncmaticaUtil.readNbtFromFile(file);
 
         if (nbt.isEmpty() || !nbt.contains("Metadata"))
         {
             return Pair.of(null, null);
         }
 
-        final int version = nbt.contains("Version") ? nbt.getInt("Version", -1) : -1;
-        final int dataVersion = nbt.contains("MinecraftDataVersion") ? nbt.getInt("MinecraftDataVersion", -1) : -1;
+        final int version = nbt.contains("Version") ? nbt.getIntOr("Version", -1) : -1;
+        final int dataVersion = nbt.contains("MinecraftDataVersion") ? nbt.getIntOr("MinecraftDataVersion", -1) : -1;
         SchematicMetadata metadata = new SchematicMetadata();
-        NbtCompound tags = nbt.getCompoundOrEmpty("Metadata");
+        CompoundTag tags = nbt.getCompoundOrEmpty("Metadata");
 
         if (!tags.isEmpty())
         {
@@ -225,12 +224,12 @@ public class SyncmaticaUtil
         return Pair.of(metadata, new SchematicSchema(version, dataVersion));
     }
 
-    public static @Nonnull NbtCompound createVec3iTag(@Nonnull Vec3i pos)
+    public static @Nonnull CompoundTag createVec3iTag(@Nonnull Vec3i pos)
     {
-        return putVec3i(new NbtCompound(), pos);
+        return putVec3i(new CompoundTag(), pos);
     }
 
-    public static @Nonnull NbtCompound putVec3i(@Nonnull NbtCompound tag, @Nonnull Vec3i pos)
+    public static @Nonnull CompoundTag putVec3i(@Nonnull CompoundTag tag, @Nonnull Vec3i pos)
     {
         tag.putInt("x", pos.getX());
         tag.putInt("y", pos.getY());
@@ -240,14 +239,14 @@ public class SyncmaticaUtil
     }
 
     @Nullable
-    public static Vec3i readVec3iFromTag(@Nullable NbtCompound tag)
+    public static Vec3i readVec3iFromTag(@Nullable CompoundTag tag)
     {
         if (tag != null &&
             tag.contains("x") &&
             tag.contains("y") &&
             tag.contains("z"))
         {
-            return new Vec3i(tag.getInt("x", 0), tag.getInt("y", 0), tag.getInt("z", 0));
+            return new Vec3i(tag.getIntOr("x", 0), tag.getIntOr("y", 0), tag.getIntOr("z", 0));
         }
 
         return null;

@@ -1,19 +1,20 @@
 package ch.endte.syncmatica.network;
 
 import javax.annotation.Nonnull;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
 import ch.endte.syncmatica.Syncmatica;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.util.Identifier;
+import org.jspecify.annotations.NonNull;
 
 public class SyncmaticaPacket
 {
-    private final PacketByteBuf packet;
+    private final FriendlyByteBuf packet;
     private final PacketType type;
     private final Identifier channel;
 
-    public SyncmaticaPacket(@Nonnull Identifier channel, @Nonnull PacketByteBuf packet)
+    public SyncmaticaPacket(@Nonnull Identifier channel, @Nonnull FriendlyByteBuf packet)
     {
         this.channel = channel;
         this.packet = packet;
@@ -30,39 +31,39 @@ public class SyncmaticaPacket
         return this.channel;
     }
 
-    public PacketByteBuf getPacket()
+    public FriendlyByteBuf getPacket()
     {
         return this.packet;
     }
 
-    protected static SyncmaticaPacket fromPacket(PacketByteBuf input)
+    protected static SyncmaticaPacket fromPacket(FriendlyByteBuf input)
     {
-        return new SyncmaticaPacket(input.readIdentifier(), new PacketByteBuf(input.readBytes(input.readableBytes())));
+        return new SyncmaticaPacket(input.readIdentifier(), new FriendlyByteBuf(input.readBytes(input.readableBytes())));
     }
 
-    protected void toPacket(PacketByteBuf output)
+    protected void toPacket(FriendlyByteBuf output)
     {
         output.writeIdentifier(this.channel);
         output.writeBytes(this.packet.copy());
     }
 
-    public record Payload(SyncmaticaPacket data) implements CustomPayload
+    public record Payload(SyncmaticaPacket data) implements CustomPacketPayload
     {
-        public static final Id<Payload> ID = new Id<>(Syncmatica.NETWORK_ID);
-        public static final PacketCodec<PacketByteBuf, Payload> CODEC = CustomPayload.codecOf(Payload::write, Payload::new);
+        public static final Type<Payload> ID = new Type<>(Syncmatica.NETWORK_ID);
+        public static final StreamCodec<FriendlyByteBuf, Payload> CODEC = CustomPacketPayload.codec(Payload::write, Payload::new);
 
-        public Payload(PacketByteBuf input)
+        public Payload(FriendlyByteBuf input)
         {
             this(SyncmaticaPacket.fromPacket(input));
         }
 
-        private void write(PacketByteBuf output)
+        private void write(FriendlyByteBuf output)
         {
             data.toPacket(output);
         }
 
         @Override
-        public Id<Payload> getId()
+        public @NonNull Type<Payload> type()
         {
             return ID;
         }

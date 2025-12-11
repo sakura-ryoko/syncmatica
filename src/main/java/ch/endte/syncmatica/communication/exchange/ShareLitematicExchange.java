@@ -2,6 +2,7 @@ package ch.endte.syncmatica.communication.exchange;
 
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
+import net.minecraft.network.FriendlyByteBuf;
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.communication.ClientCommunicationManager;
 import ch.endte.syncmatica.communication.ExchangeTarget;
@@ -9,9 +10,6 @@ import ch.endte.syncmatica.data.RedirectFileStorage;
 import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.network.PacketType;
-
-import net.minecraft.network.PacketByteBuf;
-
 import fi.dy.masa.litematica.schematic.placement.SchematicPlacement;
 
 public class ShareLitematicExchange extends AbstractExchange
@@ -31,7 +29,7 @@ public class ShareLitematicExchange extends AbstractExchange
     }
 
     @Override
-    public boolean checkPacket(final PacketType type, final PacketByteBuf packetBuf)
+    public boolean checkPacket(final PacketType type, final FriendlyByteBuf packetBuf)
     {
         if (type.equals(PacketType.REQUEST_LITEMATIC)
                 || type.equals(PacketType.REGISTER_METADATA)
@@ -43,11 +41,11 @@ public class ShareLitematicExchange extends AbstractExchange
     }
 
     @Override
-    public void handle(final PacketType type, final PacketByteBuf packetBuf)
+    public void handle(final PacketType type, final FriendlyByteBuf packetBuf)
     {
         if (type.equals(PacketType.REQUEST_LITEMATIC))
         {
-            packetBuf.readUuid();
+            packetBuf.readUUID();
             final UploadExchange upload;
             try
             {

@@ -3,6 +3,9 @@ package ch.endte.syncmatica.communication;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.communication.exchange.Exchange;
@@ -10,34 +13,31 @@ import ch.endte.syncmatica.network.handler.ClientPlayHandler;
 import ch.endte.syncmatica.network.handler.ServerPlayHandler;
 import ch.endte.syncmatica.network.PacketType;
 import ch.endte.syncmatica.network.SyncmaticaPacket;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
 import fi.dy.masa.malilib.util.StringUtils;
 
 // since Client/Server PlayNetworkHandler are 2 different classes, but I want to use exchanges
 // on both without having to recode them individually, I have an adapter class here
 public class ExchangeTarget
 {
-    public final ClientPlayNetworkHandler clientPlayNetworkHandler;
-    public final ServerPlayNetworkHandler serverPlayNetworkHandler;
+    public final ClientPacketListener clientPlayNetworkHandler;
+    public final ServerGamePacketListenerImpl serverPlayNetworkHandler;
     private final String persistentName;
 
     private FeatureSet features;
     private final List<Exchange> ongoingExchanges = new ArrayList<>(); // implicitly relies on priority
 
-    public ExchangeTarget(ClientPlayNetworkHandler clientPlayContext)
+    public ExchangeTarget(ClientPacketListener clientPlayContext)
     {
         this.clientPlayNetworkHandler = clientPlayContext;
         this.serverPlayNetworkHandler = null;
         this.persistentName = StringUtils.getWorldOrServerName();
     }
 
-    public ExchangeTarget(ServerPlayNetworkHandler serverPlayContext)
+    public ExchangeTarget(ServerGamePacketListenerImpl serverPlayContext)
     {
         this.clientPlayNetworkHandler = null;
         this.serverPlayNetworkHandler = serverPlayContext;
-        this.persistentName = serverPlayContext.getPlayer().getUuidAsString();
+        this.persistentName = serverPlayContext.getPlayer().getStringUUID();
     }
 
     // this application exclusively communicates in CustomPayLoad packets
@@ -45,7 +45,7 @@ public class ExchangeTarget
     /**
      * The Fabric API call mode sometimes fails here, because the channels might not be registered in PLAY mode, especially for Single Player.
      */
-    public void sendPacket(final PacketType type, final PacketByteBuf byteBuf, final Context context)
+    public void sendPacket(final PacketType type, final FriendlyByteBuf byteBuf, final Context context)
     {
         //SyncLog.debug("ExchangeTarget#sendPacket(): invoked.");
         if (context != null) {

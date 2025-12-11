@@ -12,9 +12,8 @@ import ch.endte.syncmatica.network.SyncmaticaPacket;
 import ch.endte.syncmatica.network.actor.ActorClientPlayHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.minecraft.resources.Identifier;
 
 // could probably turn this into a singleton
 public class Syncmatica
@@ -25,9 +24,9 @@ public class Syncmatica
 //    protected static final String CLIENT_PATH = "." + File.separator + "schematics" + File.separator + "sync";
     protected static final Path SERVER_PATH = Reference.GAME_ROOT.resolve("syncmatics");
     protected static final Path CLIENT_PATH = Reference.GAME_ROOT.resolve("schematics").resolve("sync");
-    public static final Identifier CLIENT_CONTEXT = Identifier.of(Reference.MOD_ID, "client_context");
-    public static final Identifier SERVER_CONTEXT = Identifier.of(Reference.MOD_ID, "server_context");
-    public static final Identifier NETWORK_ID = Identifier.of(Reference.MOD_ID, "main");
+    public static final Identifier CLIENT_CONTEXT = Identifier.fromNamespaceAndPath(Reference.MOD_ID, "client_context");
+    public static final Identifier SERVER_CONTEXT = Identifier.fromNamespaceAndPath(Reference.MOD_ID, "server_context");
+    public static final Identifier NETWORK_ID = Identifier.fromNamespaceAndPath(Reference.MOD_ID, "main");
     public static final UUID syncmaticaId = UUID.fromString("4c1b738f-56fa-4011-8273-498c972424ea");
     protected static Map<Identifier, Context> contexts = null;
     protected static boolean context_init = false;

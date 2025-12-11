@@ -5,6 +5,9 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import javax.annotation.Nullable;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import ch.endte.syncmatica.Feature;
 import ch.endte.syncmatica.communication.exchange.*;
 import ch.endte.syncmatica.data.LocalLitematicState;
@@ -14,21 +17,18 @@ import ch.endte.syncmatica.network.PacketType;
 import io.netty.buffer.Unpooled;
 
 import com.mojang.authlib.GameProfile;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
 
 public class ServerCommunicationManager extends CommunicationManager
 {
     private final Map<UUID, List<ServerPlacement>> downloadingFile = new HashMap<>();
-    private final Map<ExchangeTarget, ServerPlayerEntity> playerMap = new HashMap<>();
+    private final Map<ExchangeTarget, ServerPlayer> playerMap = new HashMap<>();
 
     public ServerCommunicationManager() { super(); }
 
     public GameProfile getGameProfile(final ExchangeTarget exchangeTarget) { return playerMap.get(exchangeTarget).getGameProfile(); }
 
     @Nullable
-    public ExchangeTarget fromExistingPlayer(final ServerPlayerEntity player)
+    public ExchangeTarget fromExistingPlayer(final ServerPlayer player)
     {
         AtomicReference<ExchangeTarget> newTarget = new AtomicReference<>();
 
@@ -49,19 +49,19 @@ public class ServerCommunicationManager extends CommunicationManager
     {
         if (client.getFeatureSet().hasFeature(Feature.MESSAGE))
         {
-            final PacketByteBuf newPacketBuf = new PacketByteBuf(Unpooled.buffer());
-            newPacketBuf.writeString(msgType.toString());
-            newPacketBuf.writeString(identifier);
+            final FriendlyByteBuf newPacketBuf = new FriendlyByteBuf(Unpooled.buffer());
+            newPacketBuf.writeUtf(msgType.toString());
+            newPacketBuf.writeUtf(identifier);
             client.sendPacket(PacketType.MESSAGE, newPacketBuf, context);
         }
         else if (playerMap.containsKey(client))
         {
-            final ServerPlayerEntity player = playerMap.get(client);
-            player.sendMessage(Text.of("Syncmatica " + msgType.toString() + " " + identifier), false);
+            final ServerPlayer player = playerMap.get(client);
+            player.displayClientMessage(Component.nullToEmpty("Syncmatica " + msgType.toString() + " " + identifier), false);
         }
     }
 
-    public void onPlayerJoin(final ExchangeTarget newPlayer, final ServerPlayerEntity player)
+    public void onPlayerJoin(final ExchangeTarget newPlayer, final ServerPlayer player)
     {
         final VersionHandshakeServer hi = new VersionHandshakeServer(newPlayer, context);
         playerMap.put(newPlayer, player);
@@ -86,11 +86,11 @@ public class ServerCommunicationManager extends CommunicationManager
     }
 
     @Override
-    protected void handle(final ExchangeTarget source, final PacketType type, final PacketByteBuf packetBuf)
+    protected void handle(final ExchangeTarget source, final PacketType type, final FriendlyByteBuf packetBuf)
     {
         if (type.equals(PacketType.REQUEST_LITEMATIC))
         {
-            final UUID syncmaticaId = packetBuf.readUuid();
+            final UUID syncmaticaId = packetBuf.readUUID();
             final ServerPlacement placement = context.getSyncmaticManager().getPlacement(syncmaticaId);
             if (placement == null)
             {
@@ -156,7 +156,7 @@ public class ServerCommunicationManager extends CommunicationManager
         }
         if (type.equals(PacketType.REMOVE_SYNCMATIC))
         {
-            final UUID placementId = packetBuf.readUuid();
+            final UUID placementId = packetBuf.readUUID();
             final ServerPlacement placement = context.getSyncmaticManager().getPlacement(placementId);
             if (placement != null)
             {
@@ -169,15 +169,15 @@ public class ServerCommunicationManager extends CommunicationManager
                 context.getSyncmaticManager().removePlacement(placement);
                 for (final ExchangeTarget client : broadcastTargets)
                 {
-                    final PacketByteBuf newPacketBuf = new PacketByteBuf(Unpooled.buffer());
-                    newPacketBuf.writeUuid(placement.getId());
+                    final FriendlyByteBuf newPacketBuf = new FriendlyByteBuf(Unpooled.buffer());
+                    newPacketBuf.writeUUID(placement.getId());
                     client.sendPacket(PacketType.REMOVE_SYNCMATIC, newPacketBuf, context);
                 }
             }
         }
         if (type.equals(PacketType.MODIFY_REQUEST))
         {
-            final UUID placementId = packetBuf.readUuid();
+            final UUID placementId = packetBuf.readUUID();
             final ModifyExchangeServer modifier = new ModifyExchangeServer(placementId, source, context);
             startExchange(modifier);
         }
@@ -228,13 +228,13 @@ public class ServerCommunicationManager extends CommunicationManager
                 if (client.getFeatureSet().hasFeature(Feature.MODIFY))
                 {
                     // client supports modify so just send modify
-                    final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-                    buf.writeUuid(placement.getId());
+                    final FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+                    buf.writeUUID(placement.getId());
                     putPositionData(placement, buf, client);
                     if (client.getFeatureSet().hasFeature(Feature.CORE_EX))
                     {
-                        buf.writeUuid(placement.getLastModifiedBy().uuid);
-                        buf.writeString(placement.getLastModifiedBy().getName());
+                        buf.writeUUID(placement.getLastModifiedBy().uuid);
+                        buf.writeUtf(placement.getLastModifiedBy().getName());
                     }
                     client.sendPacket(PacketType.MODIFY, buf, context);
                 }
@@ -242,10 +242,10 @@ public class ServerCommunicationManager extends CommunicationManager
                 {
                     // client doesn't support modification so
                     // send data and then
-                    final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-                    buf.writeUuid(placement.getId());
+                    final FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+                    buf.writeUUID(placement.getId());
                     client.sendPacket(PacketType.REMOVE_SYNCMATIC, buf, context);
-                    final PacketByteBuf buf2 = new PacketByteBuf(Unpooled.buffer());
+                    final FriendlyByteBuf buf2 = new FriendlyByteBuf(Unpooled.buffer());
                     putMetaData(placement, buf2, client);
                     client.sendPacket(PacketType.REGISTER_METADATA, buf2, context);
                 }
@@ -269,8 +269,8 @@ public class ServerCommunicationManager extends CommunicationManager
 
     private void cancelShare(final ExchangeTarget source, final ServerPlacement placement)
     {
-        final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
-        packetByteBuf.writeUuid(placement.getId());
+        final FriendlyByteBuf packetByteBuf = new FriendlyByteBuf(Unpooled.buffer());
+        packetByteBuf.writeUUID(placement.getId());
         source.sendPacket(PacketType.CANCEL_SHARE, packetByteBuf, context);
     }
 }

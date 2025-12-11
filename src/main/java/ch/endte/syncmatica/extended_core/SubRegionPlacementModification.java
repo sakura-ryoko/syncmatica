@@ -3,17 +3,17 @@ package ch.endte.syncmatica.extended_core;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import net.minecraft.util.BlockMirror;
-import net.minecraft.util.BlockRotation;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
 
 public class SubRegionPlacementModification {
     public final String name;
     public final BlockPos position;
-    public final BlockRotation rotation;
-    public final BlockMirror mirror;
+    public final Rotation rotation;
+    public final Mirror mirror;
 
-    SubRegionPlacementModification(final String name, final BlockPos position, final BlockRotation rotation, final BlockMirror mirror) {
+    SubRegionPlacementModification(final String name, final BlockPos position, final Rotation rotation, final Mirror mirror) {
         this.name = name;
         this.position = position;
         this.rotation = rotation;
@@ -59,8 +59,8 @@ public class SubRegionPlacementModification {
                 arr.get(2).getAsInt()
         );
 
-        final BlockRotation rotation = BlockRotation.valueOf(obj.get("rotation").getAsString());
-        final BlockMirror mirror = BlockMirror.valueOf(obj.get("mirror").getAsString());
+        final Rotation rotation = Rotation.valueOf(obj.get("rotation").getAsString());
+        final Mirror mirror = Mirror.valueOf(obj.get("mirror").getAsString());
 
         return new SubRegionPlacementModification(name, position, rotation, mirror);
     }

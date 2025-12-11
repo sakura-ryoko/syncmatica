@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import net.minecraft.core.BlockPos;
 import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.data.ServerPosition;
 import ch.endte.syncmatica.litematica.LitematicManager;
@@ -13,9 +14,6 @@ import ch.endte.syncmatica.litematica.schematic.Schema;
 import ch.endte.syncmatica.litematica.schematic.SchematicSchema;
 import ch.endte.syncmatica.util.SyncmaticaUtil;
 import com.google.common.collect.ImmutableList;
-
-import net.minecraft.util.math.BlockPos;
-
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.LeftRight;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;

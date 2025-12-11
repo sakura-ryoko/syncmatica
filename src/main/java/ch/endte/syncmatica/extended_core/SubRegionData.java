@@ -3,12 +3,11 @@ package ch.endte.syncmatica.extended_core;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import net.minecraft.util.BlockMirror;
-import net.minecraft.util.BlockRotation;
-import net.minecraft.util.math.BlockPos;
-
 import java.util.HashMap;
 import java.util.Map;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
 
 public class SubRegionData {
     private boolean isModified;
@@ -31,8 +30,8 @@ public class SubRegionData {
     public void modify(
             final String name,
             final BlockPos position,
-            final BlockRotation rotation,
-            final BlockMirror mirror
+            final Rotation rotation,
+            final Mirror mirror
     ) {
         modify(
                 new SubRegionPlacementModification(

@@ -9,7 +9,7 @@ import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.network.PacketType;
 import io.netty.buffer.Unpooled;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class VersionHandshakeClient extends FeatureExchange
 {
@@ -17,7 +17,7 @@ public class VersionHandshakeClient extends FeatureExchange
     public VersionHandshakeClient(final ExchangeTarget partner, final Context con) { super(partner, con); }
 
     @Override
-    public boolean checkPacket(final PacketType type, final PacketByteBuf packetBuf)
+    public boolean checkPacket(final PacketType type, final FriendlyByteBuf packetBuf)
     {
         return type.equals(PacketType.CONFIRM_USER)
                 || type.equals(PacketType.REGISTER_VERSION)
@@ -25,11 +25,11 @@ public class VersionHandshakeClient extends FeatureExchange
     }
 
     @Override
-    public void handle(final PacketType type, final PacketByteBuf packetBuf)
+    public void handle(final PacketType type, final FriendlyByteBuf packetBuf)
     {
         if (type.equals(PacketType.REGISTER_VERSION))
         {
-            final String version = packetBuf.readString(PACKET_MAX_STRING_SIZE);
+            final String version = packetBuf.readUtf(PACKET_MAX_STRING_SIZE);
             if (!getContext().checkPartnerVersion(version))
             {
                 // any further packets are risky so no further packets should get send
@@ -74,8 +74,8 @@ public class VersionHandshakeClient extends FeatureExchange
     @Override
     public void onFeatureSetReceive()
     {
-        final PacketByteBuf newBuf = new PacketByteBuf(Unpooled.buffer());
-        newBuf.writeString(Reference.MOD_VERSION);
+        final FriendlyByteBuf newBuf = new FriendlyByteBuf(Unpooled.buffer());
+        newBuf.writeUtf(Reference.MOD_VERSION);
         getPartner().sendPacket(PacketType.REGISTER_VERSION, newBuf, getContext());
     }
 

@@ -2,12 +2,12 @@ package ch.endte.syncmatica.communication.exchange;
 
 import java.io.*;
 import java.nio.file.Path;
+import net.minecraft.network.FriendlyByteBuf;
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.network.PacketType;
 import io.netty.buffer.Unpooled;
-import net.minecraft.network.PacketByteBuf;
 
 // uploading part of transmit data exchange
 // pairs with Download Exchange
@@ -29,7 +29,7 @@ public class UploadExchange extends AbstractExchange
     }
 
     @Override
-    public boolean checkPacket(final PacketType type, final PacketByteBuf packetBuf)
+    public boolean checkPacket(final PacketType type, final FriendlyByteBuf packetBuf)
     {
         if (type.equals(PacketType.RECEIVED_LITEMATIC)
                 || type.equals(PacketType.CANCEL_LITEMATIC))
@@ -40,10 +40,10 @@ public class UploadExchange extends AbstractExchange
     }
 
     @Override
-    public void handle(final PacketType type, final PacketByteBuf packetBuf)
+    public void handle(final PacketType type, final FriendlyByteBuf packetBuf)
     {
 
-        packetBuf.readUuid(); // uncertain if the data has to be consumed
+        packetBuf.readUUID(); // uncertain if the data has to be consumed
         if (type.equals(PacketType.RECEIVED_LITEMATIC))
         {
             send();
@@ -80,8 +80,8 @@ public class UploadExchange extends AbstractExchange
 
     private void sendData(final int bytesRead)
     {
-        final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
-        packetByteBuf.writeUuid(toUpload.getId());
+        final FriendlyByteBuf packetByteBuf = new FriendlyByteBuf(Unpooled.buffer());
+        packetByteBuf.writeUUID(toUpload.getId());
         packetByteBuf.writeInt(bytesRead);
         packetByteBuf.writeBytes(buffer, 0, bytesRead);
         getPartner().sendPacket(PacketType.SEND_LITEMATIC, packetByteBuf, getContext());
@@ -89,8 +89,8 @@ public class UploadExchange extends AbstractExchange
 
     private void sendFinish()
     {
-        final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
-        packetByteBuf.writeUuid(toUpload.getId());
+        final FriendlyByteBuf packetByteBuf = new FriendlyByteBuf(Unpooled.buffer());
+        packetByteBuf.writeUUID(toUpload.getId());
         getPartner().sendPacket(PacketType.FINISHED_LITEMATIC, packetByteBuf, getContext());
         succeed();
     }
@@ -114,8 +114,8 @@ public class UploadExchange extends AbstractExchange
     @Override
     protected void sendCancelPacket()
     {
-        final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
-        packetByteBuf.writeUuid(toUpload.getId());
+        final FriendlyByteBuf packetByteBuf = new FriendlyByteBuf(Unpooled.buffer());
+        packetByteBuf.writeUUID(toUpload.getId());
         getPartner().sendPacket(PacketType.CANCEL_LITEMATIC, packetByteBuf, getContext());
     }
 }

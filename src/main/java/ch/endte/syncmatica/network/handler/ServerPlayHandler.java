@@ -4,18 +4,18 @@ import javax.annotation.Nonnull;
 import ch.endte.syncmatica.network.actor.IServerPlay;
 import ch.endte.syncmatica.network.SyncmaticaPacket;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 
 /**
  * Network packet senders / receivers (Server Context)
  */
 public abstract class ServerPlayHandler
 {
-    public static void decodeSyncData(@Nonnull SyncmaticaPacket data, @Nonnull ServerPlayNetworkHandler handler)
+    public static void decodeSyncData(@Nonnull SyncmaticaPacket data, @Nonnull ServerGamePacketListenerImpl handler)
     {
         IServerPlay iDo = ((IServerPlay) handler);
 
@@ -27,36 +27,36 @@ public abstract class ServerPlayHandler
         iDo.syncmatica$operateComms(sm -> sm.onPacket(iDo.syncmatica$getExchangeTarget(), data.getType(), data.getPacket()));
     }
 
-    public static void encodeSyncData(@Nonnull SyncmaticaPacket data, @Nonnull ServerPlayNetworkHandler handler)
+    public static void encodeSyncData(@Nonnull SyncmaticaPacket data, @Nonnull ServerGamePacketListenerImpl handler)
     {
         sendSyncPacket(new SyncmaticaPacket.Payload(data), handler);
     }
 
-    public static void encodeSyncData(@Nonnull SyncmaticaPacket data, @Nonnull ServerPlayerEntity player)
+    public static void encodeSyncData(@Nonnull SyncmaticaPacket data, @Nonnull ServerPlayer player)
     {
         sendSyncPacket(new SyncmaticaPacket.Payload(data), player);
     }
 
     public static void receiveSyncPayload(SyncmaticaPacket.Payload payload, ServerPlayNetworking.Context context)
     {
-        decodeSyncData(payload.data(), context.player().networkHandler);
+        decodeSyncData(payload.data(), context.player().connection);
     }
 
-    public static <T extends CustomPayload> void sendSyncPacket(@Nonnull T payload, @Nonnull ServerPlayerEntity player)
+    public static <T extends CustomPacketPayload> void sendSyncPacket(@Nonnull T payload, @Nonnull ServerPlayer player)
     {
-        if (ServerPlayNetworking.canSend(player, payload.getId()))
+        if (ServerPlayNetworking.canSend(player, payload.type()))
         {
             ServerPlayNetworking.send(player, payload);
         }
     }
 
-    public static <T extends CustomPayload> void sendSyncPacket(@Nonnull T payload, @Nonnull ServerPlayNetworkHandler handler)
+    public static <T extends CustomPacketPayload> void sendSyncPacket(@Nonnull T payload, @Nonnull ServerGamePacketListenerImpl handler)
     {
-        Packet<?> packet = new CustomPayloadS2CPacket(payload);
+        Packet<?> packet = new ClientboundCustomPayloadPacket(payload);
 
-        if (handler.accepts(packet))
+        if (handler.shouldHandleMessage(packet))
         {
-            handler.sendPacket(packet);
+            handler.send(packet);
         }
     }
 }

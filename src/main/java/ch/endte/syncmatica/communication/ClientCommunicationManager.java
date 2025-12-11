@@ -3,6 +3,7 @@ package ch.endte.syncmatica.communication;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.UUID;
+import net.minecraft.network.FriendlyByteBuf;
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.Feature;
 import ch.endte.syncmatica.Syncmatica;
@@ -15,7 +16,6 @@ import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.litematica.ScreenHelper;
 import ch.endte.syncmatica.network.actor.ActorClientPlayHandler;
 import ch.endte.syncmatica.network.PacketType;
-import net.minecraft.network.PacketByteBuf;
 import fi.dy.masa.malilib.gui.Message;
 
 public class ClientCommunicationManager extends CommunicationManager
@@ -35,7 +35,7 @@ public class ClientCommunicationManager extends CommunicationManager
     }
 
     @Override
-    protected void handle(final ExchangeTarget source, final PacketType type, final PacketByteBuf packetBuf)
+    protected void handle(final ExchangeTarget source, final PacketType type, final FriendlyByteBuf packetBuf)
     {
         if (type.equals(PacketType.REGISTER_METADATA)) {
             final ServerPlacement placement = receiveMetaData(packetBuf, source);
@@ -43,7 +43,7 @@ public class ClientCommunicationManager extends CommunicationManager
             return;
         }
         if (type.equals(PacketType.REMOVE_SYNCMATIC)) {
-            final UUID placementId = packetBuf.readUuid();
+            final UUID placementId = packetBuf.readUUID();
             final ServerPlacement placement = context.getSyncmaticManager().getPlacement(placementId);
             if (placement != null) {
                 final Exchange modifier = getModifier(placement);
@@ -59,13 +59,13 @@ public class ClientCommunicationManager extends CommunicationManager
             return;
         }
         if (type.equals(PacketType.MODIFY)) {
-            final UUID placementId = packetBuf.readUuid();
+            final UUID placementId = packetBuf.readUUID();
             final ServerPlacement toModify = context.getSyncmaticManager().getPlacement(placementId);
             receivePositionData(toModify, packetBuf, source);
             if (source.getFeatureSet().hasFeature(Feature.CORE_EX)) {
                 final PlayerIdentifier lastModifiedBy = context.getPlayerIdentifierProvider().createOrGet(
-                        packetBuf.readUuid(),
-                        packetBuf.readString(PACKET_MAX_STRING_SIZE)
+                        packetBuf.readUUID(),
+                        packetBuf.readUtf(PACKET_MAX_STRING_SIZE)
                 );
 
                 toModify.setLastModifiedBy(lastModifiedBy);
@@ -75,8 +75,8 @@ public class ClientCommunicationManager extends CommunicationManager
             return;
         }
         if (type.equals(PacketType.MESSAGE)) {
-            final Message.MessageType msgType = mapMessageType(MessageType.valueOf(packetBuf.readString(PACKET_MAX_STRING_SIZE)));
-            final String text = packetBuf.readString(PACKET_MAX_STRING_SIZE);
+            final Message.MessageType msgType = mapMessageType(MessageType.valueOf(packetBuf.readUtf(PACKET_MAX_STRING_SIZE)));
+            final String text = packetBuf.readUtf(PACKET_MAX_STRING_SIZE);
             ScreenHelper.ifPresent(s -> s.addMessage(msgType, text));
             return;
         }

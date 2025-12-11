@@ -5,25 +5,25 @@ import ch.endte.syncmatica.network.SyncmaticaPacket;
 import ch.endte.syncmatica.network.actor.ActorClientPlayHandler;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
 
 /**
  * Network packet senders / receivers (Client Context)
  */
 public class ClientPlayHandler
 {
-    public static void decodeSyncData(@Nonnull SyncmaticaPacket data, ClientPlayNetworkHandler handler)
+    public static void decodeSyncData(@Nonnull SyncmaticaPacket data, ClientPacketListener handler)
     {
         CallbackInfo ci = new CallbackInfo("receiveSyncPacket", false);
         ActorClientPlayHandler.getInstance().packetEvent(data.getType(), data.getPacket(), handler, ci);
     }
 
-    public static void encodeSyncData(@Nonnull SyncmaticaPacket data, ClientPlayNetworkHandler handler)
+    public static void encodeSyncData(@Nonnull SyncmaticaPacket data, ClientPacketListener handler)
     {
         SyncmaticaPacket.Payload payload = new SyncmaticaPacket.Payload(data);
         if (handler != null)
@@ -39,37 +39,37 @@ public class ClientPlayHandler
     public static void receiveSyncPayload(@Nonnull SyncmaticaPacket data)
     {
         CallbackInfo ci = new CallbackInfo("receiveSyncPacket", false);
-        ActorClientPlayHandler.getInstance().packetEvent(data.getType(), data.getPacket(), MinecraftClient.getInstance().getNetworkHandler(), ci);
+        ActorClientPlayHandler.getInstance().packetEvent(data.getType(), data.getPacket(), Minecraft.getInstance().getConnection(), ci);
     }
 
     public static void receiveSyncPayload(SyncmaticaPacket.Payload payload, ClientPlayNetworking.Context context)
     {
         // Has threading issues ?
-        if (context.client().getNetworkHandler() != null)
+        if (context.client().getConnection() != null)
         {
-            decodeSyncData(payload.data(), context.client().getNetworkHandler());
+            decodeSyncData(payload.data(), context.client().getConnection());
         }
         else
         {
-            decodeSyncData(payload.data(), MinecraftClient.getInstance().getNetworkHandler());
+            decodeSyncData(payload.data(), Minecraft.getInstance().getConnection());
         }
     }
 
-    public static <T extends CustomPayload> void sendSyncPacket(@Nonnull T payload)
+    public static <T extends CustomPacketPayload> void sendSyncPacket(@Nonnull T payload)
     {
-        if (ClientPlayNetworking.canSend(payload.getId()))
+        if (ClientPlayNetworking.canSend(payload.type()))
         {
             ClientPlayNetworking.send(payload);
         }
     }
 
-    public static <T extends CustomPayload> void sendSyncPacket(@Nonnull T payload, @Nonnull ClientPlayNetworkHandler handler)
+    public static <T extends CustomPacketPayload> void sendSyncPacket(@Nonnull T payload, @Nonnull ClientPacketListener handler)
     {
-        Packet<?> packet = new CustomPayloadC2SPacket(payload);
+        Packet<?> packet = new ServerboundCustomPayloadPacket(payload);
 
-        if (handler.accepts(packet))
+        if (handler.shouldHandleMessage(packet))
         {
-            handler.sendPacket(packet);
+            handler.send(packet);
         }
     }
 }

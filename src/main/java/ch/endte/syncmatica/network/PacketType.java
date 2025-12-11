@@ -1,6 +1,6 @@
 package ch.endte.syncmatica.network;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 
 public enum PacketType
 {
@@ -80,7 +80,7 @@ public enum PacketType
 
     public final Identifier identifier;
 
-    PacketType(final String id, final String channel) {identifier = Identifier.of(id, channel);}
+    PacketType(final String id, final String channel) {identifier = Identifier.fromNamespaceAndPath(id, channel);}
 
     public static boolean containsIdentifier(final Identifier id)
     {

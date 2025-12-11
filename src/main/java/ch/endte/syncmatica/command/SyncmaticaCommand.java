@@ -19,23 +19,23 @@ import ch.endte.syncmatica.litematica.schematic.SchematicMetadata;
 import ch.endte.syncmatica.litematica.schematic.SchematicSchema;
 import ch.endte.syncmatica.util.SyncmaticaUtil;
 import me.lucko.fabric.api.permissions.v0.Permissions;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.PermissionLevel;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.permission.PermissionLevel;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.BlockMirror;
-import net.minecraft.util.BlockRotation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.GlobalPos;
-import net.minecraft.world.World;
 
 public class SyncmaticaCommand implements IServerCommand
 {
@@ -45,19 +45,19 @@ public class SyncmaticaCommand implements IServerCommand
     private final PermissionLevel DEFAULT_PERMISSIONS = PermissionLevel.ALL;
 
     @Override
-    public void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment environment)
+    public void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, Commands.CommandSelection environment)
     {
         dispatcher.register(
-                CommandManager
+                Commands
                         .literal(Reference.MOD_ID)
                         .requires(Permissions.require(Reference.MOD_ID + ".command", DEFAULT_PERMISSIONS))
-                        .then(CommandManager.literal("load")
+                        .then(Commands.literal("load")
                                             .requires(Permissions.require(Reference.MOD_ID + ".command.load", DEFAULT_PERMISSIONS))
                                             .executes(this::doLoadAll)
-                                            .then(CommandManager.argument("file", StringArgumentType.string())
+                                            .then(Commands.argument("file", StringArgumentType.string())
                                                                 .suggests(
                                                                         (ctx, builder) ->
-                                                                                CommandSource.suggestMatching(this.files.keySet(), builder,
+                                                                                SharedSuggestionProvider.suggest(this.files.keySet(), builder,
                                                                                                               ent -> ServerPlacement.removeExtension(ent.getFileName().toString()),
                                                                                                               ent2 -> this.formatTooltip(this.files.get(ent2).getLeft()
                                                                                                               )
@@ -130,12 +130,12 @@ public class SyncmaticaCommand implements IServerCommand
                 });
     }
 
-    private Text formatTooltip(SchematicMetadata meta)
+    private Component formatTooltip(SchematicMetadata meta)
     {
-        return Text.of(meta.getName());
+        return Component.nullToEmpty(meta.getName());
     }
 
-    private int doLoadAll(CommandContext<ServerCommandSource> ctx)
+    private int doLoadAll(CommandContext<CommandSourceStack> ctx)
     {
         if (this.context == null)
         {
@@ -149,23 +149,23 @@ public class SyncmaticaCommand implements IServerCommand
 
         if (this.files.isEmpty())
         {
-            ctx.getSource().sendFeedback(() -> Text.of("No Syncmatic file(s) found that needs to be loaded."), false);
+            ctx.getSource().sendSuccess(() -> Component.nullToEmpty("No Syncmatic file(s) found that needs to be loaded."), false);
             return 0;
         }
 
-        ServerPlayerEntity player = ctx.getSource().getPlayer();
+        ServerPlayer player = ctx.getSource().getPlayer();
         PlayerIdentifier owner;
         GlobalPos globalPos;
 
         if (player != null)
         {
             owner = this.context.getPlayerIdentifierProvider().createOrGet(player.getGameProfile());
-            globalPos = new GlobalPos(player.getEntityWorld().getRegistryKey(), player.getBlockPos());
+            globalPos = new GlobalPos(player.level().dimension(), player.blockPosition());
         }
         else
         {
             owner = this.context.getPlayerIdentifierProvider().createOrGet(UUID.randomUUID(), "Unknown");
-            globalPos = new GlobalPos(World.OVERWORLD, BlockPos.ORIGIN);
+            globalPos = new GlobalPos(Level.OVERWORLD, BlockPos.ZERO);
         }
 
         AtomicInteger count = new AtomicInteger();
@@ -181,15 +181,15 @@ public class SyncmaticaCommand implements IServerCommand
                     }
                 });
 
-        ctx.getSource().sendFeedback(() -> Text.of("§b" + String.format("%02d", count.get()) + "§r Syncmatic file(s) found / loaded."), true);
+        ctx.getSource().sendSuccess(() -> Component.nullToEmpty("§b" + String.format("%02d", count.get()) + "§r Syncmatic file(s) found / loaded."), true);
         this.updateSyncmaticDir(this.context);
         return 1;
     }
 
-    private boolean loadEach(ServerCommandSource src, Path p, SchematicMetadata meta, SchematicSchema schema, PlayerIdentifier owner, GlobalPos pos)
+    private boolean loadEach(CommandSourceStack src, Path p, SchematicMetadata meta, SchematicSchema schema, PlayerIdentifier owner, GlobalPos pos)
     {
         ServerPlacement placement = new ServerPlacement(UUID.randomUUID(), p.normalize(), p.getFileName().toString(), owner);
-        placement = placement.move(ServerPosition.fromGlobalPos(pos), BlockRotation.NONE, BlockMirror.NONE);
+        placement = placement.move(ServerPosition.fromGlobalPos(pos), Rotation.NONE, Mirror.NONE);
         placement = placement.setMetadata(meta);
         placement = placement.setSchema(schema);
 
@@ -197,11 +197,11 @@ public class SyncmaticaCommand implements IServerCommand
         ServerCommunicationManager comms = (ServerCommunicationManager) this.context.getCommunicationManager();
         comms.addPlacement(comms.fromExistingPlayer(src.getPlayer()), placement);
         final String name = placement.getName();
-        src.sendFeedback(() -> Text.of("Loaded Server Placement '§d" + name + "§r'"), true);
+        src.sendSuccess(() -> Component.nullToEmpty("Loaded Server Placement '§d" + name + "§r'"), true);
         return true;
     }
 
-    private int doLoadEach(CommandContext<ServerCommandSource> ctx, String result)
+    private int doLoadEach(CommandContext<CommandSourceStack> ctx, String result)
     {
         if (this.files.isEmpty())
         {
@@ -210,31 +210,31 @@ public class SyncmaticaCommand implements IServerCommand
 
         if (this.files.isEmpty())
         {
-            ctx.getSource().sendFeedback(() -> Text.of("No Syncmatic file(s) found that needs to be loaded."), false);
+            ctx.getSource().sendSuccess(() -> Component.nullToEmpty("No Syncmatic file(s) found that needs to be loaded."), false);
             return 0;
         }
 
         Path dir = this.context.getLitematicFolder();
         Path file = dir.resolve(result + ".litematic");
         Pair<SchematicMetadata, SchematicSchema> pair = SyncmaticaUtil.litematicPeek(file);
-        ServerPlayerEntity player = ctx.getSource().getPlayer();
+        ServerPlayer player = ctx.getSource().getPlayer();
         PlayerIdentifier owner;
         GlobalPos globalPos;
 
         if (player != null)
         {
             owner = this.context.getPlayerIdentifierProvider().createOrGet(player.getGameProfile());
-            globalPos = new GlobalPos(player.getEntityWorld().getRegistryKey(), player.getBlockPos());
+            globalPos = new GlobalPos(player.level().dimension(), player.blockPosition());
         }
         else
         {
             owner = this.context.getPlayerIdentifierProvider().createOrGet(UUID.randomUUID(), "Unknown");
-            globalPos = new GlobalPos(World.OVERWORLD, BlockPos.ORIGIN);
+            globalPos = new GlobalPos(Level.OVERWORLD, BlockPos.ZERO);
         }
 
         if (this.loadEach(ctx.getSource(), file, pair.getLeft(), pair.getRight(), owner, globalPos))
         {
-            ctx.getSource().sendFeedback(() -> Text.of("§b01§r Syncmatic file(s) found / loaded."), true);
+            ctx.getSource().sendSuccess(() -> Component.nullToEmpty("§b01§r Syncmatic file(s) found / loaded."), true);
         }
 
         this.updateSyncmaticDir(this.context);

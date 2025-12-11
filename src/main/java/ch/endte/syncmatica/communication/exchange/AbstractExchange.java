@@ -1,14 +1,14 @@
 package ch.endte.syncmatica.communication.exchange;
 
 import java.util.UUID;
+import net.minecraft.network.FriendlyByteBuf;
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.communication.CommunicationManager;
 import ch.endte.syncmatica.communication.ExchangeTarget;
-import net.minecraft.network.PacketByteBuf;
 
 public abstract class AbstractExchange implements Exchange
 {
-    protected int PACKET_MAX_STRING_SIZE = PacketByteBuf.DEFAULT_MAX_STRING_LENGTH;
+    protected int PACKET_MAX_STRING_SIZE = FriendlyByteBuf.MAX_STRING_LENGTH;
     private boolean success = false;
     private boolean finished = false;
     private final ExchangeTarget partner;
@@ -64,10 +64,10 @@ public abstract class AbstractExchange implements Exchange
         onClose();
     }
 
-    protected static boolean checkUUID(final PacketByteBuf sourceBuf, final UUID targetId)
+    protected static boolean checkUUID(final FriendlyByteBuf sourceBuf, final UUID targetId)
     {
         final int r = sourceBuf.readerIndex();
-        final UUID sourceId = sourceBuf.readUuid();
+        final UUID sourceId = sourceBuf.readUUID();
         sourceBuf.readerIndex(r);
         return sourceId.equals(targetId);
     }

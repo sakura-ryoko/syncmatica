@@ -4,7 +4,9 @@ import java.io.FileInputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.extended_core.PlayerIdentifier;
@@ -16,10 +18,6 @@ import ch.endte.syncmatica.util.SyncmaticaUtil;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import org.apache.commons.lang3.tuple.Pair;
-
-import net.minecraft.util.BlockMirror;
-import net.minecraft.util.BlockRotation;
-import net.minecraft.util.math.BlockPos;
 
 public class ServerPlacement
 {
@@ -33,8 +31,8 @@ public class ServerPlacement
     private PlayerIdentifier lastModifiedBy; // player that last modified it
 
     private ServerPosition origin;
-    private BlockRotation rotation;
-    private BlockMirror mirror;
+    private Rotation rotation;
+    private Mirror mirror;
     private SubRegionData subRegionData = new SubRegionData();
 
     // Feature.DISPLAY_NAME
@@ -123,12 +121,12 @@ public class ServerPlacement
         return origin;
     }
 
-    public BlockRotation getRotation()
+    public Rotation getRotation()
     {
         return rotation;
     }
 
-    public BlockMirror getMirror()
+    public Mirror getMirror()
     {
         return mirror;
     }
@@ -145,14 +143,14 @@ public class ServerPlacement
         return this;
     }
 
-    public ServerPlacement move(final String dimensionId, final BlockPos origin, final BlockRotation rotation,
-                                final BlockMirror mirror)
+    public ServerPlacement move(final String dimensionId, final BlockPos origin, final Rotation rotation,
+                                final Mirror mirror)
     {
         move(new ServerPosition(origin, dimensionId), rotation, mirror);
         return this;
     }
 
-    public ServerPlacement move(final ServerPosition origin, final BlockRotation rotation, final BlockMirror mirror)
+    public ServerPlacement move(final ServerPosition origin, final Rotation rotation, final Mirror mirror)
     {
         this.origin = origin;
         this.rotation = rotation;
@@ -406,8 +404,8 @@ public class ServerPlacement
                 return null;
             }
             newPlacement.origin = pos;
-            newPlacement.rotation = BlockRotation.valueOf(obj.get("rotation").getAsString());
-            newPlacement.mirror = BlockMirror.valueOf(obj.get("mirror").getAsString());
+            newPlacement.rotation = Rotation.valueOf(obj.get("rotation").getAsString());
+            newPlacement.mirror = Mirror.valueOf(obj.get("mirror").getAsString());
 
             if (obj.has("lastModifiedBy"))
             {

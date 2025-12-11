@@ -3,15 +3,16 @@ package ch.endte.syncmatica.litematica.schematic;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import net.minecraft.util.StringRepresentable;
 import com.google.common.collect.ImmutableList;
+import org.jspecify.annotations.NonNull;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.util.StringIdentifiable;
 
 /**
  * Cloned from Litematica 1.21.5 -- Sakura
  */
-public enum FileType implements StringIdentifiable
+public enum FileType implements StringRepresentable
 {
 	INVALID,
 	UNKNOWN,
@@ -21,7 +22,7 @@ public enum FileType implements StringIdentifiable
 	SPONGE_SCHEMATIC,
 	VANILLA_STRUCTURE;
 
-	public static final EnumCodec<FileType> CODEC = StringIdentifiable.createCodec(FileType::values);
+	public static final EnumCodec<FileType> CODEC = StringRepresentable.fromEnum(FileType::values);
 	public static final ImmutableList<FileType> VALUES = ImmutableList.copyOf(values());
 
 	public Codec<FileType> codec()
@@ -95,7 +96,7 @@ public enum FileType implements StringIdentifiable
 	}
 
 	@Override
-	public String asString()
+	public @NonNull String getSerializedName()
 	{
 		return getString(this);
 	}

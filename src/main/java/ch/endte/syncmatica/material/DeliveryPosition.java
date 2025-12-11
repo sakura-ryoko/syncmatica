@@ -1,7 +1,7 @@
 package ch.endte.syncmatica.material;
 
 import ch.endte.syncmatica.data.ServerPosition;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 
 public class DeliveryPosition extends ServerPosition {
 

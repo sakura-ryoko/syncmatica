@@ -4,6 +4,10 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import javax.annotation.Nullable;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.data.RedirectFileStorage;
@@ -18,12 +22,6 @@ import ch.endte.syncmatica.litematica.schematic.SchematicMetadata;
 import ch.endte.syncmatica.litematica.schematic.SchematicSchema;
 import ch.endte.syncmatica.util.SyncmaticaUtil;
 import org.apache.commons.lang3.tuple.Pair;
-
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.BlockMirror;
-import net.minecraft.util.BlockRotation;
-import net.minecraft.util.math.BlockPos;
-
 import fi.dy.masa.malilib.gui.Message;
 import fi.dy.masa.litematica.data.DataManager;
 import fi.dy.masa.litematica.data.SchematicHolder;
@@ -100,7 +98,7 @@ public class LitematicManager
     // or another source
     public void renderSyncmatic(final ServerPlacement placement)
     {
-        final String dimension = MinecraftClient.getInstance().getCameraEntity().getEntityWorld().getRegistryKey().getValue().toString();
+        final String dimension = Minecraft.getInstance().getCameraEntity().level().dimension().identifier().toString();
         if (!dimension.equals(placement.getDimension()))
         {
             ScreenHelper.ifPresent(s -> s.addMessage(Message.MessageType.ERROR, "syncmatica.error.player_dimension_mismatch"));
@@ -203,13 +201,13 @@ public class LitematicManager
             }
 
             final PlayerIdentifier owner = context.getPlayerIdentifierProvider().createOrGet(
-                    MinecraftClient.getInstance().getSession().getUuidOrNull(),
-                    MinecraftClient.getInstance().getSession().getUsername()
+                    Minecraft.getInstance().getUser().getProfileId(),
+                    Minecraft.getInstance().getUser().getName()
             );
 
             final ServerPlacement placement = new ServerPlacement(UUID.randomUUID(), placementFile, schem.getName(), owner);
             // thanks miniHUD
-            final String dimension = MinecraftClient.getInstance().getCameraEntity().getEntityWorld().getRegistryKey().getValue().toString();
+            final String dimension = Minecraft.getInstance().getCameraEntity().level().dimension().identifier().toString();
             placement.move(dimension, schem.getOrigin(), schem.getRotation(), schem.getMirror());
             transferSubregionDataToServerPlacement(schem, placement);
 
@@ -414,7 +412,7 @@ public class LitematicManager
 
     public boolean isSubregionModified(final SubRegionPlacement subRegionPlacement, final BlockPos defaultPos)
     {
-        return subRegionPlacement.getMirror() != BlockMirror.NONE || subRegionPlacement.getRotation() != BlockRotation.NONE ||
+        return subRegionPlacement.getMirror() != Mirror.NONE || subRegionPlacement.getRotation() != Rotation.NONE ||
                 !subRegionPlacement.getPos().equals(defaultPos);
     }
 
@@ -425,8 +423,8 @@ public class LitematicManager
 //        mutable.setBlockRotation(BlockRotation.NONE);
 //        mutable.setBlockPosition(defaultPos);
         SchematicPlacementEventHandler.getInstance().invokeSetSubRegionOrigin(eventHandler, subRegionPlacement, defaultPos);
-        SchematicPlacementEventHandler.getInstance().invokeSetSubRegionRotation(eventHandler, subRegionPlacement, BlockRotation.NONE);
-        SchematicPlacementEventHandler.getInstance().invokeSetSubRegionMirror(eventHandler, subRegionPlacement, BlockMirror.NONE);
+        SchematicPlacementEventHandler.getInstance().invokeSetSubRegionRotation(eventHandler, subRegionPlacement, Rotation.NONE);
+        SchematicPlacementEventHandler.getInstance().invokeSetSubRegionMirror(eventHandler, subRegionPlacement, Mirror.NONE);
     }
 
     // gets called by code mixed into litematicas loading stage
@@ -535,9 +533,9 @@ public class LitematicManager
 
     public ServerPosition getPlayerPosition()
     {
-        if (MinecraftClient.getInstance().getCameraEntity() != null)
+        if (Minecraft.getInstance().getCameraEntity() != null)
         {
-            final BlockPos blockPos = MinecraftClient.getInstance().getCameraEntity().getBlockPos();
+            final BlockPos blockPos = Minecraft.getInstance().getCameraEntity().blockPosition();
             final String dimensionId = getPlayerDimension();
             return new ServerPosition(blockPos, dimensionId);
         }
@@ -546,9 +544,9 @@ public class LitematicManager
 
     public String getPlayerDimension()
     {
-        if (MinecraftClient.getInstance().getCameraEntity() != null)
+        if (Minecraft.getInstance().getCameraEntity() != null)
         {
-            return MinecraftClient.getInstance().getCameraEntity().getEntityWorld().getRegistryKey().getValue().toString();
+            return Minecraft.getInstance().getCameraEntity().level().dimension().identifier().toString();
         }
         else
         {

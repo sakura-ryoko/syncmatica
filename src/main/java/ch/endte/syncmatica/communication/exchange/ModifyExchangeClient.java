@@ -8,7 +8,7 @@ import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.litematica.ScreenHelper;
 import ch.endte.syncmatica.network.PacketType;
 import io.netty.buffer.Unpooled;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import fi.dy.masa.malilib.gui.Message;
 import fi.dy.masa.litematica.schematic.placement.SchematicPlacement;
 
@@ -27,7 +27,7 @@ public class ModifyExchangeClient extends AbstractExchange
     }
 
     @Override
-    public boolean checkPacket(final PacketType type, final PacketByteBuf packetBuf)
+    public boolean checkPacket(final PacketType type, final FriendlyByteBuf packetBuf)
     {
         if (type.equals(PacketType.MODIFY_REQUEST_DENY)
                 || type.equals(PacketType.MODIFY_REQUEST_ACCEPT)
@@ -39,11 +39,11 @@ public class ModifyExchangeClient extends AbstractExchange
     }
 
     @Override
-    public void handle(final PacketType type, final PacketByteBuf packetBuf)
+    public void handle(final PacketType type, final FriendlyByteBuf packetBuf)
     {
         if (type.equals(PacketType.MODIFY_REQUEST_DENY))
         {
-            packetBuf.readUuid();
+            packetBuf.readUUID();
             close(false);
             if (!litematic.isLocked())
             {
@@ -56,12 +56,12 @@ public class ModifyExchangeClient extends AbstractExchange
         }
         else if (type.equals(PacketType.MODIFY_REQUEST_ACCEPT))
         {
-            packetBuf.readUuid();
+            packetBuf.readUUID();
             acceptModification();
         }
         else if (type.equals(PacketType.REMOVE_SYNCMATIC))
         {
-            packetBuf.readUuid();
+            packetBuf.readUUID();
             final ShareLitematicExchange legacyModify = new ShareLitematicExchange(litematic, getPartner(), getContext(), placement);
             getContext().getCommunicationManager().startExchange(legacyModify);
             succeed(); // the adding portion of this is handled by the ShareLitematicExchange
@@ -79,8 +79,8 @@ public class ModifyExchangeClient extends AbstractExchange
         getContext().getCommunicationManager().setModifier(placement, this);
         if (getPartner().getFeatureSet().hasFeature(Feature.MODIFY))
         {
-            final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-            buf.writeUuid(placement.getId());
+            final FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+            buf.writeUUID(placement.getId());
             getPartner().sendPacket(PacketType.MODIFY_REQUEST, buf, getContext());
         }
         else
@@ -113,8 +113,8 @@ public class ModifyExchangeClient extends AbstractExchange
     private void sendFinish() {
         if (getPartner().getFeatureSet().hasFeature(Feature.MODIFY))
         {
-            final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-            buf.writeUuid(placement.getId());
+            final FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+            buf.writeUUID(placement.getId());
             getContext().getCommunicationManager().putPositionData(placement, buf, getPartner());
             getPartner().sendPacket(PacketType.MODIFY_FINISH, buf, getContext());
             succeed();
@@ -122,8 +122,8 @@ public class ModifyExchangeClient extends AbstractExchange
         }
         else
         {
-            final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-            buf.writeUuid(placement.getId());
+            final FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+            buf.writeUUID(placement.getId());
             getPartner().sendPacket(PacketType.REMOVE_SYNCMATIC, buf, getContext());
             expectRemove = true;
         }
@@ -134,8 +134,8 @@ public class ModifyExchangeClient extends AbstractExchange
     {
         if (getPartner().getFeatureSet().hasFeature(Feature.MODIFY))
         {
-            final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-            buf.writeUuid(placement.getId());
+            final FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+            buf.writeUUID(placement.getId());
             getContext().getCommunicationManager().putPositionData(placement, buf, getPartner());
             getPartner().sendPacket(PacketType.MODIFY_FINISH, buf, getContext());
         }

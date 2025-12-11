@@ -1,13 +1,13 @@
 package ch.endte.syncmatica.communication.exchange;
 
 import java.util.UUID;
+import net.minecraft.network.FriendlyByteBuf;
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.communication.ExchangeTarget;
 import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.extended_core.PlayerIdentifier;
 import ch.endte.syncmatica.network.PacketType;
 import io.netty.buffer.Unpooled;
-import net.minecraft.network.PacketByteBuf;
 
 public class ModifyExchangeServer extends AbstractExchange
 {
@@ -22,15 +22,15 @@ public class ModifyExchangeServer extends AbstractExchange
     }
 
     @Override
-    public boolean checkPacket(final PacketType type, final PacketByteBuf packetBuf)
+    public boolean checkPacket(final PacketType type, final FriendlyByteBuf packetBuf)
     {
         return type.equals(PacketType.MODIFY_FINISH) && checkUUID(packetBuf, placement.getId());
     }
 
     @Override
-    public void handle(final PacketType type, final PacketByteBuf packetBuf)
+    public void handle(final PacketType type, final FriendlyByteBuf packetBuf)
     {
-        packetBuf.readUuid(); // consume uuid
+        packetBuf.readUUID(); // consume uuid
         if (type.equals(PacketType.MODIFY_FINISH))
         {
             getContext().getCommunicationManager().receivePositionData(placement, packetBuf, getPartner());
@@ -59,8 +59,8 @@ public class ModifyExchangeServer extends AbstractExchange
 
     private void accept()
     {
-        final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-        buf.writeUuid(placement.getId());
+        final FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+        buf.writeUUID(placement.getId());
         getPartner().sendPacket(PacketType.MODIFY_REQUEST_ACCEPT, buf, getContext());
         getContext().getCommunicationManager().setModifier(placement, this);
     }
@@ -68,8 +68,8 @@ public class ModifyExchangeServer extends AbstractExchange
     @Override
     protected void sendCancelPacket()
     {
-        final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-        buf.writeUuid(placementId);
+        final FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+        buf.writeUUID(placementId);
         getPartner().sendPacket(PacketType.MODIFY_REQUEST_DENY, buf, getContext());
     }
 

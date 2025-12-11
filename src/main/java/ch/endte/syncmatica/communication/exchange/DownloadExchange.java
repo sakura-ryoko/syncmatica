@@ -9,6 +9,7 @@ import java.security.DigestOutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
+import net.minecraft.network.FriendlyByteBuf;
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.communication.ExchangeTarget;
@@ -17,8 +18,6 @@ import ch.endte.syncmatica.communication.ServerCommunicationManager;
 import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.network.PacketType;
 import io.netty.buffer.Unpooled;
-
-import net.minecraft.network.PacketByteBuf;
 
 public class DownloadExchange extends AbstractExchange
 {
@@ -39,7 +38,7 @@ public class DownloadExchange extends AbstractExchange
     }
 
     @Override
-    public boolean checkPacket(final PacketType type, final PacketByteBuf packetBuf)
+    public boolean checkPacket(final PacketType type, final FriendlyByteBuf packetBuf)
     {
         if (type.equals(PacketType.SEND_LITEMATIC)
                 || type.equals(PacketType.FINISHED_LITEMATIC)
@@ -51,9 +50,9 @@ public class DownloadExchange extends AbstractExchange
     }
 
     @Override
-    public void handle(final PacketType type, final PacketByteBuf packetBuf)
+    public void handle(final PacketType type, final FriendlyByteBuf packetBuf)
     {
-        packetBuf.readUuid(); //skips the UUID
+        packetBuf.readUUID(); //skips the UUID
         if (type.equals(PacketType.SEND_LITEMATIC))
         {
             final int size = packetBuf.readInt();
@@ -77,8 +76,8 @@ public class DownloadExchange extends AbstractExchange
                 e.printStackTrace();
                 return;
             }
-            final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
-            packetByteBuf.writeUuid(toDownload.getId());
+            final FriendlyByteBuf packetByteBuf = new FriendlyByteBuf(Unpooled.buffer());
+            packetByteBuf.writeUUID(toDownload.getId());
             getPartner().sendPacket(PacketType.RECEIVED_LITEMATIC, packetByteBuf, getContext());
             return;
         }
@@ -115,8 +114,8 @@ public class DownloadExchange extends AbstractExchange
     @Override
     public void init()
     {
-        final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
-        packetByteBuf.writeUuid(toDownload.getId());
+        final FriendlyByteBuf packetByteBuf = new FriendlyByteBuf(Unpooled.buffer());
+        packetByteBuf.writeUUID(toDownload.getId());
         getPartner().sendPacket(PacketType.REQUEST_LITEMATIC, packetByteBuf, getContext());
     }
 
@@ -153,8 +152,8 @@ public class DownloadExchange extends AbstractExchange
     @Override
     protected void sendCancelPacket()
     {
-        final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
-        packetByteBuf.writeUuid(toDownload.getId());
+        final FriendlyByteBuf packetByteBuf = new FriendlyByteBuf(Unpooled.buffer());
+        packetByteBuf.writeUUID(toDownload.getId());
         getPartner().sendPacket(PacketType.CANCEL_LITEMATIC, packetByteBuf, getContext());
     }
 
