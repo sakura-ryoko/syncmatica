@@ -26,6 +26,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
+import net.minecraft.command.permission.PermissionLevel;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -41,7 +42,7 @@ public class SyncmaticaCommand implements IServerCommand
     public static final SyncmaticaCommand INSTANCE = new SyncmaticaCommand();
     private Context context = null;
     private final HashMap<Path, Pair<SchematicMetadata, SchematicSchema>> files = new HashMap<>();
-    private final int DEFAULT_PERMISSIONS = 0;
+    private final PermissionLevel DEFAULT_PERMISSIONS = PermissionLevel.ALL;
 
     @Override
     public void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment environment)

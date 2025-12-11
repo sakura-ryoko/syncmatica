@@ -3,27 +3,25 @@ package ch.endte.syncmatica.litematica.gui;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.Syncmatica;
-import ch.endte.syncmatica.data.LocalLitematicState;
-import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.communication.ClientCommunicationManager;
 import ch.endte.syncmatica.communication.ExchangeTarget;
+import ch.endte.syncmatica.data.LocalLitematicState;
+import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.network.PacketType;
+import io.netty.buffer.Unpooled;
+
+import net.minecraft.network.PacketByteBuf;
 
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.widgets.WidgetListEntryBase;
+import fi.dy.masa.malilib.render.GuiContext;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
-
-import io.netty.buffer.Unpooled;
-
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.network.PacketByteBuf;
 
 
 public class WidgetSyncmaticaServerPlacementEntry extends WidgetListEntryBase<ServerPlacement>
@@ -81,7 +79,7 @@ public class WidgetSyncmaticaServerPlacementEntry extends WidgetListEntryBase<Se
     }
 
     @Override
-    public void render(DrawContext drawContext, int mouseX, int mouseY, boolean selected)
+    public void render(GuiContext ctx, int mouseX, int mouseY, boolean selected)
     {
         // Source: WidgetSchematicEntry
 //        RenderUtils.color(1f, 1f, 1f, 1f);
@@ -89,21 +87,21 @@ public class WidgetSyncmaticaServerPlacementEntry extends WidgetListEntryBase<Se
         // Draw a lighter background for the hovered and the selected entry
         if (selected || isMouseOver(mouseX, mouseY))
         {
-            RenderUtils.drawRect(drawContext, x, y, width, height, 0x70FFFFFF);
+            RenderUtils.drawRect(ctx, x, y, width, height, 0x70FFFFFF);
         }
         else if (isOdd)
         {
-            RenderUtils.drawRect(drawContext, x, y, width, height, 0x20FFFFFF);
+            RenderUtils.drawRect(ctx, x, y, width, height, 0x20FFFFFF);
         }
         // Draw a slightly lighter background for even entries
         else
         {
-            RenderUtils.drawRect(drawContext, x, y, width, height, 0x50FFFFFF);
+            RenderUtils.drawRect(ctx, x, y, width, height, 0x50FFFFFF);
         }
 
         final String schematicName = placement.getName();
-        drawString(drawContext, x + 20, y + 7, 0xFFFFFFFF, schematicName);
-        drawSubWidgets(drawContext, mouseX, mouseY);
+        this.drawString(ctx, x + 20, y + 7, 0xFFFFFFFF, schematicName);
+        this.drawSubWidgets(ctx, mouseX, mouseY);
     }
 
     private static class ButtonListener implements IButtonActionListener

@@ -5,28 +5,26 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import ch.endte.syncmatica.litematica.schematic.Schema;
-import ch.endte.syncmatica.litematica.schematic.SchematicSchema;
-import com.google.common.collect.ImmutableList;
-
 import ch.endte.syncmatica.data.ServerPlacement;
 import ch.endte.syncmatica.data.ServerPosition;
 import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.litematica.ScreenHelper;
+import ch.endte.syncmatica.litematica.schematic.Schema;
+import ch.endte.syncmatica.litematica.schematic.SchematicSchema;
 import ch.endte.syncmatica.util.SyncmaticaUtil;
+import com.google.common.collect.ImmutableList;
 
-import fi.dy.masa.litematica.gui.Icons;
+import net.minecraft.util.math.BlockPos;
+
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.LeftRight;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.gui.widgets.WidgetListBase;
 import fi.dy.masa.malilib.gui.widgets.WidgetSearchBar;
+import fi.dy.masa.malilib.render.GuiContext;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
-
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.util.math.BlockPos;
+import fi.dy.masa.litematica.gui.Icons;
 
 
 public class WidgetListSyncmaticaServerPlacement extends WidgetListBase<ServerPlacement, WidgetSyncmaticaServerPlacementEntry>
@@ -67,30 +65,27 @@ public class WidgetListSyncmaticaServerPlacement extends WidgetListBase<ServerPl
 
     // source: WidgetFileBrowserBase
     @Override
-    public void drawContents(DrawContext drawContext, int mouseX, int mouseY, float partialTicks)
+    public void drawContents(GuiContext ctx, int mouseX, int mouseY, float partialTicks)
     {
         // Draw an outline around the entire widget
-        RenderUtils.drawOutlinedBox(drawContext, posX, posY, browserWidth, browserHeight, 0xB0000000, GuiBase.COLOR_HORIZONTAL_BAR);
+        RenderUtils.drawOutlinedBox(ctx, posX, posY, browserWidth, browserHeight, 0xB0000000, GuiBase.COLOR_HORIZONTAL_BAR);
 
-        super.drawContents(drawContext, mouseX, mouseY, partialTicks);
-
-        drawPlacementInfo(drawContext, getLastSelectedEntry());
+        super.drawContents(ctx, mouseX, mouseY, partialTicks);
+        this.drawPlacementInfo(ctx, getLastSelectedEntry());
     }
 
-    private void drawPlacementInfo(final DrawContext drawContext, final ServerPlacement placement)
+    private void drawPlacementInfo(final GuiContext ctx, final ServerPlacement placement)
     {
         int x = posX + totalWidth - infoWidth;
         int y = posY;
         final int height = Math.min(infoHeight, parent.getMaxInfoHeight());
 
-        RenderUtils.drawOutlinedBox(drawContext, x, y, infoWidth, height, 0xA0000000, GuiBase.COLOR_HORIZONTAL_BAR);
+        RenderUtils.drawOutlinedBox(ctx, x, y, infoWidth, height, 0xA0000000, GuiBase.COLOR_HORIZONTAL_BAR);
 
         if (placement == null)
         {
             return;
         }
-
-//        RenderUtils.color(1f, 1f, 1f, 1f);
 
         x += 3;
         y += 3;
@@ -98,41 +93,41 @@ public class WidgetListSyncmaticaServerPlacement extends WidgetListBase<ServerPl
         final int valueColor = 0xFFFFFFFF;
 
         String str = StringUtils.translate("syncmatica.gui.label.placement_info.display_name");
-        drawString(drawContext, str, x, y, textColor);
+        this.drawString(ctx, str, x, y, textColor);
         y += 12;
-        drawString(drawContext, placement.getName(), x + 4, y, valueColor);
+        this.drawString(ctx, placement.getName(), x + 4, y, valueColor);
         y += 12;
 
         str = StringUtils.translate("syncmatica.gui.label.placement_info.file_name");
-        drawString(drawContext, str, x, y, textColor);
+        this.drawString(ctx, str, x, y, textColor);
         y += 12;
-        drawString(drawContext, placement.getFile().getFileName().toString(), x + 4, y, valueColor);
+        this.drawString(ctx, placement.getFile().getFileName().toString(), x + 4, y, valueColor);
         y += 12;
 
         str = StringUtils.translate("syncmatica.gui.label.placement_info.dimension_id");
-        drawString(drawContext, str, x, y, textColor);
+        this.drawString(ctx, str, x, y, textColor);
         y += 12;
-        drawString(drawContext, placement.getDimension(), x + 4, y, valueColor);
+        this.drawString(ctx, placement.getDimension(), x + 4, y, valueColor);
         y += 12;
 
         str = StringUtils.translate("syncmatica.gui.label.placement_info.position");
-        drawString(drawContext, str, x, y, textColor);
+        this.drawString(ctx, str, x, y, textColor);
         y += 12;
         final BlockPos origin = placement.getPosition();
         final String tmp = String.format("%d %d %d", origin.getX(), origin.getY(), origin.getZ());
-        drawString(drawContext, tmp, x + 4, y, valueColor);
+        this.drawString(ctx, tmp, x + 4, y, valueColor);
         y += 12;
 
         str = StringUtils.translate("syncmatica.gui.label.placement_info.owner");
-        drawString(drawContext, str, x, y, textColor);
+        this.drawString(ctx, str, x, y, textColor);
         y += 12;
-        drawString(drawContext, placement.getOwner().getName(), x + 4, y, valueColor);
+        this.drawString(ctx, placement.getOwner().getName(), x + 4, y, valueColor);
         y += 12;
 
         str = StringUtils.translate("syncmatica.gui.label.placement_info.last_modified");
-        drawString(drawContext, str, x, y, textColor);
+        this.drawString(ctx, str, x, y, textColor);
         y += 12;
-        drawString(drawContext, placement.getLastModifiedBy().getName(), x + 4, y, valueColor);
+        this.drawString(ctx, placement.getLastModifiedBy().getName(), x + 4, y, valueColor);
         y += 12;
 
         // Feature.VERSION
@@ -145,13 +140,13 @@ public class WidgetListSyncmaticaServerPlacement extends WidgetListBase<ServerPl
             final Schema schema = Schema.getSchemaByDataVersion(dataVersion);
 
             str = StringUtils.translate("syncmatica.gui.label.placement_info.version", version.litematicVersion());
-            drawString(drawContext, str, x, y, textColor);
+            this.drawString(ctx, str, x, y, textColor);
             y += 12;
 
             if (schema != null)
             {
                 str = StringUtils.translate("syncmatica.gui.label.placement_info.schema", schema.getString(), version.minecraftDataVersion());
-                drawString(drawContext, str, x, y, textColor);
+                this.drawString(ctx, str, x, y, textColor);
                 //y += 12;
             }
         }
