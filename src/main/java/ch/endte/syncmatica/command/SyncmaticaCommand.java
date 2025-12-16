@@ -18,7 +18,11 @@ import ch.endte.syncmatica.extended_core.PlayerIdentifier;
 import ch.endte.syncmatica.litematica.schematic.SchematicMetadata;
 import ch.endte.syncmatica.litematica.schematic.SchematicSchema;
 import ch.endte.syncmatica.util.SyncmaticaUtil;
-import me.lucko.fabric.api.permissions.v0.Permissions;
+import org.apache.commons.lang3.tuple.Pair;
+
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -31,11 +35,6 @@ import net.minecraft.server.permissions.PermissionLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
-import org.apache.commons.lang3.tuple.Pair;
-
-import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.brigadier.context.CommandContext;
 
 public class SyncmaticaCommand implements IServerCommand
 {
@@ -50,9 +49,9 @@ public class SyncmaticaCommand implements IServerCommand
         dispatcher.register(
                 Commands
                         .literal(Reference.MOD_ID)
-                        .requires(Permissions.require(Reference.MOD_ID + ".command", DEFAULT_PERMISSIONS))
+                        .requires(PermsWrap.check(Reference.MOD_ID + ".command", DEFAULT_PERMISSIONS))
                         .then(Commands.literal("load")
-                                            .requires(Permissions.require(Reference.MOD_ID + ".command.load", DEFAULT_PERMISSIONS))
+                                            .requires(PermsWrap.check(Reference.MOD_ID + ".command.load", DEFAULT_PERMISSIONS))
                                             .executes(this::doLoadAll)
                                             .then(Commands.argument("file", StringArgumentType.string())
                                                                 .suggests(
@@ -63,7 +62,7 @@ public class SyncmaticaCommand implements IServerCommand
                                                                                                               )
                                                                                 )
                                                                 )
-                                                                .requires(Permissions.require(Reference.MOD_ID + ".command.load_each", DEFAULT_PERMISSIONS))
+                                                                .requires(PermsWrap.check(Reference.MOD_ID + ".command.load_each", DEFAULT_PERMISSIONS))
                                                                 .executes((ctx) ->
                                                                           {
                                                                               String result = StringArgumentType.getString(ctx, "file");
