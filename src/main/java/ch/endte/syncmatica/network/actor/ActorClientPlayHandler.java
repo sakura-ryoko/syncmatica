@@ -69,8 +69,12 @@ public class ActorClientPlayHandler
 
     public void packetEvent(final PacketType type, final FriendlyByteBuf data, final ClientPacketListener clientContext, CallbackInfo ci)
     {
-        if (clientCommunication == null)
+        if (clientCommunication == null || exTarget.clientPlayNetworkHandler != clientContext)
         {
+            Syncmatica.debug("ActorClientPlayHandler#packetEvent: re-init client context (communication null: %b, handler mismatch: %b)"
+                    .formatted(clientCommunication == null, exTarget == null || exTarget.clientPlayNetworkHandler != clientContext));
+
+            this.reset();
             ActorClientPlayHandler.getInstance().startEvent(clientContext);
         }
         if (packetEvent(type, data))

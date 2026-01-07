@@ -490,18 +490,21 @@ public class LitematicManager
     public void commitLoad()
     {
         final SyncmaticManager man = context.getSyncmaticManager();
-        for (final SchematicPlacement schem : preLoadList)
+        if (preLoadList != null)
         {
-//            final UUID id = ((IIDContainer) schem).syncmatica$getServerId();
-            final UUID id = eventHandler.getServerId(schem);
-            final ServerPlacement p = man.getPlacement(id);
-            if (p != null)
+            for (final SchematicPlacement schem : preLoadList)
             {
-                if (context.getFileStorage().getLocalLitematic(p) != schem.getSchematicFile())
+//            final UUID id = ((IIDContainer) schem).syncmatica$getServerId();
+                final UUID id = eventHandler.getServerId(schem);
+                final ServerPlacement p = man.getPlacement(id);
+                if (p != null)
                 {
-                    ((RedirectFileStorage) context.getFileStorage()).addRedirect(schem.getSchematicFile());
+                    if (context.getFileStorage().getLocalLitematic(p) != schem.getSchematicFile())
+                    {
+                        ((RedirectFileStorage) context.getFileStorage()).addRedirect(schem.getSchematicFile());
+                    }
+                    renderSyncmatic(p, schem, true);
                 }
-                renderSyncmatic(p, schem, true);
             }
         }
         preLoadList = null;
