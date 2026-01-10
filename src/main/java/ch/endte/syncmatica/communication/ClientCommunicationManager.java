@@ -81,10 +81,14 @@ public class ClientCommunicationManager extends CommunicationManager
             return;
         }
         if (type.equals(PacketType.REGISTER_VERSION)) {
+            // Reset LitematicManager to clear ghost placements from previous sessions
+            // and ensure it uses the current context.
             LitematicManager.clear();
-            Syncmatica.restartClient();
+            LitematicManager.getInstance().setActiveContext(context);
 
-            ActorClientPlayHandler.getInstance().packetEvent(type, packetBuf);
+            final VersionHandshakeClient hi = new VersionHandshakeClient(server, context);
+            startExchange(hi);
+            hi.handle(type, packetBuf);
         }
     }
 

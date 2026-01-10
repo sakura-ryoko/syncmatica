@@ -87,6 +87,29 @@ public class LitematicManager
         }
         context = con;
         ScreenHelper.ifPresent(s -> s.setActiveContext(con));
+        context.getSyncmaticManager().addServerPlacementConsumer(this::checkSyncMatches);
+        for (final ServerPlacement p : context.getSyncmaticManager().getAll())
+        {
+            checkSyncMatches(p);
+        }
+    }
+
+    private void checkSyncMatches(final ServerPlacement p)
+    {
+        for (final SchematicPlacement sm : DataManager.getSchematicPlacementManager().getAllSchematicsPlacements())
+        {
+            final UUID smId = eventHandler.getServerId(sm);
+            if (smId != null && smId.equals(p.getId()))
+            {
+                if (!rendering.containsKey(p))
+                {
+                    rendering.put(p, sm);
+                    ((RedirectFileStorage) context.getFileStorage()).addRedirect(sm.getSchematicFile());
+                    readVersionInfo(p, sm);
+                }
+                break;
+            }
+        }
     }
 
     public Context getActiveContext()
@@ -445,6 +468,10 @@ public class LitematicManager
             {
                 final ServerPlacement adjusted = readVersionInfo(p, schem);
                 rendering.put(Objects.requireNonNullElse(adjusted, p), schem);
+                if (context.getFileStorage().getLocalLitematic(p) != schem.getSchematicFile())
+                {
+                    ((RedirectFileStorage) context.getFileStorage()).addRedirect(schem.getSchematicFile());
+                }
                 DataManager.getSchematicPlacementManager().addSchematicPlacement(schem, false);
             }
         }
@@ -490,18 +517,21 @@ public class LitematicManager
     public void commitLoad()
     {
         final SyncmaticManager man = context.getSyncmaticManager();
-        for (final SchematicPlacement schem : preLoadList)
+        if (preLoadList != null)
         {
-//            final UUID id = ((IIDContainer) schem).syncmatica$getServerId();
-            final UUID id = eventHandler.getServerId(schem);
-            final ServerPlacement p = man.getPlacement(id);
-            if (p != null)
+            for (final SchematicPlacement schem : preLoadList)
             {
-                if (context.getFileStorage().getLocalLitematic(p) != schem.getSchematicFile())
+//            final UUID id = ((IIDContainer) schem).syncmatica$getServerId();
+                final UUID id = eventHandler.getServerId(schem);
+                final ServerPlacement p = man.getPlacement(id);
+                if (p != null)
                 {
-                    ((RedirectFileStorage) context.getFileStorage()).addRedirect(schem.getSchematicFile());
+                    if (context.getFileStorage().getLocalLitematic(p) != schem.getSchematicFile())
+                    {
+                        ((RedirectFileStorage) context.getFileStorage()).addRedirect(schem.getSchematicFile());
+                    }
+                    renderSyncmatic(p, schem, true);
                 }
-                renderSyncmatic(p, schem, true);
             }
         }
         preLoadList = null;

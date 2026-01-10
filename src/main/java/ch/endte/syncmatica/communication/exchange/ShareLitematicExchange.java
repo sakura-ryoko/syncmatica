@@ -66,6 +66,7 @@ public class ShareLitematicExchange extends AbstractExchange
             redirect.addRedirect(toUpload);
             LitematicManager.getInstance().renderSyncmatic(toShare, schematicPlacement, false);
             getContext().getSyncmaticManager().addPlacement(toShare);
+            succeed();
             return;
         }
         if (type.equals(PacketType.CANCEL_SHARE))

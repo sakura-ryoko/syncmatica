@@ -68,9 +68,8 @@ public class Syncmatica
         if (contexts == null) {
             contexts = new HashMap<>();
         }
-        if (!contexts.containsKey(contextId)) {
-            contexts.put(contextId, con);
-        }
+        // Always update the context to ensure we have the latest instance (e.g. after re-login)
+        contexts.put(contextId, con);
         context_init = true;
     }
 
