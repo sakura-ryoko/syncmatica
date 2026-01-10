@@ -185,9 +185,9 @@ public abstract class CommunicationManager
         if (exchangeTarget.getFeatureSet().hasFeature(Feature.VERSION)) {
             litematicVersion = buf.readVarInt();
             dataVersion = buf.readVarInt();
-            placement = new ServerPlacement(id, fileName, displayName, hash, owner, litematicVersion, dataVersion);
+            placement = new ServerPlacement(id, ServerPlacement.normalizeFileName(fileName), displayName, hash, owner, litematicVersion, dataVersion);
         } else {
-            placement = new ServerPlacement(id, fileName, displayName, hash, owner);
+            placement = new ServerPlacement(id, ServerPlacement.normalizeFileName(fileName), displayName, hash, owner);
         }
 
         placement.setLastModifiedBy(lastModifiedBy);
