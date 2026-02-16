@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.14-SNAPSHOT'
+	id 'fabric-loom' version '1.15-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -33,7 +33,7 @@ dependencies {
 	modImplementation "com.github.sakura-ryoko:litematica:${project.litematica_version}"
 
 	include(modApi(fabricApi.module("fabric-networking-api-v1", project.fabric_api_version)))
-	include(modApi(fabricApi.module("fabric-resource-loader-v0", project.fabric_api_version)))
+//	include(modApi(fabricApi.module("fabric-resource-loader-v0", project.fabric_api_version)))
 	include(modApi(fabricApi.module("fabric-resource-loader-v1", project.fabric_api_version)))
 
 	// Lucko Permissions API
