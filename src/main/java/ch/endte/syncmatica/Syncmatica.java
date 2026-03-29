@@ -37,8 +37,8 @@ public class Syncmatica
     public static void preInit()
     {
         Syncmatica.debug("Syncmatica#preInit(): registering play channel(s)");
-        PayloadTypeRegistry.playC2S().register(SyncmaticaPacket.Payload.ID, SyncmaticaPacket.Payload.CODEC);
-        PayloadTypeRegistry.playS2C().register(SyncmaticaPacket.Payload.ID, SyncmaticaPacket.Payload.CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(SyncmaticaPacket.Payload.ID, SyncmaticaPacket.Payload.CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(SyncmaticaPacket.Payload.ID, SyncmaticaPacket.Payload.CODEC);
         // These need to be registered ASAP at launch.
     }
 

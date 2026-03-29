@@ -1,5 +1,6 @@
 package ch.endte.syncmatica.mixin;
 
+import java.util.Optional;
 import ch.endte.syncmatica.Reference;
 import ch.endte.syncmatica.Syncmatica;
 import ch.endte.syncmatica.litematica.LitematicManager;
@@ -8,6 +9,7 @@ import ch.endte.syncmatica.network.actor.ActorClientPlayHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.WorldStem;
 import net.minecraft.server.packs.repository.PackRepository;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.storage.LevelStorageSource;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -21,7 +23,7 @@ public class MixinMinecraftClient
     @Shadow private boolean isLocalServer;
 
     @Inject(method = "doWorldLoad", at = @At("TAIL"))
-    private void syncmatica$startIntegratedServer(LevelStorageSource.LevelStorageAccess session, PackRepository dataPackManager, WorldStem saveLoader, boolean newWorld, CallbackInfo ci)
+    private void syncmatica$startIntegratedServer(LevelStorageSource.LevelStorageAccess levelSourceAccess, PackRepository packRepository, WorldStem worldStem, Optional<GameRules> gameRules, boolean newWorld, CallbackInfo ci)
     {
         if (this.isLocalServer)
         {

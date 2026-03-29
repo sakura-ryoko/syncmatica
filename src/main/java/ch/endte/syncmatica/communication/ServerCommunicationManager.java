@@ -57,7 +57,7 @@ public class ServerCommunicationManager extends CommunicationManager
         else if (playerMap.containsKey(client))
         {
             final ServerPlayer player = playerMap.get(client);
-            player.displayClientMessage(Component.nullToEmpty("Syncmatica " + msgType.toString() + " " + identifier), false);
+            player.sendSystemMessage(Component.nullToEmpty("Syncmatica " + msgType.toString() + " " + identifier), false);
         }
     }
 
