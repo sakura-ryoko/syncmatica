@@ -18,12 +18,14 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Minecraft.class)
-public class MixinMinecraftClient
+public class MixinMinecraft
 {
     @Shadow private boolean isLocalServer;
 
     @Inject(method = "doWorldLoad", at = @At("TAIL"))
-    private void syncmatica$startIntegratedServer(LevelStorageSource.LevelStorageAccess levelSourceAccess, PackRepository packRepository, WorldStem worldStem, Optional<GameRules> gameRules, boolean newWorld, CallbackInfo ci)
+    private void syncmatica$startIntegratedServer(LevelStorageSource.LevelStorageAccess levelSourceAccess,
+                                                  PackRepository packRepository, WorldStem worldStem,
+                                                  Optional<GameRules> gameRules, boolean newWorld, CallbackInfo ci)
     {
         if (this.isLocalServer)
         {

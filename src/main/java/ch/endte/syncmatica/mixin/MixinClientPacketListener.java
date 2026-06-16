@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = ClientPacketListener.class, priority = 1001)
-public abstract class MixinClientPlayNetworkHandler implements IClientPlay
+public abstract class MixinClientPacketListener implements IClientPlay
 {
     @Unique
     public ExchangeTarget exTarget = null;

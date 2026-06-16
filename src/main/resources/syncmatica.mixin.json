@@ -4,17 +4,17 @@
     "package": "ch.endte.syncmatica.mixin",
     "compatibilityLevel": "JAVA_25",
     "mixins": [
-        "MixinCommandManager",
+        "MixinCommands",
         "MixinMinecraftServer",
-        "MixinPlayerManager",
-        "MixinServerCommonNetworkHandler",
-        "MixinServerPlayNetworkHandler"
+        "MixinPlayerList",
+        "MixinServerCommonPacketListenerImpl",
+        "MixinServerGamePacketListenerImpl"
     ],
     "client": [
-        "MixinClientCommonNetworkHandler",
-        "MixinClientPlayNetworkHandler",
+        "MixinClientCommonPacketListenerImpl",
+        "MixinClientPacketListener",
         "MixinIntegratedServer",
-        "MixinMinecraftClient"
+        "MixinMinecraft"
     ],
     "server": [
     ],

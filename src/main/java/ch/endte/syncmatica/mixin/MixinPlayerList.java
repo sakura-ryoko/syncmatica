@@ -18,12 +18,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PlayerList.class)
-public class MixinPlayerManager
+public class MixinPlayerList
 {
-    public MixinPlayerManager() { super(); }
+    public MixinPlayerList() { super(); }
 
     @Inject(method = "placeNewPlayer", at = @At("TAIL"))
-    private void syncmatica$eventOnPlayerJoin(Connection connection, ServerPlayer player, CommonListenerCookie clientData, CallbackInfo ci)
+    private void syncmatica$eventOnPlayerJoin(Connection connection, ServerPlayer player, CommonListenerCookie cookie, CallbackInfo ci)
     {
         Syncmatica.debug("MixinPlayerManager#onPlayerJoin(): player {}", player.getName().tryCollapseToString());
 

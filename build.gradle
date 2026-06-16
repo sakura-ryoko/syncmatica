@@ -1,5 +1,5 @@
 plugins {
-	id 'net.fabricmc.fabric-loom' version '1.15.+'
+	id 'net.fabricmc.fabric-loom' version '1.16.+'
 	id 'maven-publish'
 }
 
@@ -14,7 +14,7 @@ repositories {
 		content { includeGroupAndSubgroups("com.terraformersmc")}
 	}
 	maven { url = 'https://jitpack.io'
-		content { includeGroupAndSubgroups("io.github")}
+		content { includeGroupAndSubgroups("com.github")}
 	}
 	maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
 	maven { url = 'https://maven.nucleoid.xyz/' }
@@ -27,10 +27,10 @@ dependencies {
 	implementation "com.google.code.findbugs:jsr305:3.0.2"
 //	implementation "org.jspecify:jspecify:1.0.0"
 
-	implementation "fi.dy.masa.malilib:malilib-fabric-${project.minecraft_version_out}:${project.malilib_version}"
-	implementation "fi.dy.masa.litematica:litematica-fabric-${project.minecraft_version_out}:${project.litematica_version}"
-//	implementation "com.github.sakura-ryoko:malilib:${project.malilib_version}"
-//	implementation "com.github.sakura-ryoko:litematica:${project.litematica_version}"
+//	implementation "fi.dy.masa.malilib:malilib-fabric-${project.minecraft_version_out}:${project.malilib_version}"
+//	implementation "fi.dy.masa.litematica:litematica-fabric-${project.minecraft_version_out}:${project.litematica_version}"
+	implementation "com.github.sakura-ryoko:malilib:${project.malilib_version}"
+	implementation "com.github.sakura-ryoko:litematica:${project.litematica_version}"
 
 	include(api(fabricApi.module("fabric-api-base", project.fabric_api_version)))
 	include(api(fabricApi.module("fabric-networking-api-v1", project.fabric_api_version)))

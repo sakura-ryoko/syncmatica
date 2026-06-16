@@ -14,25 +14,25 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Commands.class)
-public class MixinCommandManager
+public class MixinCommands
 {
     @Shadow @Final private CommandDispatcher<CommandSourceStack> dispatcher;
 
     @Inject(method = "<init>", at = @At(value = "INVOKE",
                                         target = "Lnet/minecraft/server/commands/WhitelistCommand;register(Lcom/mojang/brigadier/CommandDispatcher;)V",
                                         shift = At.Shift.AFTER))
-    private void syncmatica_injectDedicatedCommands(Commands.CommandSelection environment,
-                                                    CommandBuildContext registryAccess, CallbackInfo ci)
+    private void syncmatica_injectDedicatedCommands(Commands.CommandSelection commandSelection,
+                                                    CommandBuildContext context, CallbackInfo ci)
     {
-        SyncmaticaCommand.INSTANCE.register(this.dispatcher, registryAccess, environment);
+        SyncmaticaCommand.INSTANCE.register(this.dispatcher, context, commandSelection);
     }
 
     @Inject(method = "<init>", at = @At(value = "INVOKE",
                                         target = "Lnet/minecraft/server/commands/PublishCommand;register(Lcom/mojang/brigadier/CommandDispatcher;)V",
                                         shift = At.Shift.AFTER))
-    private void syncmatica_injectIntegratedCommands(Commands.CommandSelection environment,
-                                                    CommandBuildContext registryAccess, CallbackInfo ci)
+    private void syncmatica_injectIntegratedCommands(Commands.CommandSelection commandSelection,
+                                                     CommandBuildContext context, CallbackInfo ci)
     {
-        SyncmaticaCommand.INSTANCE.register(this.dispatcher, registryAccess, environment);
+        SyncmaticaCommand.INSTANCE.register(this.dispatcher, context, commandSelection);
     }
 }

@@ -25,7 +25,7 @@ import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 
 @Mixin(value = ServerGamePacketListenerImpl.class, priority = 1001)
-public abstract class MixinServerPlayNetworkHandler implements IServerPlay
+public abstract class MixinServerGamePacketListenerImpl implements IServerPlay
 {
     @Shadow public abstract ServerPlayer getPlayer();
 
@@ -35,13 +35,13 @@ public abstract class MixinServerPlayNetworkHandler implements IServerPlay
     private ServerCommunicationManager comManager = null;
 
     @Inject(method = "<init>", at = @At("TAIL"))
-    public void syncmatica$onConnect(MinecraftServer server, Connection clientConnection, ServerPlayer player, CommonListenerCookie clientData, CallbackInfo ci)
+    public void syncmatica$onConnect(MinecraftServer server, Connection connection, ServerPlayer player, CommonListenerCookie clientData, CallbackInfo ci)
     {
         syncmatica$operateComms(sm -> sm.onPlayerJoin(syncmatica$getExchangeTarget(), player));
     }
 
     @Inject(method = "onDisconnect", at = @At("HEAD"))
-    public void syncmatica$onDisconnected(DisconnectionDetails info, CallbackInfo ci)
+    public void syncmatica$onDisconnected(DisconnectionDetails details, CallbackInfo ci)
     {
         syncmatica$operateComms(sm -> sm.onPlayerLeave(syncmatica$getExchangeTarget()));
     }
