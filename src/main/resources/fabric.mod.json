@@ -6,12 +6,17 @@
 	"description": "Server-wide shared litematics.",
 	"authors": [
 		"nnnik",
-		"samipourquoi"
+		"samipourquoi",
+		"sakura-ryoko"
 	],
 	"contact": {
-		"sources": "https://github.com/endtech/syncmatica"
+		"homepage": "https://modrinth.com/mod/syncmatica",
+		"sources": "https://github.com/sakura-ryoko/syncmatica",
+		"issues": "https://github.com/sakura-ryoko/syncmatica/issues"
 	},
 	"license": "CC0-1.0",
+	"icon": "assets/syncmatica/icon/logo.png",
+
 	"environment": "*",
 	"entrypoints": {
 		"main": [
@@ -22,20 +27,21 @@
 		"syncmatica.mixin.json",
 		"syncmatica.litematica_mixin.json"
 	],
+	"accessWidener": "syncmatica.accesswidener",
+
 	"depends": {
 		"minecraft": "1.21.11",
 		"fabric-networking-api-v1": ">=5.1.4"
 	},
 	"suggests": {
-		"malilib": ">=0.27.4- <0.28.0",
-		"litematica": ">=0.25.4- <0.27.0"
+		"malilib": ">=0.27.15- <0.28.0",
+		"litematica": ">=0.26.11- <0.27.0"
 	},
 	"breaks": {
-		"malilib": "<0.27.4-",
-		"litematica": "<0.25.4-"
+		"malilib": "<0.27.15-",
+		"litematica": "<0.26.11-"
 	},
 	
-	"icon": "assets/syncmatica/icon/logo.png",
 	"custom": {
 		"modmenu": {
 			"links": {

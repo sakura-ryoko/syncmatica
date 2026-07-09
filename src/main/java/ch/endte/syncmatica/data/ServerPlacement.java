@@ -4,6 +4,9 @@ import java.io.FileInputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
@@ -101,6 +104,22 @@ public class ServerPlacement
         return this.fileName;
     }
 
+    public String getCleanFileName()
+    {
+        String badFileName = this.fileName;
+        String result = badFileName;
+
+        Pattern pattern = Pattern.compile("[^/\\\\]+$");
+        Matcher matcher = pattern.matcher(badFileName);
+
+        if (matcher.find())
+        {
+            result = matcher.group();
+        }
+
+        return result;
+    }
+
     public UUID getHash()
     {
         return hashValue;
@@ -162,6 +181,12 @@ public class ServerPlacement
     {
         this.file = file;
         this.fileName = file.toAbsolutePath().toString();
+        return this;
+    }
+
+    protected ServerPlacement setFileName(String fileName)
+    {
+        this.fileName = fileName;
         return this;
     }
 
