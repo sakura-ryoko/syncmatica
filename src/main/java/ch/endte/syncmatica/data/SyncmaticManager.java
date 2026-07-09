@@ -8,6 +8,8 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.Reference;
@@ -92,7 +94,7 @@ public class SyncmaticManager
 
         if (context.isServer())
         {
-            saveServer();
+            this.saveServer();
         }
     }
 
@@ -108,7 +110,7 @@ public class SyncmaticManager
     {
         if (context.isServer())
         {
-            saveServer();
+            this.saveServer();
         }
     }
 
@@ -117,15 +119,25 @@ public class SyncmaticManager
         final JsonObject obj = new JsonObject();
         final JsonArray arr = new JsonArray();
 
-        for (final ServerPlacement p : getAll())
+        for (final ServerPlacement p : this.getAll())
         {
-            arr.add(p.toJson());
+            // Sanitize the FileName
+            Pattern pattern = Pattern.compile("[^/\\\\]+$");
+            Matcher matcher = pattern.matcher(p.getFileName());
+
+            if (matcher.find())
+            {
+                String result = matcher.group();
+                ServerPlacement px = p.setFileName(result);
+                arr.add(px.toJson());
+            }
+            else
+            {
+                arr.add(p.toJson());
+            }
         }
 
         obj.add(PLACEMENTS_JSON_KEY, arr);
-//        final File backup = new File(context.getConfigFolder(), "placements.json.bak");
-//        final File incoming = new File(context.getConfigFolder(), "placements.json.new");
-//        final File current = new File(context.getConfigFolder(), "placements.json");
         final Path backup = context.getConfigFolder().resolve("placements.json.bak");
         final Path incoming = context.getConfigFolder().resolve("placements.json.new");
         final Path current = context.getConfigFolder().resolve("placements.json");
@@ -141,7 +153,6 @@ public class SyncmaticManager
         {
             Syncmatica.LOGGER.error("saveServer(): Exception writing incoming file '{}'; {}",
                                     incoming.getFileName().toString(), e.getLocalizedMessage());
-            e.printStackTrace();
             return;
         }
 
@@ -177,7 +188,6 @@ public class SyncmaticManager
             {
                 Syncmatica.LOGGER.error("loadServer(): Exception moving upgrade file '{}'; {}",
                                         upgrade.getFileName().toString(), e.getLocalizedMessage());
-                e.printStackTrace();
             }
         }
 
@@ -198,7 +208,6 @@ public class SyncmaticManager
             {
                 Syncmatica.LOGGER.error("loadServer(): Exception reading file '{}'; {}", f.getFileName().toString(),
                                         e.getLocalizedMessage());
-                e.printStackTrace();
             }
             if (element == null)
             {
@@ -239,9 +248,7 @@ public class SyncmaticManager
             {
                 Syncmatica.LOGGER.error("loadServer(): Exception loading server placement; {}",
                                         e.getLocalizedMessage());
-                e.printStackTrace();
             }
         }
     }
-
 }

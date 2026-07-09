@@ -87,7 +87,7 @@ public abstract class CommunicationManager
     {
         buf.writeUUID(metaData.getId());
 //        buf.writeString(SyncmaticaUtil.sanitizeFileName(metaData.getFileName()));
-        buf.writeUtf(metaData.getFileName());
+        buf.writeUtf(metaData.getCleanFileName());
         buf.writeUUID(metaData.getHash());
 
         if (exchangeTarget.getFeatureSet().hasFeature(Feature.DISPLAY_NAME))
