@@ -10,7 +10,8 @@ import fi.dy.masa.malilib.util.StringUtils;
 public enum MainMenuButtonType implements IButtonType
 {
     VIEW_SYNCMATICS("syncmatica.gui.button.view_syncmatics"),
-    MATERIAL_GATHERINGS("syncmatica.gui.button.material_gatherings");
+//    MATERIAL_GATHERINGS("syncmatica.gui.button.material_gatherings"),
+    ;
 
     private final String labelKey;
 
