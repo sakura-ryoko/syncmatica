@@ -7,13 +7,16 @@ import ch.endte.syncmatica.data.ServerPlacement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import org.jetbrains.annotations.Nullable;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
-import fi.dy.masa.malilib.util.JsonUtils;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
+import fi.dy.masa.malilib.util.data.Constants;
+import fi.dy.masa.malilib.util.data.json.JsonUtils;
+import fi.dy.masa.malilib.util.data.tag.CompoundData;
 import fi.dy.masa.litematica.interfaces.ISchematicPlacementEventListener;
 import fi.dy.masa.litematica.schematic.LitematicaSchematic;
 import fi.dy.masa.litematica.schematic.placement.SchematicPlacement;
@@ -89,12 +92,12 @@ public class PlacementEventHandler implements ISchematicPlacementEventListener
     }
 
     @Override
-    public void onPlacementCreateFromNbt(SchematicPlacement placement, LitematicaSchematic litematicaSchematic, BlockPos blockPos, String s, Rotation blockRotation, Mirror blockMirror, boolean enabled, boolean renderEnabled, CompoundTag nbt)
+    public void onPlacementCreateFromData(SchematicPlacement placement, LitematicaSchematic litematicaSchematic, BlockPos blockPos, String s, Rotation blockRotation, Mirror blockMirror, boolean enabled, boolean renderEnabled, CompoundData data)
     {
-        if (nbt.contains("syncmatica_uuid") && placement != null)
+        if (data.contains("syncmatica_uuid", Constants.NBT.TAG_STRING) && placement != null)
         {
-            String id = nbt.getStringOr("syncmatica_uuid", "");
-            Syncmatica.debug("PlacementEventHandler#onPlacementCreateFromNbt(): name: [{}], id: [{}]", placement.getName(), id);
+            String id = data.getStringOrDefault("syncmatica_uuid", "");
+            Syncmatica.debug("PlacementEventHandler#onPlacementCreateFromData(): name: [{}], id: [{}]", placement.getName(), id);
             this.setServerId(placement, UUID.fromString(id));
             LitematicManager.getInstance().preLoad(placement);
         }
@@ -117,18 +120,18 @@ public class PlacementEventHandler implements ISchematicPlacementEventListener
     }
 
     @Override
-    public void onSavePlacementToNbt(SchematicPlacement placement, CompoundTag nbt)
+    public void onSavePlacementToData(SchematicPlacement placement, CompoundData data)
     {
         UUID serverId = this.getServerId(placement);
 
         if (serverId != null)
         {
-            Syncmatica.debug("PlacementEventHandler#onSavePlacementToNbt(): name: [{}], id: [{}]", placement.getName(), serverId.toString());
-            nbt.putString("syncmatica_uuid", serverId.toString());
+            Syncmatica.debug("PlacementEventHandler#onSavePlacementToData(): name: [{}], id: [{}]", placement.getName(), serverId.toString());
+            data.putString("syncmatica_uuid", serverId.toString());
         }
         else
         {
-            Syncmatica.LOGGER.warn("PlacementEventHandler#onSavePlacementToNbt(): name: [{}] --> NOT FOUND!", placement.getName());
+            Syncmatica.LOGGER.warn("PlacementEventHandler#onSavePlacementToData(): name: [{}] --> NOT FOUND!", placement.getName());
         }
     }
 

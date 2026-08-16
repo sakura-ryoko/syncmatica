@@ -34,12 +34,12 @@
 		"fabric-networking-api-v1": ">=5.1.4"
 	},
 	"suggests": {
-		"malilib": ">=0.27.15- <0.28.0",
-		"litematica": ">=0.26.11- <0.27.0"
+		"malilib": ">=0.27.17- <0.28.0",
+		"litematica": ">=0.26.13- <0.27.0"
 	},
 	"breaks": {
-		"malilib": "<0.27.15-",
-		"litematica": "<0.26.11-"
+		"malilib": "<0.27.17-",
+		"litematica": "<0.26.13-"
 	},
 	
 	"custom": {
