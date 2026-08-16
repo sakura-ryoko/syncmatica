@@ -1,10 +1,10 @@
 package ch.endte.syncmatica.litematica.gui;
 
-import org.apache.logging.log4j.LogManager;
+import net.minecraft.client.gui.screens.Screen;
+
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
-import net.minecraft.client.gui.screens.Screen;
 
 public class ButtonListenerChangeMenu implements IButtonActionListener
 {
@@ -23,9 +23,9 @@ public class ButtonListenerChangeMenu implements IButtonActionListener
         GuiBase gui = null;
         switch (type)
         {
-            case MATERIAL_GATHERINGS:
-                LogManager.getLogger().info("Opened Material Gatherings GUI - currently unsupported operation");
-                break;
+//            case MATERIAL_GATHERINGS:
+//                LogManager.getLogger().info("Opened Material Gatherings GUI - currently unsupported operation");
+//                break;
             case VIEW_SYNCMATICS:
                 gui = new GuiSyncmaticaServerPlacementList();
                 break;
