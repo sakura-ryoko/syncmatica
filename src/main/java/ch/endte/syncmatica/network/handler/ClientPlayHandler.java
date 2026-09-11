@@ -5,7 +5,6 @@ import ch.endte.syncmatica.network.SyncmaticaPacket;
 import ch.endte.syncmatica.network.actor.ActorClientPlayHandler;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
@@ -36,23 +35,9 @@ public class ClientPlayHandler
         }
     }
 
-    public static void receiveSyncPayload(@Nonnull SyncmaticaPacket data)
-    {
-        CallbackInfo ci = new CallbackInfo("receiveSyncPacket", false);
-        ActorClientPlayHandler.getInstance().packetEvent(data.getType(), data.getPacket(), Minecraft.getInstance().getConnection(), ci);
-    }
-
     public static void receiveSyncPayload(SyncmaticaPacket.Payload payload, ClientPlayNetworking.Context context)
     {
-        // Has threading issues ?
-        if (context.client().getConnection() != null)
-        {
-            decodeSyncData(payload.data(), context.client().getConnection());
-        }
-        else
-        {
-            decodeSyncData(payload.data(), Minecraft.getInstance().getConnection());
-        }
+        decodeSyncData(payload.data(), context.player().connection);
     }
 
     public static <T extends CustomPacketPayload> void sendSyncPacket(@Nonnull T payload)

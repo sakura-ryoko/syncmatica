@@ -22,6 +22,9 @@
 	"entrypoints": {
 		"main": [
 			"ch.endte.syncmatica.ModInit"
+		],
+		"client": [
+			"ch.endte.syncmatica.ClientModInit"
 		]
 	},
 	"mixins": [

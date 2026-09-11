@@ -10,14 +10,12 @@ import ch.endte.syncmatica.data.IFileStorage;
 import ch.endte.syncmatica.data.SyncmaticManager;
 import ch.endte.syncmatica.extended_core.PlayerIdentifierProvider;
 import ch.endte.syncmatica.network.SyncmaticaPacket;
-import ch.endte.syncmatica.network.handler.ClientPlayHandler;
 import ch.endte.syncmatica.network.handler.ServerPlayHandler;
 import ch.endte.syncmatica.service.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
 public class Context
@@ -34,7 +32,6 @@ public class Context
     private final QuotaService quota;
     private final DebugService debugService;
     private final PlayerIdentifierProvider playerIdentifierProvider;
-    private static boolean registerS2C = false;
     private static boolean registerC2S = false;
 
     public Context(
@@ -178,19 +175,6 @@ public class Context
                 Syncmatica.LOGGER.error("Context#registerReceivers(): isServer() Exception");
             }
         }
-        else
-        {
-            if (Reference.isClient() && !registerS2C)
-            {
-                Syncmatica.debug("Context#registerReceivers(): [CLIENT] -> registerSyncmaticaHandler");
-                ClientPlayNetworking.registerGlobalReceiver(SyncmaticaPacket.Payload.ID, ClientPlayHandler::receiveSyncPayload);
-                registerS2C = true;
-            }
-            else
-            {
-                Syncmatica.LOGGER.error("Context#registerReceivers(): isClient() Exception");
-            }
-        }
     }
 
     public void unregisterReceivers()
@@ -201,12 +185,6 @@ public class Context
             Syncmatica.debug("Context#unregisterReceivers(): [SERVER] -> unregisterSyncmaticaHandlers");
             ServerPlayNetworking.unregisterGlobalReceiver(SyncmaticaPacket.Payload.ID.id());
             registerC2S = false;
-        }
-        else
-        {
-            Syncmatica.debug("Context#unregisterReceivers(): [CLIENT] -> unregisterSyncmaticaHandlers");
-            ClientPlayNetworking.unregisterGlobalReceiver(SyncmaticaPacket.Payload.ID.id());
-            registerS2C = false;
         }
     }
 
