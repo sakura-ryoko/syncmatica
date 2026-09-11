@@ -38,20 +38,32 @@ import net.minecraft.world.level.block.Rotation;
 
 public class SyncmaticaCommand implements IServerCommand
 {
+    public static final String FILE_EXT = ".litematic";
+    public static final DirectoryStream.Filter<Path> FILTER = buildFilter();
     public static final SyncmaticaCommand INSTANCE = new SyncmaticaCommand();
     private Context context = null;
     private final HashMap<Path, Pair<SchematicMetadata, SchematicSchema>> files = new HashMap<>();
     private final PermissionLevel DEFAULT_PERMISSIONS = PermissionLevel.ALL;
+
+    public String command()
+    {
+        return Reference.MOD_ID;
+    }
+
+    public String node()
+    {
+        return this.command() + ":command";
+    }
 
     @Override
     public void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, Commands.CommandSelection environment)
     {
         dispatcher.register(
                 Commands
-                        .literal(Reference.MOD_ID)
-                        .requires(PermsWrap.check(Reference.MOD_ID + ".command", DEFAULT_PERMISSIONS))
+                        .literal(this.command())
+                        .requires(ctx -> PermsWrap.check(ctx, this.node(), DEFAULT_PERMISSIONS))
                         .then(Commands.literal("load")
-                                            .requires(PermsWrap.check(Reference.MOD_ID + ".command.load", DEFAULT_PERMISSIONS))
+                                            .requires(ctx -> PermsWrap.check(ctx, this.node()+".load", DEFAULT_PERMISSIONS))
                                             .executes(this::doLoadAll)
                                             .then(Commands.argument("file", StringArgumentType.string())
                                                                 .suggests(
@@ -62,7 +74,7 @@ public class SyncmaticaCommand implements IServerCommand
                                                                                                               )
                                                                                 )
                                                                 )
-                                                                .requires(PermsWrap.check(Reference.MOD_ID + ".command.load_each", DEFAULT_PERMISSIONS))
+                                                                .requires(ctx -> PermsWrap.check(ctx, this.node()+".load_each", DEFAULT_PERMISSIONS))
                                                                 .executes((ctx) ->
                                                                           {
                                                                               String result = StringArgumentType.getString(ctx, "file");
@@ -70,6 +82,31 @@ public class SyncmaticaCommand implements IServerCommand
                                                                           })
                                             )
                         ));
+    }
+
+    private static DirectoryStream.Filter<Path> buildFilter()
+    {
+        return entry ->
+        {
+            if (Files.isRegularFile(entry))
+            {
+                final String file = entry.getFileName().toString();
+
+                if (file.endsWith(FILE_EXT))
+                {
+                    String name = file.substring(0, (file.length() - FILE_EXT.length()));
+
+                    try
+                    {
+                        UUID.fromString(name);
+                        return true;
+                    }
+                    catch (IllegalArgumentException ignored) {}
+                }
+            }
+
+            return false;
+        };
     }
 
     public void updateSyncmaticDir(Context context)
@@ -96,7 +133,7 @@ public class SyncmaticaCommand implements IServerCommand
             {
                 for (Path file : stream)
                 {
-                    if (!Files.isDirectory(file))
+                    if (!Files.isDirectory(file) && FILTER.accept(file))
                     {
                         list.add(file);
 //                        Syncmatica.LOGGER.warn("updateSyncmaticDir(): list::add '{}'", file.toAbsolutePath().toString());
@@ -148,7 +185,7 @@ public class SyncmaticaCommand implements IServerCommand
 
         if (this.files.isEmpty())
         {
-            ctx.getSource().sendSuccess(() -> Component.nullToEmpty("No Syncmatic file(s) found that needs to be loaded."), false);
+            ctx.getSource().sendFailure(Component.nullToEmpty("No Syncmatic file(s) found that needs to be loaded."));
             return 0;
         }
 
@@ -209,7 +246,7 @@ public class SyncmaticaCommand implements IServerCommand
 
         if (this.files.isEmpty())
         {
-            ctx.getSource().sendSuccess(() -> Component.nullToEmpty("No Syncmatic file(s) found that needs to be loaded."), false);
+            ctx.getSource().sendFailure(Component.nullToEmpty("No Syncmatic file(s) found that needs to be loaded."));
             return 0;
         }
 

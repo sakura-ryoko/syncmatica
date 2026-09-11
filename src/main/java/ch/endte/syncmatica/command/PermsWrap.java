@@ -1,22 +1,51 @@
 package ch.endte.syncmatica.command;
 
-import java.util.function.Predicate;
 import javax.annotation.Nonnull;
-import me.lucko.fabric.api.permissions.v0.Permissions;
 
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.permissions.PermissionLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 
 public class PermsWrap
 {
-	public static Predicate<CommandSourceStack> check(@Nonnull String node, PermissionLevel level)
+	public static boolean check(@Nonnull CommandSourceStack src, @Nonnull String node, int level)
 	{
-		return Permissions.require(node, level);
+		return check(src, node, PermissionLevel.byId(Mth.clamp(level, 0, PermissionLevel.OWNERS.id())));
 	}
 
-	public static Predicate<CommandSourceStack> check(@Nonnull String node, int level)
+	public static boolean check(@Nonnull CommandSourceStack src, @Nonnull String node, @Nonnull PermissionLevel pl)
 	{
-		return Permissions.require(node, PermissionLevel.byId(Mth.clamp(level, 0, PermissionLevel.OWNERS.id())));
+		Identifier id = Identifier.tryParse(node);
+
+		if (id != null)
+		{
+			if (src.getPlayer() != null)
+			{
+				return src.getPlayer().checkPermission(id, pl);
+			}
+
+			return src.checkPermission(id, pl);
+		}
+
+		return false;
+	}
+
+	public static boolean check(@Nonnull Entity src, @Nonnull String node, int level)
+	{
+		return check(src, node, PermissionLevel.byId(Mth.clamp(level, 0, PermissionLevel.OWNERS.id())));
+	}
+
+	public static boolean check(@Nonnull Entity src, @Nonnull String node, @Nonnull PermissionLevel pl)
+	{
+		Identifier id = Identifier.tryParse(node);
+
+		if (id != null)
+		{
+			return src.checkPermission(id, pl);
+		}
+
+		return false;
 	}
 }

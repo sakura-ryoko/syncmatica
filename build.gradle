@@ -4,6 +4,7 @@ plugins {
 }
 
 repositories {
+	mavenLocal()
 	maven {url = "https://masa.dy.fi/maven/sakura-ryoko"
 		content {includeGroupAndSubgroups("fi.dy.masa")}
 	}
@@ -16,8 +17,8 @@ repositories {
 	maven { url = 'https://jitpack.io'
 		content { includeGroupAndSubgroups("com.github")}
 	}
-	maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
-	maven { url = 'https://maven.nucleoid.xyz/' }
+//	maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
+//	maven { url = 'https://maven.nucleoid.xyz/' }
 }
 
 dependencies {
@@ -26,18 +27,18 @@ dependencies {
 	implementation "com.google.code.findbugs:jsr305:3.0.2"
 //	implementation "org.jspecify:jspecify:1.0.0"
 
-	implementation "fi.dy.masa.malilib:malilib-fabric-${project.minecraft_version_out}:${project.malilib_version}"
-	implementation "fi.dy.masa.litematica:litematica-fabric-${project.minecraft_version_out}:${project.litematica_version}"
-//	implementation "com.github.sakura-ryoko:malilib:${project.malilib_version}"
-//	implementation "com.github.sakura-ryoko:litematica:${project.litematica_version}"
+//	implementation "fi.dy.masa.malilib:malilib-fabric-${project.minecraft_version_out}:${project.malilib_version}"
+//	implementation "fi.dy.masa.litematica:litematica-fabric-${project.minecraft_version_out}:${project.litematica_version}"
+	implementation "com.github.sakura-ryoko:malilib:${project.malilib_version}"
+	implementation "com.github.sakura-ryoko:litematica:${project.litematica_version}"
 
 	include(api(fabricApi.module("fabric-api-base", project.fabric_api_version)))
 	include(api(fabricApi.module("fabric-networking-api-v1", project.fabric_api_version)))
-//    include(api(fabricApi.module("fabric-resource-loader-v0", project.fabric_api_version)))
 	include(api(fabricApi.module("fabric-resource-loader-v1", project.fabric_api_version)))
+	include(api(fabricApi.module("fabric-permission-api-v1", project.fabric_api_version)))
 
 	// Lucko Permissions API
-	implementation include("me.lucko:fabric-permissions-api:${project.fabric_permissions_api_version}")
+//	implementation include("me.lucko:fabric-permissions-api:${project.fabric_permissions_api_version}")
 	compileOnly "com.terraformersmc:modmenu:${project.mod_menu_version}"
 //	runtimeOnly 'me.fallenbreath:mixin-auditor:0.2.0-u'
 }

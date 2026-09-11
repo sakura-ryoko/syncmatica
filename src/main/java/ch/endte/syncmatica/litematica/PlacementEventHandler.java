@@ -44,7 +44,7 @@ public class PlacementEventHandler implements ISchematicPlacementEventListener
         }
         else
         {
-            Syncmatica.LOGGER.warn("PlacementEventHandler#getServerId() - name: [{}] --> NOT FOUND!", placement != null ? placement.getName() : "<NULL>");
+            Syncmatica.debug("PlacementEventHandler#getServerId() - name: [{}] --> NOT FOUND!", placement != null ? placement.getName() : "<NULL>");
         }
 
         return null;
@@ -115,7 +115,7 @@ public class PlacementEventHandler implements ISchematicPlacementEventListener
         }
         else
         {
-            Syncmatica.LOGGER.warn("PlacementEventHandler#onSavePlacementToJson(): name: [{}] --> NOT FOUND!", placement.getName());
+            Syncmatica.debug("PlacementEventHandler#onSavePlacementToJson(): name: [{}] --> NOT FOUND!", placement.getName());
         }
     }
 
@@ -131,7 +131,7 @@ public class PlacementEventHandler implements ISchematicPlacementEventListener
         }
         else
         {
-            Syncmatica.LOGGER.warn("PlacementEventHandler#onSavePlacementToData(): name: [{}] --> NOT FOUND!", placement.getName());
+            Syncmatica.debug("PlacementEventHandler#onSavePlacementToData(): name: [{}] --> NOT FOUND!", placement.getName());
         }
     }
 
