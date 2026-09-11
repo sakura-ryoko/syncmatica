@@ -33,7 +33,7 @@ public class MixinMinecraft
         }
     }
 
-    @Inject(method = "disconnect(Lnet/minecraft/client/gui/screens/Screen;Z)V", at = @At("HEAD"))
+    @Inject(method = "disconnect(Lnet/minecraft/client/gui/screens/Screen;ZZ)V", at = @At("HEAD"))
     private void syncmatica$shutdownPre(final CallbackInfo ci)
     {
         ActorClientPlayHandler.getInstance().reset();
@@ -41,7 +41,7 @@ public class MixinMinecraft
         ScreenHelper.close();
     }
 
-    @Inject(method = "disconnect(Lnet/minecraft/client/gui/screens/Screen;Z)V", at = @At("RETURN"))
+    @Inject(method = "disconnect(Lnet/minecraft/client/gui/screens/Screen;ZZ)V", at = @At("RETURN"))
     private void syncmatica$shutdownPost(final CallbackInfo ci)
     {
         // This fixes some timing issues between this

@@ -15,13 +15,10 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import net.minecraft.network.Connection;
 import net.minecraft.network.DisconnectionDetails;
 import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 
 @Mixin(value = ServerGamePacketListenerImpl.class, priority = 1001)
@@ -33,12 +30,6 @@ public abstract class MixinServerGamePacketListenerImpl implements IServerPlay
     private ExchangeTarget exTarget = null;
     @Unique
     private ServerCommunicationManager comManager = null;
-
-    @Inject(method = "<init>", at = @At("TAIL"))
-    public void syncmatica$onConnect(MinecraftServer server, Connection connection, ServerPlayer player, CommonListenerCookie clientData, CallbackInfo ci)
-    {
-        syncmatica$operateComms(sm -> sm.onPlayerJoin(syncmatica$getExchangeTarget(), player));
-    }
 
     @Inject(method = "onDisconnect", at = @At("HEAD"))
     public void syncmatica$onDisconnected(DisconnectionDetails details, CallbackInfo ci)

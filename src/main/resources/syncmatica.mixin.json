@@ -11,8 +11,6 @@
         "MixinServerGamePacketListenerImpl"
     ],
     "client": [
-        "MixinClientCommonPacketListenerImpl",
-        "MixinClientPacketListener",
         "MixinIntegratedServer",
         "MixinMinecraft"
     ],

@@ -1,14 +1,8 @@
 package ch.endte.syncmatica.mixin;
 
-import ch.endte.syncmatica.Context;
-import ch.endte.syncmatica.Reference;
 import ch.endte.syncmatica.Syncmatica;
-import ch.endte.syncmatica.network.handler.ServerPlayHandler;
-import ch.endte.syncmatica.network.PacketType;
-import ch.endte.syncmatica.network.SyncmaticaPacket;
-import io.netty.buffer.Unpooled;
+import ch.endte.syncmatica.network.actor.IServerPlay;
 import net.minecraft.network.Connection;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.server.players.PlayerList;
@@ -27,18 +21,8 @@ public class MixinPlayerList
     {
         Syncmatica.debug("MixinPlayerManager#onPlayerJoin(): player {}", player.getName().tryCollapseToString());
 
-        if (Reference.isServer() || Reference.isDedicatedServer() || Reference.isIntegratedServer() || Reference.isOpenToLan())
-        {
-            Context server = Syncmatica.getContext(Syncmatica.SERVER_CONTEXT);
-            if (server != null && server.isStarted())
-            {
-                Syncmatica.debug("syncmatica$eventOnPlayerJoin: yeet");
-                FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-                buf.writeUtf(Reference.MOD_VERSION);
-
-                ServerPlayHandler.encodeSyncData(new SyncmaticaPacket(PacketType.REGISTER_VERSION.getId(), buf), player);
-            }
-        }
+        IServerPlay handler = (IServerPlay) player.connection;
+        handler.syncmatica$operateComms(sm -> sm.onPlayerJoin(handler.syncmatica$getExchangeTarget(), player));
     }
 
     @Inject(method = "remove", at = @At("HEAD"))
