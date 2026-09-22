@@ -31,16 +31,16 @@
 	"accessWidener": "syncmatica.accesswidener",
 
 	"depends": {
-		"minecraft": ">=26.3-beta.1 <26.4",
+		"minecraft": ">=26.3 <26.4",
 		"fabric-networking-api-v1": "*"
 	},
 	"suggests": {
-		"malilib": ">=0.29.99- <0.30.0-",
-		"litematica": ">=0.28.99- <0.29.0-"
+		"malilib": ">=0.30.1- <0.31.0-",
+		"litematica": ">=0.29.0- <0.30.0-"
 	},
 	"breaks": {
-		"malilib": "<0.29.99-",
-		"litematica": "<0.28.99-"
+		"malilib": "<0.30.1-",
+		"litematica": "<0.29.0-"
 	},
 	
 	"custom": {
