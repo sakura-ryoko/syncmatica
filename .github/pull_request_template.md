@@ -1,6 +1,6 @@
 ## Pull Request Description
 
-### MaLiLib - Overview
+### Syncmatica - Overview
 <!-- Provide a concise summary of the changes introduced by this PR. -->
 
 ### Related Issues
