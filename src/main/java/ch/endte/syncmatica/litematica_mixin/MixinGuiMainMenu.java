@@ -3,6 +3,7 @@ package ch.endte.syncmatica.litematica_mixin;
 import ch.endte.syncmatica.Context;
 import ch.endte.syncmatica.litematica.LitematicManager;
 import ch.endte.syncmatica.litematica.gui.ButtonListenerChangeMenu;
+import ch.endte.syncmatica.litematica.gui.IGuiBase;
 import ch.endte.syncmatica.litematica.gui.MainMenuButtonType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -10,22 +11,34 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
-import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.litematica.gui.GuiMainMenu;
-import fi.dy.masa.litematica.selection.SelectionMode;
 
 @Mixin(GuiMainMenu.class)
 public class MixinGuiMainMenu extends GuiBase {
 
     @Inject(method = "initGui", at = @At("RETURN"), remap = false)
     public void initGui(final CallbackInfo ci) {
-        final int width = getButtonWidth();
-        final int x = 52 + 2 * width;
-        int y = 30;
-        createChangeMenuButton(x, y, width, MainMenuButtonType.VIEW_SYNCMATICS);
-        y += 22;
-//        createChangeMenuButton(x, y, width, MainMenuButtonType.MATERIAL_GATHERINGS).setEnabled(false);
+        ButtonBase lastButton = null;
+        for (final ButtonBase button : ((IGuiBase) this).getButtons()) {
+            if (button.getY() == 30 && (lastButton == null || button.getX() > lastButton.getX())) {
+                lastButton = button;
+            }
+        }
+        if (lastButton == null) {
+            return;
+        }
+
+        final int width = Math.max(lastButton.getWidth(), getSyncmaticaButtonWidth());
+        int x = lastButton.getX() + lastButton.getWidth() + 20;
+        int y = lastButton.getY();
+        if (x + width > getScreenWidth() - 12) {
+            x = lastButton.getX();
+            y += 22;
+        }
+        createChangeMenuButton(x, y, Math.min(width, Math.max(1, getScreenWidth() - x - 12)),
+                MainMenuButtonType.VIEW_SYNCMATICS);
     }
 
     @Unique
@@ -38,16 +51,11 @@ public class MixinGuiMainMenu extends GuiBase {
     }
 
     @Unique
-    private int getButtonWidth() {
+    private int getSyncmaticaButtonWidth() {
         int width = 0;
 
         for (final MainMenuButtonType type : MainMenuButtonType.values()) {
             width = Math.max(width, getStringWidth(type.getTranslatedKey()) + 30);
-        }
-
-        for (final SelectionMode mode : SelectionMode.values()) {
-            final String label = StringUtils.translate("litematica.gui.button.area_selection_mode", mode.getDisplayName());
-            width = Math.max(width, getStringWidth(label) + 10);
         }
 
         return width;
